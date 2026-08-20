@@ -13,7 +13,8 @@ export const Input = ({
   error,
   required = false,
   autoComplete,
-  id
+  id,
+  maxLength
 }) => {
   const inputId = id || `input-${name}`;
 
@@ -21,7 +22,9 @@ export const Input = ({
     <div className="input-group">
       {label && (
         <label htmlFor={inputId} className="input-label">
-          <span>{label} {required && <span style={{ color: 'var(--primary-emerald)' }}>*</span>}</span>
+          <span>
+            {label} {required && <span style={{ color: 'var(--primary-emerald)' }}>*</span>}
+          </span>
         </label>
       )}
       <div className="input-wrapper">
@@ -38,6 +41,7 @@ export const Input = ({
           onChange={onChange}
           placeholder={placeholder}
           autoComplete={autoComplete}
+          maxLength={maxLength}
           className={`custom-input ${!LeftIcon ? 'no-left-icon' : ''} ${
             rightElement ? 'has-right-btn' : ''
           } ${error ? 'is-error' : ''}`}
