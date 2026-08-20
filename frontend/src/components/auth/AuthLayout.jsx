@@ -4,6 +4,7 @@ import { FeatureHighlights } from '../layout/FeatureHighlights';
 import { Login } from './Login';
 import { Signup } from './Signup';
 import { ForgotPassword } from './ForgotPassword';
+import { TiltCard } from '../common/TiltCard';
 import { NotificationToast } from '../common/NotificationToast';
 
 export const AuthLayout = () => {
@@ -12,24 +13,24 @@ export const AuthLayout = () => {
 
   return (
     <div className="app-viewport">
-      {/* Background Animated Blobs */}
+      {/* Dynamic Ambient Background Blur */}
       <div className="bg-ambient-wrapper">
         <div className="ambient-blob ambient-blob-1" />
         <div className="ambient-blob ambient-blob-2" />
         <div className="ambient-blob ambient-blob-3" />
       </div>
 
-      {/* Top Header */}
+      {/* Brand Header */}
       <Header />
 
-      {/* Split Screen Layout */}
+      {/* Main Content Grid */}
       <main className="main-content">
         <div className="auth-grid">
-          {/* Left Side: Product Showcase & Graphics */}
+          {/* Left Side: Desktop Features & Highlights */}
           <FeatureHighlights />
 
-          {/* Right Side: Dynamic Form Container */}
-          <div>
+          {/* Right Side: 3D Mouse Tilt Card Wrapper */}
+          <TiltCard>
             {currentView === 'login' && (
               <Login
                 onSwitchToSignUp={() => setCurrentView('signup')}
@@ -48,7 +49,7 @@ export const AuthLayout = () => {
                 onBackToLogin={() => setCurrentView('login')}
               />
             )}
-          </div>
+          </TiltCard>
         </div>
       </main>
 
@@ -59,7 +60,7 @@ export const AuthLayout = () => {
         </p>
       </footer>
 
-      {/* Toast Notification Container */}
+      {/* Toast Container */}
       <NotificationToast />
     </div>
   );
