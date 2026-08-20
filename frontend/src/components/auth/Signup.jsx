@@ -3,7 +3,7 @@ import { useAuth } from '../../context/AuthContext';
 import { Input } from '../common/Input';
 import { Button } from '../common/Button';
 import { SocialLogin } from './SocialLogin';
-import { User, Mail, Phone, Lock, Eye, EyeOff, UserPlus, ShieldCheck } from 'lucide-react';
+import { User, Mail, Phone, Lock, Eye, EyeOff, UserPlus } from 'lucide-react';
 
 export const Signup = ({ onSwitchToLogin }) => {
   const { signup, isLoading } = useAuth();
@@ -18,23 +18,6 @@ export const Signup = ({ onSwitchToLogin }) => {
 
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
-
-  // CREATIVE FEATURE: Password Strength Meter Calculation
-  const getPasswordStrength = (pass) => {
-    if (!pass) return { score: 0, label: '', color: 'transparent' };
-    let score = 0;
-    if (pass.length >= 6) score += 1;
-    if (pass.length >= 10) score += 1;
-    if (/[A-Z]/.test(pass)) score += 1;
-    if (/[0-9]/.test(pass)) score += 1;
-    if (/[^A-Za-z0-9]/.test(pass)) score += 1;
-
-    if (score <= 1) return { score: 25, label: 'Weak', color: '#ef4444' };
-    if (score <= 3) return { score: 65, label: 'Medium', color: '#f59e0b' };
-    return { score: 100, label: 'Strong', color: '#10b981' };
-  };
-
-  const strength = getPasswordStrength(formData.password);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -93,6 +76,12 @@ export const Signup = ({ onSwitchToLogin }) => {
     e.preventDefault();
     if (!validateForm()) return;
 
+    console.log('Signup Successful (Simulated):', {
+      fullName: formData.fullName,
+      email: formData.email,
+      mobile: formData.mobile
+    });
+
     try {
       await signup({
         fullName: formData.fullName,
@@ -101,7 +90,7 @@ export const Signup = ({ onSwitchToLogin }) => {
         password: formData.password
       });
     } catch (err) {
-      // Error handled in AuthContext
+      // Error state handled in AuthContext
     }
   };
 
@@ -156,40 +145,27 @@ export const Signup = ({ onSwitchToLogin }) => {
           required
         />
 
-        {/* Password + Strength Meter */}
-        <div>
-          <Input
-            label="Password"
-            type={showPassword ? 'text' : 'password'}
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            placeholder="••••••••"
-            leftIcon={Lock}
-            error={errors.password}
-            required
-            rightElement={
-              <button
-                type="button"
-                className="input-toggle-btn"
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-              </button>
-            }
-          />
-          {formData.password && (
-            <div style={{ marginTop: '0.4rem' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '0.2rem' }}>
-                <span>Password Strength</span>
-                <span style={{ color: strength.color, fontWeight: '700' }}>{strength.label}</span>
-              </div>
-              <div style={{ height: '4px', width: '100%', background: 'rgba(255,255,255,0.1)', borderRadius: '2px', overflow: 'hidden' }}>
-                <div style={{ height: '100%', width: `${strength.score}%`, background: strength.color, transition: 'all 0.3s ease' }} />
-              </div>
-            </div>
-          )}
-        </div>
+        {/* Password */}
+        <Input
+          label="Password"
+          type={showPassword ? 'text' : 'password'}
+          name="password"
+          value={formData.password}
+          onChange={handleChange}
+          placeholder="••••••••"
+          leftIcon={Lock}
+          error={errors.password}
+          required
+          rightElement={
+            <button
+              type="button"
+              className="input-toggle-btn"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
+          }
+        />
 
         {/* Confirm Password */}
         <Input
@@ -237,4 +213,5 @@ export const Signup = ({ onSwitchToLogin }) => {
   );
 };
 
+// Also export as SignUpForm for backward compatibility
 export const SignUpForm = Signup;
