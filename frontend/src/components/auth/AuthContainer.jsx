@@ -232,9 +232,17 @@ export const AuthContainer = () => {
 
       {/* Top Navbar */}
       <header className="lofi-navbar relative z-10 w-full px-8 py-6 flex items-center justify-between">
-        <div className="brand-name text-2xl font-bold text-white tracking-wider flex items-center gap-1">
-          Price<span>Lens</span>
-        </div>
+        <a href="/" className="lofi-brand-badge">
+          <img
+            src="/logo.jpg"
+            alt="PriceLens Logo"
+            className="lofi-brand-img"
+          />
+          <div className="brand-name">
+            <span className="text-price">PRICE</span>
+            <span className="text-lens">LENS</span>
+          </div>
+        </a>
 
         <nav className="lofi-nav-links hidden md:flex items-center space-x-8 text-white font-medium text-sm">
           <a href="#home" className="lofi-nav-link">Home</a>
