@@ -1,6 +1,6 @@
 import React from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
-import { AuthLayout } from './components/auth/AuthLayout';
+import { AuthContainer } from './components/auth/AuthContainer';
 import { MockDashboard } from './components/layout/MockDashboard';
 
 const AppContent = () => {
@@ -9,10 +9,6 @@ const AppContent = () => {
   if (isAuthenticated) {
     return (
       <div className="app-viewport">
-        <div className="bg-ambient-wrapper">
-          <div className="ambient-blob ambient-blob-1" />
-          <div className="ambient-blob ambient-blob-2" />
-        </div>
         <main className="main-content">
           <MockDashboard />
         </main>
@@ -20,7 +16,7 @@ const AppContent = () => {
     );
   }
 
-  return <AuthLayout />;
+  return <AuthContainer />;
 };
 
 export default function App() {
