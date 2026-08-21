@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import { AlertCircle } from 'lucide-react';
 
 export const Input = ({
@@ -27,11 +28,18 @@ export const Input = ({
           </span>
         </label>
       )}
-      <div className="input-wrapper">
+      <motion.div
+        className="input-wrapper"
+        whileFocus={{ y: -2, scale: 1.005 }}
+        transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+      >
         {LeftIcon && (
-          <div className="input-icon-left">
+          <motion.div
+            className="input-icon-left"
+            whileHover={{ scale: 1.15 }}
+          >
             <LeftIcon size={18} />
-          </div>
+          </motion.div>
         )}
         <input
           id={inputId}
@@ -47,12 +55,17 @@ export const Input = ({
           } ${error ? 'is-error' : ''}`}
         />
         {rightElement}
-      </div>
+      </motion.div>
       {error && (
-        <div className="input-error-msg">
+        <motion.div
+          initial={{ opacity: 0, y: -4 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -4 }}
+          className="input-error-msg"
+        >
           <AlertCircle size={14} />
           <span>{error}</span>
-        </div>
+        </motion.div>
       )}
     </div>
   );

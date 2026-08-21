@@ -1,28 +1,58 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import { TrendingDown, MessageSquareQuote, ShieldCheck, Sparkles } from 'lucide-react';
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.15
+    }
+  }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, x: -30, rotateY: -10 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    rotateY: 0,
+    transition: { type: 'spring', stiffness: 100, damping: 15 }
+  }
+};
 
 export const FeatureHighlights = () => {
   return (
-    <div className="showcase-panel">
-      {/* Capsule Badge Tag */}
-      <div className="showcase-badge">
+    <motion.div
+      className="showcase-panel"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      {/* Capsule Tag Badge */}
+      <motion.div className="showcase-badge" variants={itemVariants}>
         <Sparkles size={14} />
         <span>✦ Next-Gen Shopping Intelligence</span>
-      </div>
+      </motion.div>
 
-      {/* Main Heading */}
-      <h1 className="showcase-title">
+      {/* Main Title */}
+      <motion.h1 className="showcase-title" variants={itemVariants}>
         Buy Smarter with <span>AI-Driven Insights</span>
-      </h1>
+      </motion.h1>
 
       {/* Subtitle */}
-      <p className="showcase-desc">
+      <motion.p className="showcase-desc" variants={itemVariants}>
         PriceLens aggregates real-time prices across major online stores and analyzes thousands of customer reviews to give you instant, trustworthy purchase recommendations.
-      </p>
+      </motion.p>
 
       {/* 3 Feature Cards */}
       <div className="features-list">
-        <div className="feature-item-card">
+        <motion.div
+          className="feature-item-card"
+          variants={itemVariants}
+          whileHover={{ scale: 1.02, x: 6, transition: { duration: 0.2 } }}
+        >
           <div className="feature-icon-box feature-icon-emerald">
             <TrendingDown size={22} />
           </div>
@@ -32,9 +62,13 @@ export const FeatureHighlights = () => {
               Track historical price drops and find the absolute lowest price across verified sellers.
             </p>
           </div>
-        </div>
+        </motion.div>
 
-        <div className="feature-item-card">
+        <motion.div
+          className="feature-item-card"
+          variants={itemVariants}
+          whileHover={{ scale: 1.02, x: 6, transition: { duration: 0.2 } }}
+        >
           <div className="feature-icon-box feature-icon-cyan">
             <MessageSquareQuote size={22} />
           </div>
@@ -44,9 +78,13 @@ export const FeatureHighlights = () => {
               Skip endless reading. AI summarizes pros, cons, and genuine buyer sentiment in seconds.
             </p>
           </div>
-        </div>
+        </motion.div>
 
-        <div className="feature-item-card">
+        <motion.div
+          className="feature-item-card"
+          variants={itemVariants}
+          whileHover={{ scale: 1.02, x: 6, transition: { duration: 0.2 } }}
+        >
           <div className="feature-icon-box feature-icon-indigo">
             <ShieldCheck size={22} />
           </div>
@@ -56,8 +94,8 @@ export const FeatureHighlights = () => {
               Advanced algorithms filter out bot-generated and incentivized seller reviews.
             </p>
           </div>
-        </div>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 };

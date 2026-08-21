@@ -1,19 +1,19 @@
 /* ==========================================================================
    PriceLens - Design System & Global CSS
-   Theme: Modern Dark E-Commerce / 3D Glassmorphism AI Platform
+   Theme: Ultimate 3D Glassmorphism AI SaaS Platform
    ========================================================================== */
 
 :root {
   /* Color Palette */
-  --bg-dark: #090d16;
-  --bg-surface: #111827;
-  --bg-card: rgba(17, 24, 39, 0.75);
-  --bg-card-hover: rgba(31, 41, 55, 0.85);
-  --bg-input: rgba(15, 23, 42, 0.65);
+  --bg-dark: #0b0f17;
+  --bg-surface: #0f172a;
+  --bg-card: rgba(15, 23, 42, 0.45);
+  --bg-card-hover: rgba(30, 41, 59, 0.55);
+  --bg-input: rgba(15, 23, 42, 0.7);
   
   --primary-emerald: #10b981;
   --primary-emerald-hover: #059669;
-  --primary-emerald-glow: rgba(16, 185, 129, 0.3);
+  --primary-emerald-glow: rgba(16, 185, 129, 0.35);
 
   --accent-cyan: #06b6d4;
   --accent-indigo: #6366f1;
@@ -25,8 +25,8 @@
   --text-placeholder: #475569;
 
   --border-subtle: rgba(255, 255, 255, 0.08);
-  --border-glass: rgba(255, 255, 255, 0.14);
-  --border-focus: rgba(16, 185, 129, 0.6);
+  --border-glass: rgba(255, 255, 255, 0.12);
+  --border-focus: rgba(16, 185, 129, 0.65);
   --border-error: rgba(239, 68, 68, 0.6);
 
   --error: #ef4444;
@@ -42,13 +42,13 @@
   /* Shadow & Glow */
   --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.2);
   --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
-  --shadow-lg: 0 20px 40px -15px rgba(0, 0, 0, 0.6);
-  --shadow-glow: 0 0 45px rgba(16, 185, 129, 0.2);
+  --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+  --shadow-glow: 0 0 50px rgba(16, 185, 129, 0.22);
 
   /* Radius */
   --radius-sm: 8px;
   --radius-md: 14px;
-  --radius-lg: 22px;
+  --radius-lg: 24px;
   --radius-full: 9999px;
 
   /* Transitions */
@@ -82,7 +82,7 @@ html, body {
   flex-direction: column;
 }
 
-/* Background Animated Blobs */
+/* Background Animated Aurora & Mesh Orbs */
 .bg-ambient-wrapper {
   position: fixed;
   inset: 0;
@@ -94,41 +94,41 @@ html, body {
 .ambient-blob {
   position: absolute;
   border-radius: 50%;
-  filter: blur(120px);
-  opacity: 0.5;
-  animation: floatBlob 18s ease-in-out infinite alternate;
+  filter: blur(140px);
+  opacity: 0.45;
+  will-change: transform;
 }
 
 .ambient-blob-1 {
-  top: -10%;
-  left: -10%;
-  width: 550px;
-  height: 550px;
-  background: radial-gradient(circle, rgba(16, 185, 129, 0.4) 0%, rgba(6, 182, 212, 0) 70%);
+  top: -12%;
+  left: -12%;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.45) 0%, rgba(6, 182, 212, 0) 70%);
 }
 
 .ambient-blob-2 {
   bottom: -15%;
   right: -10%;
-  width: 650px;
-  height: 650px;
-  background: radial-gradient(circle, rgba(99, 102, 241, 0.35) 0%, rgba(59, 130, 246, 0) 70%);
-  animation-delay: -9s;
+  width: 700px;
+  height: 700px;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.4) 0%, rgba(59, 130, 246, 0) 70%);
 }
 
 .ambient-blob-3 {
-  top: 40%;
-  left: 35%;
-  width: 450px;
-  height: 450px;
-  background: radial-gradient(circle, rgba(6, 182, 212, 0.3) 0%, rgba(16, 185, 129, 0) 70%);
-  animation-delay: -4s;
+  top: 35%;
+  left: 30%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.35) 0%, rgba(16, 185, 129, 0) 70%);
 }
 
-@keyframes floatBlob {
-  0% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(40px, 30px) scale(1.08); }
-  100% { transform: translate(-30px, 50px) scale(0.95); }
+.ambient-blob-4 {
+  bottom: 25%;
+  left: 5%;
+  width: 450px;
+  height: 450px;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.3) 0%, rgba(147, 51, 234, 0) 70%);
 }
 
 /* Container & Layout */
@@ -144,7 +144,7 @@ html, body {
 
 @media (min-width: 768px) {
   .app-viewport {
-    padding: 2rem 3rem;
+    padding: 2rem 3.5rem;
   }
 }
 
@@ -174,19 +174,20 @@ html, body {
   }
 }
 
-/* 3D Glassmorphism Card & Tilt Container */
+/* 3D Glassmorphism Card Design */
 .tilt-card-wrapper {
   border-radius: var(--radius-lg);
+  perspective: 1200px;
 }
 
 .glass-card {
   position: relative;
   background: var(--bg-card);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
   border: 1px solid var(--border-glass);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md), var(--shadow-glow);
+  box-shadow: var(--shadow-lg), var(--shadow-glow);
   padding: 2.25rem;
   transition: border-color var(--transition-normal), box-shadow var(--transition-normal);
   overflow: hidden;
@@ -198,7 +199,7 @@ html, body {
   }
 }
 
-/* Glowing Neon Top Sheen Line */
+/* Glowing Dynamic Accent Top Sheen Line */
 .glass-card::before {
   content: '';
   position: absolute;
@@ -207,7 +208,7 @@ html, body {
   right: 0;
   height: 2px;
   background: linear-gradient(90deg, transparent 0%, var(--primary-emerald) 50%, var(--accent-cyan) 80%, transparent 100%);
-  opacity: 0.8;
+  opacity: 0.85;
 }
 
 .glass-card:hover {
@@ -240,7 +241,7 @@ html, body {
   gap: 1.25rem;
 }
 
-/* Input Component */
+/* Input Component with 3D Focus & Micro-interactions */
 .input-group {
   display: flex;
   flex-direction: column;
@@ -303,7 +304,7 @@ html, body {
 .custom-input:focus {
   border-color: var(--primary-emerald);
   box-shadow: 0 0 0 3px var(--primary-emerald-glow);
-  background-color: rgba(15, 23, 42, 0.85);
+  background-color: rgba(15, 23, 42, 0.9);
 }
 
 .input-wrapper:focus-within .input-icon-left {
@@ -407,7 +408,7 @@ html, body {
   text-decoration: underline;
 }
 
-/* Button Components */
+/* Button Components with 3D Push Feedback & Neon Sheen */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -429,17 +430,12 @@ html, body {
 .btn-primary {
   background: linear-gradient(135deg, var(--primary-emerald) 0%, var(--accent-cyan) 100%);
   color: #041410;
-  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.35);
+  box-shadow: 0 4px 18px rgba(16, 185, 129, 0.35);
 }
 
 .btn-primary:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.5);
+  box-shadow: 0 8px 28px rgba(16, 185, 129, 0.55);
   filter: brightness(1.08);
-}
-
-.btn-primary:active:not(:disabled) {
-  transform: translateY(0);
 }
 
 .btn-outline {
@@ -464,13 +460,11 @@ html, body {
 .btn-google:hover:not(:disabled) {
   background: rgba(255, 255, 255, 0.08);
   border-color: rgba(255, 255, 255, 0.25);
-  transform: translateY(-1px);
 }
 
 .btn:disabled {
   opacity: 0.65;
   cursor: not-allowed;
-  transform: none !important;
 }
 
 .btn-spinner {
