@@ -223,7 +223,10 @@ export const AuthContainer = () => {
   };
 
   return (
-    <div className="lofi-bg-viewport min-h-screen w-full bg-cover bg-center bg-no-repeat relative flex flex-col justify-between overflow-hidden">
+    <div
+      className="lofi-bg-viewport min-h-screen w-full bg-cover bg-center bg-no-repeat relative flex flex-col justify-between overflow-hidden"
+      style={{ backgroundImage: "url('/bg-auth.png')" }}
+    >
       {/* Dark Vignette Overlay */}
       <div className="lofi-overlay absolute inset-0 bg-black/40 backdrop-brightness-90 pointer-events-none" style={{ zIndex: -5 }} />
 
