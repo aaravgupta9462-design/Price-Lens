@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useMotionValue, useTransform, useSpring } from 'framer-motion';
 import { Mail, Lock, User, Phone, Eye, EyeOff, X, KeyRound, CheckCircle2, RefreshCw } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import './AuthContainer.css';
@@ -9,6 +9,32 @@ export const AuthContainer = () => {
 
   // State: 'login' | 'register' | 'forgot'
   const [viewState, setViewState] = useState('login');
+
+  // 3D Mouse Tilt & Floating Animation States
+  const [isHovered, setIsHovered] = useState(false);
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  const rotateXRaw = useTransform(mouseY, [-0.5, 0.5], [10, -10]);
+  const rotateYRaw = useTransform(mouseX, [-0.5, 0.5], [-10, 10]);
+
+  const rotateX = useSpring(rotateXRaw, { damping: 20, stiffness: 200 });
+  const rotateY = useSpring(rotateYRaw, { damping: 20, stiffness: 200 });
+
+  const handleMouseMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const xPct = (e.clientX - rect.left) / rect.width - 0.5;
+    const yPct = (e.clientY - rect.top) / rect.height - 0.5;
+    mouseX.set(xPct);
+    mouseY.set(yPct);
+  };
+
+  const handleMouseEnter = () => setIsHovered(true);
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+    mouseX.set(0);
+    mouseY.set(0);
+  };
 
   // Login State
   const [loginData, setLoginData] = useState({ identifier: '', password: '', rememberMe: false });
@@ -196,16 +222,26 @@ export const AuthContainer = () => {
   };
 
   return (
-    <div className="lofi-bg-viewport min-h-screen w-full bg-cover bg-center bg-no-repeat relative flex flex-col justify-between">
+    <div
+      className="lofi-bg-viewport min-h-screen w-full bg-cover bg-center bg-no-repeat relative flex flex-col justify-between overflow-hidden"
+      style={{ backgroundImage: "url('/bg-auth.png')" }}
+    >
       {/* Dark Vignette Overlay */}
-      <div className="lofi-overlay absolute inset-0 bg-black/40 backdrop-brightness-90 pointer-events-none" />
+      <div className="lofi-overlay absolute inset-0 bg-black/40 backdrop-brightness-90 pointer-events-none" style={{ zIndex: -5 }} />
 
       {/* Top Navbar */}
       <header className="lofi-navbar relative z-10 w-full px-8 py-6 flex items-center justify-between">
-        <div className="brand-name text-2xl font-bold text-white tracking-wider flex items-center gap-1">
-          Price<span>Lens</span>
-          <span style={{ color: '#10b981' }}>.</span>
-        </div>
+        <a href="/" className="lofi-brand-badge">
+          <img
+            src="/logo.jpg"
+            alt="PriceLens Logo"
+            className="lofi-brand-img"
+          />
+          <div className="brand-name">
+            <span className="text-price">PRICE</span>
+            <span className="text-lens">LENS</span>
+          </div>
+        </a>
 
         <nav className="lofi-nav-links hidden md:flex items-center space-x-8 text-white font-medium text-sm">
           <a href="#home" className="lofi-nav-link">Home</a>
@@ -221,10 +257,35 @@ export const AuthContainer = () => {
         </nav>
       </header>
 
-      {/* Main Centered Pure Glassmorphism Modal Container */}
+      {/* Main Centered Pure Glassmorphism Modal Container with 3D Tilt, Spring Entrance & Infinite Float */}
       <main className="lofi-main-center relative z-10 flex-1 flex items-center justify-center p-4">
-        <div className="w-full max-w-md">
-          <div className="lofi-glass-card backdrop-blur-xl bg-white/10 border border-white/20 shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] rounded-2xl p-8 relative overflow-hidden text-white">
+        <div className="w-full max-w-md style-3d-perspective" style={{ perspective: 1000 }}>
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0, rotateY: 15 }}
+            animate={
+              isHovered
+                ? { scale: 1, opacity: 1, y: 0 }
+                : { scale: 1, opacity: 1, y: [0, -8, 0] }
+            }
+            style={{
+              rotateX: isHovered ? rotateX : 0,
+              rotateY: isHovered ? rotateY : 0,
+              transformStyle: 'preserve-3d'
+            }}
+            transition={
+              isHovered
+                ? { type: 'spring', stiffness: 200, damping: 20 }
+                : {
+                    scale: { type: 'spring', stiffness: 120, damping: 12 },
+                    opacity: { duration: 0.4 },
+                    y: { repeat: Infinity, duration: 4, ease: 'easeInOut' }
+                  }
+            }
+            onMouseMove={handleMouseMove}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+            className="lofi-glass-card backdrop-blur-xl bg-white/10 border border-white/20 shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] rounded-2xl p-8 relative overflow-hidden text-white"
+          >
             {/* Close Button ('X') */}
             <button
               onClick={() => {
@@ -320,14 +381,15 @@ export const AuthContainer = () => {
                       </button>
                     </div>
 
-                    {/* Submit Button */}
-                    <button
+                    {/* Submit Button with 3D Push Tap Effect */}
+                    <motion.button
+                      whileTap={{ scale: 0.95 }}
                       type="submit"
                       disabled={isLoading}
-                      className="lofi-btn-dark w-full py-3 mt-4 rounded-lg bg-slate-900/80 hover:bg-slate-800 text-white font-semibold text-sm shadow-lg border border-white/10 transition-all duration-200"
+                      className="lofi-btn-dark w-full py-3 mt-4 rounded-lg bg-slate-900/80 hover:bg-slate-800 text-white font-semibold text-sm shadow-lg border border-white/10 transition-all"
                     >
                       {isLoading ? 'Logging in...' : 'Login'}
-                    </button>
+                    </motion.button>
                   </form>
 
                   {/* Register Switcher */}
@@ -446,14 +508,15 @@ export const AuthContainer = () => {
                       )}
                     </div>
 
-                    {/* Submit Button */}
-                    <button
+                    {/* Submit Button with 3D Push Tap Effect */}
+                    <motion.button
+                      whileTap={{ scale: 0.95 }}
                       type="submit"
                       disabled={isLoading}
-                      className="lofi-btn-dark w-full py-3 mt-4 rounded-lg bg-slate-900/80 hover:bg-slate-800 text-white font-semibold text-sm shadow-lg border border-white/10 transition-all duration-200"
+                      className="lofi-btn-dark w-full py-3 mt-4 rounded-lg bg-slate-900/80 hover:bg-slate-800 text-white font-semibold text-sm shadow-lg border border-white/10 transition-all"
                     >
                       {isLoading ? 'Creating Account...' : 'Sign Up'}
-                    </button>
+                    </motion.button>
                   </form>
 
                   {/* Login Switcher */}
@@ -511,12 +574,13 @@ export const AuthContainer = () => {
                         )}
                       </div>
 
-                      <button
+                      <motion.button
+                        whileTap={{ scale: 0.95 }}
                         type="submit"
                         className="lofi-btn-dark w-full py-3 rounded-lg bg-slate-900/80 hover:bg-slate-800 text-white font-semibold text-sm shadow-lg border border-white/10 transition-all"
                       >
                         Send OTP
-                      </button>
+                      </motion.button>
                     </form>
                   )}
 
@@ -544,12 +608,13 @@ export const AuthContainer = () => {
                         )}
                       </div>
 
-                      <button
+                      <motion.button
+                        whileTap={{ scale: 0.95 }}
                         type="submit"
                         className="lofi-btn-dark w-full py-3 rounded-lg bg-slate-900/80 hover:bg-slate-800 text-white font-semibold text-sm shadow-lg border border-white/10 transition-all"
                       >
                         Verify OTP
-                      </button>
+                      </motion.button>
 
                       <div className="text-center text-xs text-white/70" style={{ textAlign: 'center', marginTop: '1rem', fontSize: '0.8rem' }}>
                         Didn't receive code?{' '}
@@ -615,12 +680,13 @@ export const AuthContainer = () => {
                         )}
                       </div>
 
-                      <button
+                      <motion.button
+                        whileTap={{ scale: 0.95 }}
                         type="submit"
                         className="lofi-btn-dark w-full py-3 mt-4 rounded-lg bg-slate-900/80 hover:bg-slate-800 text-white font-semibold text-sm shadow-lg border border-white/10 transition-all"
                       >
                         Reset Password
-                      </button>
+                      </motion.button>
                     </form>
                   )}
 
@@ -631,12 +697,13 @@ export const AuthContainer = () => {
                         <CheckCircle2 size={28} />
                       </div>
                       <p className="text-sm text-white">Password reset successfully!</p>
-                      <button
+                      <motion.button
+                        whileTap={{ scale: 0.95 }}
                         onClick={() => switchView('login')}
                         className="lofi-btn-dark w-full py-3 rounded-lg bg-slate-900/80 hover:bg-slate-800 text-white font-semibold text-sm border border-white/10 transition-all"
                       >
                         Back to Login
-                      </button>
+                      </motion.button>
                     </div>
                   )}
 
@@ -656,14 +723,9 @@ export const AuthContainer = () => {
                 </motion.div>
               )}
             </AnimatePresence>
-          </div>
+          </motion.div>
         </div>
       </main>
-
-      {/* Footer */}
-      <footer className="relative z-10 w-full py-4 text-center text-xs text-white/60 drop-shadow-md" style={{ textAlign: 'center', padding: '1rem 0', fontSize: '0.8rem', color: 'rgba(255,255,255,0.6)' }}>
-        PriceLens &copy; {new Date().getFullYear()} — Modern Aesthetic Glassmorphic Interface.
-      </footer>
     </div>
   );
 };

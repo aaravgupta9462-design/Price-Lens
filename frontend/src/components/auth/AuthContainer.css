@@ -5,7 +5,7 @@
 .lofi-bg-viewport {
   min-height: 100vh;
   width: 100%;
-  background-image: url('https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=2070');
+  background-image: url('/bg-auth.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -31,6 +31,59 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+.lofi-brand-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.45rem 1.1rem;
+  border-radius: 9999px;
+  background: rgba(0, 0, 0, 0.65);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6), 0 0 15px rgba(245, 158, 11, 0.15);
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.lofi-brand-badge:hover {
+  border-color: rgba(245, 158, 11, 0.6);
+  box-shadow: 0 6px 25px rgba(245, 158, 11, 0.3);
+}
+
+.lofi-brand-img {
+  width: 2.25rem;
+  height: 2.25rem;
+  object-fit: contain;
+  border-radius: 0.5rem;
+  filter: drop-shadow(0 2px 8px rgba(245, 158, 11, 0.5));
+}
+
+.brand-name {
+  font-family: var(--font-heading, 'Outfit', sans-serif);
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+}
+
+.brand-name .text-price {
+  color: #ffffff;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
+}
+
+.brand-name .text-lens {
+  background: linear-gradient(135deg, #fef08a 0%, #f59e0b 50%, #d97706 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-left: 0.35rem;
+  filter: drop-shadow(0 2px 8px rgba(245, 158, 11, 0.5));
+  font-weight: 900;
 }
 
 .lofi-nav-links {
