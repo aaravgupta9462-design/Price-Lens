@@ -1,22 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { AuthContainer } from './components/auth/AuthContainer';
-import { MockDashboard } from './components/layout/MockDashboard';
+import LandingPage from './components/LandingPage';
 
 const AppContent = () => {
   const { isAuthenticated } = useAuth();
+  const [showAuth, setShowAuth] = useState(false);
 
+  // If auth form was requested and user is now authenticated, go back to landing
   if (isAuthenticated) {
-    return (
-      <div className="app-viewport">
-        <main className="main-content">
-          <MockDashboard />
-        </main>
-      </div>
-    );
+    return <LandingPage onGetStarted={() => {}} isAuthenticated />;
   }
 
-  return <AuthContainer />;
+  // Show auth form when user clicks Get Started
+  if (showAuth) {
+    return <AuthContainer />;
+  }
+
+  // Default: show marketing landing page
+  return <LandingPage onGetStarted={() => setShowAuth(true)} isAuthenticated={false} />;
 };
 
 export default function App() {
