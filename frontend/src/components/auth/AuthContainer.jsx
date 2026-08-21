@@ -234,7 +234,6 @@ export const AuthContainer = () => {
       <header className="lofi-navbar relative z-10 w-full px-8 py-6 flex items-center justify-between">
         <div className="brand-name text-2xl font-bold text-white tracking-wider flex items-center gap-1">
           Price<span>Lens</span>
-          <span style={{ color: '#10b981' }}>.</span>
         </div>
 
         <nav className="lofi-nav-links hidden md:flex items-center space-x-8 text-white font-medium text-sm">
