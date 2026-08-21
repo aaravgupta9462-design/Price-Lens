@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Mail, Lock, User, Phone, Eye, EyeOff, X, KeyRound, CheckCircle2, RefreshCw } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import './AuthContainer.css';
 
 export const AuthContainer = () => {
   const { login, signup, isLoading, addToast } = useAuth();
@@ -20,7 +21,7 @@ export const AuthContainer = () => {
   const [registerErrors, setRegisterErrors] = useState({});
 
   // Forgot Password 3-Step State
-  const [forgotStep, setForgotStep] = useState(1); // 1: Request, 2: Verify OTP, 3: Reset Password, 4: Success
+  const [forgotStep, setForgotStep] = useState(1);
   const [forgotIdentifier, setForgotIdentifier] = useState('');
   const [forgotIdentifierError, setForgotIdentifierError] = useState('');
   const [otp, setOtp] = useState('');
@@ -31,7 +32,6 @@ export const AuthContainer = () => {
   const [isResending, setIsResending] = useState(false);
   const [resendMsg, setResendMsg] = useState('');
 
-  // Reset errors when switching views
   const switchView = (view) => {
     setViewState(view);
     setLoginErrors({});
@@ -42,7 +42,6 @@ export const AuthContainer = () => {
     setForgotPasswordErrors({});
   };
 
-  // Login Submit Handler
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
     const errors = {};
@@ -70,18 +69,15 @@ export const AuthContainer = () => {
     }
 
     setLoginErrors({});
-
-    // TODO: POST /api/v1/auth/login API call (See API_CONTRACTS.md)
     console.log('TODO: Execute POST /api/v1/auth/login payload:', loginData);
 
     try {
       await login({ email: loginData.identifier, password: loginData.password, rememberMe: loginData.rememberMe });
     } catch (err) {
-      // Handled via AuthContext Toast
+      // Handled via AuthContext
     }
   };
 
-  // Register Submit Handler
   const handleRegisterSubmit = async (e) => {
     e.preventDefault();
     const errors = {};
@@ -120,18 +116,15 @@ export const AuthContainer = () => {
     }
 
     setRegisterErrors({});
-
-    // TODO: POST /api/v1/auth/signup API call (See API_CONTRACTS.md)
     console.log('TODO: Execute POST /api/v1/auth/signup payload:', registerData);
 
     try {
       await signup(registerData);
     } catch (err) {
-      // Handled via AuthContext Toast
+      // Handled via AuthContext
     }
   };
 
-  // Forgot Password Handlers
   const handleSendOtp = (e) => {
     e.preventDefault();
     const val = forgotIdentifier.trim();
@@ -148,10 +141,7 @@ export const AuthContainer = () => {
     }
 
     setForgotIdentifierError('');
-
-    // TODO: POST /api/v1/auth/forgot-password/request-otp API call
     console.log('TODO: Execute POST /api/v1/auth/forgot-password/request-otp payload:', { identifier: val });
-
     setForgotStep(2);
   };
 
@@ -169,10 +159,7 @@ export const AuthContainer = () => {
     }
 
     setOtpError('');
-
-    // TODO: POST /api/v1/auth/forgot-password/verify-otp API call
     console.log('TODO: Execute POST /api/v1/auth/forgot-password/verify-otp payload:', { identifier: forgotIdentifier, otp: cleanOtp });
-
     setForgotStep(3);
   };
 
@@ -198,10 +185,7 @@ export const AuthContainer = () => {
     }
 
     setForgotPasswordErrors({});
-
-    // TODO: POST /api/v1/auth/forgot-password/reset API call
     console.log('TODO: Execute POST /api/v1/auth/forgot-password/reset payload:', { identifier: forgotIdentifier, newPassword });
-
     setForgotStep(4);
   };
 
@@ -212,30 +196,25 @@ export const AuthContainer = () => {
   };
 
   return (
-    <div
-      className="min-h-screen w-full bg-cover bg-center bg-no-repeat relative flex flex-col justify-between"
-      style={{
-        backgroundImage: `url('https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=2070')`
-      }}
-    >
-      {/* Dark Aesthetic Vignette Overlay */}
-      <div className="absolute inset-0 bg-black/40 backdrop-brightness-90 pointer-events-none" />
+    <div className="lofi-bg-viewport min-h-screen w-full bg-cover bg-center bg-no-repeat relative flex flex-col justify-between">
+      {/* Dark Vignette Overlay */}
+      <div className="lofi-overlay absolute inset-0 bg-black/40 backdrop-brightness-90 pointer-events-none" />
 
       {/* Top Navbar */}
-      <header className="relative z-10 w-full px-8 py-6 flex items-center justify-between">
-        <div className="text-2xl font-bold text-white tracking-wider flex items-center gap-1 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+      <header className="lofi-navbar relative z-10 w-full px-8 py-6 flex items-center justify-between">
+        <div className="brand-name text-2xl font-bold text-white tracking-wider flex items-center gap-1">
           Price<span>Lens</span>
-          <span className="text-emerald-400">.</span>
+          <span style={{ color: '#10b981' }}>.</span>
         </div>
 
-        <nav className="hidden md:flex items-center space-x-8 text-white font-medium text-sm drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
-          <a href="#home" className="hover:text-emerald-400 transition-colors">Home</a>
-          <a href="#about" className="hover:text-emerald-400 transition-colors">About</a>
-          <a href="#services" className="hover:text-emerald-400 transition-colors">Services</a>
-          <a href="#contact" className="hover:text-emerald-400 transition-colors">Contact</a>
+        <nav className="lofi-nav-links hidden md:flex items-center space-x-8 text-white font-medium text-sm">
+          <a href="#home" className="lofi-nav-link">Home</a>
+          <a href="#about" className="lofi-nav-link">About</a>
+          <a href="#services" className="lofi-nav-link">Services</a>
+          <a href="#contact" className="lofi-nav-link">Contact</a>
           <button
             onClick={() => switchView('login')}
-            className="px-5 py-2 rounded-full bg-white/10 hover:bg-white/20 border border-white/30 backdrop-blur-md transition-all text-white font-semibold"
+            className="lofi-nav-btn"
           >
             Login
           </button>
@@ -243,15 +222,15 @@ export const AuthContainer = () => {
       </header>
 
       {/* Main Centered Pure Glassmorphism Modal Container */}
-      <main className="relative z-10 flex-1 flex items-center justify-center p-4">
+      <main className="lofi-main-center relative z-10 flex-1 flex items-center justify-center p-4">
         <div className="w-full max-w-md">
-          <div className="backdrop-blur-xl bg-white/10 border border-white/20 shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] rounded-2xl p-8 relative overflow-hidden text-white">
+          <div className="lofi-glass-card backdrop-blur-xl bg-white/10 border border-white/20 shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] rounded-2xl p-8 relative overflow-hidden text-white">
             {/* Close Button ('X') */}
             <button
               onClick={() => {
                 if (addToast) addToast('Modal dismiss demo', 'info');
               }}
-              className="absolute top-4 right-4 text-white/70 hover:text-white transition-colors p-1 rounded-full hover:bg-white/10"
+              className="lofi-close-btn absolute top-4 right-4 text-white/70 hover:text-white transition-colors p-1 rounded-full hover:bg-white/10"
               aria-label="Close"
             >
               <X size={20} />
@@ -269,14 +248,14 @@ export const AuthContainer = () => {
                   exit="exit"
                   className="w-full"
                 >
-                  <h2 className="text-3xl font-bold text-center text-white mb-8 tracking-wide drop-shadow-md">
+                  <h2 className="lofi-title text-3xl font-bold text-center text-white mb-8 tracking-wide">
                     Login
                   </h2>
 
                   <form onSubmit={handleLoginSubmit} className="space-y-6" noValidate>
                     {/* Email / Mobile Input */}
-                    <div className="relative">
-                      <div className="flex items-center border-b border-white/40 pb-2 focus-within:border-white transition-colors">
+                    <div className="lofi-input-group relative">
+                      <div className="lofi-input-wrapper flex items-center border-b border-white/40 pb-2 focus-within:border-white transition-colors">
                         <input
                           type="text"
                           value={loginData.identifier}
@@ -285,18 +264,18 @@ export const AuthContainer = () => {
                             if (loginErrors.identifier) setLoginErrors({ ...loginErrors, identifier: '' });
                           }}
                           placeholder="Email or Mobile Number"
-                          className="w-full bg-transparent text-white placeholder-white/60 focus:outline-none pr-8 text-sm"
+                          className="lofi-input w-full bg-transparent text-white placeholder-white/60 focus:outline-none pr-8 text-sm"
                         />
-                        <Mail size={18} className="text-white/80 absolute right-0" />
+                        <Mail size={18} className="lofi-input-icon text-white/80 absolute right-0" />
                       </div>
                       {loginErrors.identifier && (
-                        <p className="text-rose-400 text-xs mt-1">{loginErrors.identifier}</p>
+                        <p className="lofi-error-text text-rose-400 text-xs mt-1">{loginErrors.identifier}</p>
                       )}
                     </div>
 
                     {/* Password Input */}
-                    <div className="relative">
-                      <div className="flex items-center border-b border-white/40 pb-2 focus-within:border-white transition-colors">
+                    <div className="lofi-input-group relative">
+                      <div className="lofi-input-wrapper flex items-center border-b border-white/40 pb-2 focus-within:border-white transition-colors">
                         <input
                           type={showLoginPassword ? 'text' : 'password'}
                           value={loginData.password}
@@ -305,24 +284,24 @@ export const AuthContainer = () => {
                             if (loginErrors.password) setLoginErrors({ ...loginErrors, password: '' });
                           }}
                           placeholder="Password"
-                          className="w-full bg-transparent text-white placeholder-white/60 focus:outline-none pr-8 text-sm"
+                          className="lofi-input w-full bg-transparent text-white placeholder-white/60 focus:outline-none pr-8 text-sm"
                         />
                         <button
                           type="button"
                           onClick={() => setShowLoginPassword(!showLoginPassword)}
-                          className="text-white/80 focus:outline-none absolute right-0"
+                          className="lofi-toggle-btn text-white/80 focus:outline-none absolute right-0"
                         >
                           {showLoginPassword ? <EyeOff size={18} /> : <Lock size={18} />}
                         </button>
                       </div>
                       {loginErrors.password && (
-                        <p className="text-rose-400 text-xs mt-1">{loginErrors.password}</p>
+                        <p className="lofi-error-text text-rose-400 text-xs mt-1">{loginErrors.password}</p>
                       )}
                     </div>
 
                     {/* Options: Remember Me & Forgot Password */}
-                    <div className="flex items-center justify-between text-xs text-white/80 pt-1">
-                      <label className="flex items-center gap-2 cursor-pointer select-none">
+                    <div className="flex items-center justify-between text-xs text-white/80 pt-1" style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <label className="flex items-center gap-2 cursor-pointer select-none" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                         <input
                           type="checkbox"
                           checked={loginData.rememberMe}
@@ -335,6 +314,7 @@ export const AuthContainer = () => {
                         type="button"
                         onClick={() => switchView('forgot')}
                         className="hover:text-emerald-300 transition-colors underline-offset-4 hover:underline"
+                        style={{ background: 'none', border: 'none', color: '#ffffff', cursor: 'pointer' }}
                       >
                         Forgot Password?
                       </button>
@@ -344,18 +324,19 @@ export const AuthContainer = () => {
                     <button
                       type="submit"
                       disabled={isLoading}
-                      className="w-full py-3 mt-4 rounded-lg bg-slate-900/80 hover:bg-slate-800 text-white font-semibold text-sm shadow-lg hover:shadow-emerald-500/20 border border-white/10 transition-all duration-200 active:scale-[0.98]"
+                      className="lofi-btn-dark w-full py-3 mt-4 rounded-lg bg-slate-900/80 hover:bg-slate-800 text-white font-semibold text-sm shadow-lg border border-white/10 transition-all duration-200"
                     >
                       {isLoading ? 'Logging in...' : 'Login'}
                     </button>
                   </form>
 
                   {/* Register Switcher */}
-                  <div className="text-center text-xs text-white/70 mt-6">
+                  <div className="text-center text-xs text-white/70 mt-6" style={{ textAlign: 'center', marginTop: '1.5rem', fontSize: '0.85rem' }}>
                     Don't have an account?{' '}
                     <button
                       onClick={() => switchView('register')}
                       className="text-white font-semibold hover:text-emerald-300 transition-colors ml-1 underline"
+                      style={{ background: 'none', border: 'none', color: '#34d399', cursor: 'pointer', fontWeight: 600 }}
                     >
                       Register
                     </button>
@@ -363,7 +344,7 @@ export const AuthContainer = () => {
                 </motion.div>
               )}
 
-              {/* SIGNUP / REGISTER STATE */}
+              {/* REGISTER STATE */}
               {viewState === 'register' && (
                 <motion.div
                   key="register-view"
@@ -373,14 +354,14 @@ export const AuthContainer = () => {
                   exit="exit"
                   className="w-full"
                 >
-                  <h2 className="text-3xl font-bold text-center text-white mb-6 tracking-wide drop-shadow-md">
+                  <h2 className="lofi-title text-3xl font-bold text-center text-white mb-6 tracking-wide">
                     Register
                   </h2>
 
                   <form onSubmit={handleRegisterSubmit} className="space-y-5" noValidate>
                     {/* Full Name */}
-                    <div className="relative">
-                      <div className="flex items-center border-b border-white/40 pb-2 focus-within:border-white transition-colors">
+                    <div className="lofi-input-group relative">
+                      <div className="lofi-input-wrapper flex items-center border-b border-white/40 pb-2 focus-within:border-white transition-colors">
                         <input
                           type="text"
                           value={registerData.fullName}
@@ -389,18 +370,18 @@ export const AuthContainer = () => {
                             if (registerErrors.fullName) setRegisterErrors({ ...registerErrors, fullName: '' });
                           }}
                           placeholder="Full Name"
-                          className="w-full bg-transparent text-white placeholder-white/60 focus:outline-none pr-8 text-sm"
+                          className="lofi-input w-full bg-transparent text-white placeholder-white/60 focus:outline-none pr-8 text-sm"
                         />
-                        <User size={18} className="text-white/80 absolute right-0" />
+                        <User size={18} className="lofi-input-icon text-white/80 absolute right-0" />
                       </div>
                       {registerErrors.fullName && (
-                        <p className="text-rose-400 text-xs mt-1">{registerErrors.fullName}</p>
+                        <p className="lofi-error-text text-rose-400 text-xs mt-1">{registerErrors.fullName}</p>
                       )}
                     </div>
 
                     {/* Email */}
-                    <div className="relative">
-                      <div className="flex items-center border-b border-white/40 pb-2 focus-within:border-white transition-colors">
+                    <div className="lofi-input-group relative">
+                      <div className="lofi-input-wrapper flex items-center border-b border-white/40 pb-2 focus-within:border-white transition-colors">
                         <input
                           type="email"
                           value={registerData.email}
@@ -409,18 +390,18 @@ export const AuthContainer = () => {
                             if (registerErrors.email) setRegisterErrors({ ...registerErrors, email: '' });
                           }}
                           placeholder="Email Address"
-                          className="w-full bg-transparent text-white placeholder-white/60 focus:outline-none pr-8 text-sm"
+                          className="lofi-input w-full bg-transparent text-white placeholder-white/60 focus:outline-none pr-8 text-sm"
                         />
-                        <Mail size={18} className="text-white/80 absolute right-0" />
+                        <Mail size={18} className="lofi-input-icon text-white/80 absolute right-0" />
                       </div>
                       {registerErrors.email && (
-                        <p className="text-rose-400 text-xs mt-1">{registerErrors.email}</p>
+                        <p className="lofi-error-text text-rose-400 text-xs mt-1">{registerErrors.email}</p>
                       )}
                     </div>
 
                     {/* Mobile */}
-                    <div className="relative">
-                      <div className="flex items-center border-b border-white/40 pb-2 focus-within:border-white transition-colors">
+                    <div className="lofi-input-group relative">
+                      <div className="lofi-input-wrapper flex items-center border-b border-white/40 pb-2 focus-within:border-white transition-colors">
                         <input
                           type="tel"
                           value={registerData.mobile}
@@ -430,18 +411,18 @@ export const AuthContainer = () => {
                           }}
                           placeholder="Mobile Number (10 digits)"
                           maxLength={10}
-                          className="w-full bg-transparent text-white placeholder-white/60 focus:outline-none pr-8 text-sm"
+                          className="lofi-input w-full bg-transparent text-white placeholder-white/60 focus:outline-none pr-8 text-sm"
                         />
-                        <Phone size={18} className="text-white/80 absolute right-0" />
+                        <Phone size={18} className="lofi-input-icon text-white/80 absolute right-0" />
                       </div>
                       {registerErrors.mobile && (
-                        <p className="text-rose-400 text-xs mt-1">{registerErrors.mobile}</p>
+                        <p className="lofi-error-text text-rose-400 text-xs mt-1">{registerErrors.mobile}</p>
                       )}
                     </div>
 
                     {/* Password */}
-                    <div className="relative">
-                      <div className="flex items-center border-b border-white/40 pb-2 focus-within:border-white transition-colors">
+                    <div className="lofi-input-group relative">
+                      <div className="lofi-input-wrapper flex items-center border-b border-white/40 pb-2 focus-within:border-white transition-colors">
                         <input
                           type={showRegisterPassword ? 'text' : 'password'}
                           value={registerData.password}
@@ -450,18 +431,18 @@ export const AuthContainer = () => {
                             if (registerErrors.password) setRegisterErrors({ ...registerErrors, password: '' });
                           }}
                           placeholder="Password"
-                          className="w-full bg-transparent text-white placeholder-white/60 focus:outline-none pr-8 text-sm"
+                          className="lofi-input w-full bg-transparent text-white placeholder-white/60 focus:outline-none pr-8 text-sm"
                         />
                         <button
                           type="button"
                           onClick={() => setShowRegisterPassword(!showRegisterPassword)}
-                          className="text-white/80 focus:outline-none absolute right-0"
+                          className="lofi-toggle-btn text-white/80 focus:outline-none absolute right-0"
                         >
                           {showRegisterPassword ? <EyeOff size={18} /> : <Lock size={18} />}
                         </button>
                       </div>
                       {registerErrors.password && (
-                        <p className="text-rose-400 text-xs mt-1">{registerErrors.password}</p>
+                        <p className="lofi-error-text text-rose-400 text-xs mt-1">{registerErrors.password}</p>
                       )}
                     </div>
 
@@ -469,18 +450,19 @@ export const AuthContainer = () => {
                     <button
                       type="submit"
                       disabled={isLoading}
-                      className="w-full py-3 mt-4 rounded-lg bg-slate-900/80 hover:bg-slate-800 text-white font-semibold text-sm shadow-lg border border-white/10 transition-all duration-200 active:scale-[0.98]"
+                      className="lofi-btn-dark w-full py-3 mt-4 rounded-lg bg-slate-900/80 hover:bg-slate-800 text-white font-semibold text-sm shadow-lg border border-white/10 transition-all duration-200"
                     >
                       {isLoading ? 'Creating Account...' : 'Sign Up'}
                     </button>
                   </form>
 
                   {/* Login Switcher */}
-                  <div className="text-center text-xs text-white/70 mt-6">
+                  <div className="text-center text-xs text-white/70 mt-6" style={{ textAlign: 'center', marginTop: '1.5rem', fontSize: '0.85rem' }}>
                     Already have an account?{' '}
                     <button
                       onClick={() => switchView('login')}
                       className="text-white font-semibold hover:text-emerald-300 transition-colors ml-1 underline"
+                      style={{ background: 'none', border: 'none', color: '#34d399', cursor: 'pointer', fontWeight: 600 }}
                     >
                       Login
                     </button>
@@ -498,10 +480,10 @@ export const AuthContainer = () => {
                   exit="exit"
                   className="w-full"
                 >
-                  <h2 className="text-3xl font-bold text-center text-white mb-2 tracking-wide drop-shadow-md">
+                  <h2 className="lofi-title text-3xl font-bold text-center text-white mb-2 tracking-wide">
                     Reset Password
                   </h2>
-                  <p className="text-xs text-white/70 text-center mb-6">
+                  <p className="text-xs text-white/70 text-center mb-6" style={{ textAlign: 'center', fontSize: '0.8rem', opacity: 0.8, marginBottom: '1.5rem' }}>
                     {forgotStep === 1 && 'Enter your Email or 10-digit Mobile to receive an OTP.'}
                     {forgotStep === 2 && `Enter 6-digit OTP sent to ${forgotIdentifier}`}
                     {forgotStep === 3 && 'Enter your new password below.'}
@@ -510,8 +492,8 @@ export const AuthContainer = () => {
                   {/* STEP 1: REQUEST OTP */}
                   {forgotStep === 1 && (
                     <form onSubmit={handleSendOtp} className="space-y-6" noValidate>
-                      <div className="relative">
-                        <div className="flex items-center border-b border-white/40 pb-2 focus-within:border-white transition-colors">
+                      <div className="lofi-input-group relative">
+                        <div className="lofi-input-wrapper flex items-center border-b border-white/40 pb-2 focus-within:border-white transition-colors">
                           <input
                             type="text"
                             value={forgotIdentifier}
@@ -520,18 +502,18 @@ export const AuthContainer = () => {
                               if (forgotIdentifierError) setForgotIdentifierError('');
                             }}
                             placeholder="Email or Mobile Number"
-                            className="w-full bg-transparent text-white placeholder-white/60 focus:outline-none pr-8 text-sm"
+                            className="lofi-input w-full bg-transparent text-white placeholder-white/60 focus:outline-none pr-8 text-sm"
                           />
-                          <Mail size={18} className="text-white/80 absolute right-0" />
+                          <Mail size={18} className="lofi-input-icon text-white/80 absolute right-0" />
                         </div>
                         {forgotIdentifierError && (
-                          <p className="text-rose-400 text-xs mt-1">{forgotIdentifierError}</p>
+                          <p className="lofi-error-text text-rose-400 text-xs mt-1">{forgotIdentifierError}</p>
                         )}
                       </div>
 
                       <button
                         type="submit"
-                        className="w-full py-3 rounded-lg bg-slate-900/80 hover:bg-slate-800 text-white font-semibold text-sm shadow-lg border border-white/10 transition-all active:scale-[0.98]"
+                        className="lofi-btn-dark w-full py-3 rounded-lg bg-slate-900/80 hover:bg-slate-800 text-white font-semibold text-sm shadow-lg border border-white/10 transition-all"
                       >
                         Send OTP
                       </button>
@@ -541,8 +523,8 @@ export const AuthContainer = () => {
                   {/* STEP 2: VERIFY OTP */}
                   {forgotStep === 2 && (
                     <form onSubmit={handleVerifyOtp} className="space-y-6" noValidate>
-                      <div className="relative">
-                        <div className="flex items-center border-b border-white/40 pb-2 focus-within:border-white transition-colors">
+                      <div className="lofi-input-group relative">
+                        <div className="lofi-input-wrapper flex items-center border-b border-white/40 pb-2 focus-within:border-white transition-colors">
                           <input
                             type="text"
                             value={otp}
@@ -552,23 +534,24 @@ export const AuthContainer = () => {
                             }}
                             placeholder="6-Digit OTP Code"
                             maxLength={6}
-                            className="w-full bg-transparent text-white placeholder-white/60 focus:outline-none pr-8 text-sm tracking-widest text-center"
+                            className="lofi-input w-full bg-transparent text-white placeholder-white/60 focus:outline-none pr-8 text-sm tracking-widest text-center"
+                            style={{ letterSpacing: '0.25em', textAlign: 'center' }}
                           />
-                          <KeyRound size={18} className="text-white/80 absolute right-0" />
+                          <KeyRound size={18} className="lofi-input-icon text-white/80 absolute right-0" />
                         </div>
                         {otpError && (
-                          <p className="text-rose-400 text-xs mt-1 text-center">{otpError}</p>
+                          <p className="lofi-error-text text-rose-400 text-xs mt-1 text-center">{otpError}</p>
                         )}
                       </div>
 
                       <button
                         type="submit"
-                        className="w-full py-3 rounded-lg bg-slate-900/80 hover:bg-slate-800 text-white font-semibold text-sm shadow-lg border border-white/10 transition-all active:scale-[0.98]"
+                        className="lofi-btn-dark w-full py-3 rounded-lg bg-slate-900/80 hover:bg-slate-800 text-white font-semibold text-sm shadow-lg border border-white/10 transition-all"
                       >
                         Verify OTP
                       </button>
 
-                      <div className="text-center text-xs text-white/70">
+                      <div className="text-center text-xs text-white/70" style={{ textAlign: 'center', marginTop: '1rem', fontSize: '0.8rem' }}>
                         Didn't receive code?{' '}
                         <button
                           type="button"
@@ -581,11 +564,12 @@ export const AuthContainer = () => {
                             }, 800);
                           }}
                           className="text-white font-semibold underline hover:text-emerald-300 ml-1 inline-flex items-center gap-1"
+                          style={{ background: 'none', border: 'none', color: '#ffffff', cursor: 'pointer' }}
                         >
                           <RefreshCw size={11} className={isResending ? 'animate-spin' : ''} />
                           <span>{isResending ? 'Sending...' : 'Resend Code'}</span>
                         </button>
-                        {resendMsg && <p className="text-emerald-400 text-xs mt-1">{resendMsg}</p>}
+                        {resendMsg && <p className="text-emerald-400 text-xs mt-1" style={{ color: '#34d399' }}>{resendMsg}</p>}
                       </div>
                     </form>
                   )}
@@ -593,8 +577,8 @@ export const AuthContainer = () => {
                   {/* STEP 3: NEW PASSWORD */}
                   {forgotStep === 3 && (
                     <form onSubmit={handleResetPassword} className="space-y-5" noValidate>
-                      <div className="relative">
-                        <div className="flex items-center border-b border-white/40 pb-2 focus-within:border-white transition-colors">
+                      <div className="lofi-input-group relative">
+                        <div className="lofi-input-wrapper flex items-center border-b border-white/40 pb-2 focus-within:border-white transition-colors">
                           <input
                             type="password"
                             value={newPassword}
@@ -603,17 +587,17 @@ export const AuthContainer = () => {
                               if (forgotPasswordErrors.newPassword) setForgotPasswordErrors({ ...forgotPasswordErrors, newPassword: '' });
                             }}
                             placeholder="New Password"
-                            className="w-full bg-transparent text-white placeholder-white/60 focus:outline-none pr-8 text-sm"
+                            className="lofi-input w-full bg-transparent text-white placeholder-white/60 focus:outline-none pr-8 text-sm"
                           />
-                          <Lock size={18} className="text-white/80 absolute right-0" />
+                          <Lock size={18} className="lofi-input-icon text-white/80 absolute right-0" />
                         </div>
                         {forgotPasswordErrors.newPassword && (
-                          <p className="text-rose-400 text-xs mt-1">{forgotPasswordErrors.newPassword}</p>
+                          <p className="lofi-error-text text-rose-400 text-xs mt-1">{forgotPasswordErrors.newPassword}</p>
                         )}
                       </div>
 
-                      <div className="relative">
-                        <div className="flex items-center border-b border-white/40 pb-2 focus-within:border-white transition-colors">
+                      <div className="lofi-input-group relative">
+                        <div className="lofi-input-wrapper flex items-center border-b border-white/40 pb-2 focus-within:border-white transition-colors">
                           <input
                             type="password"
                             value={confirmPassword}
@@ -622,18 +606,18 @@ export const AuthContainer = () => {
                               if (forgotPasswordErrors.confirmPassword) setForgotPasswordErrors({ ...forgotPasswordErrors, confirmPassword: '' });
                             }}
                             placeholder="Confirm Password"
-                            className="w-full bg-transparent text-white placeholder-white/60 focus:outline-none pr-8 text-sm"
+                            className="lofi-input w-full bg-transparent text-white placeholder-white/60 focus:outline-none pr-8 text-sm"
                           />
-                          <Lock size={18} className="text-white/80 absolute right-0" />
+                          <Lock size={18} className="lofi-input-icon text-white/80 absolute right-0" />
                         </div>
                         {forgotPasswordErrors.confirmPassword && (
-                          <p className="text-rose-400 text-xs mt-1">{forgotPasswordErrors.confirmPassword}</p>
+                          <p className="lofi-error-text text-rose-400 text-xs mt-1">{forgotPasswordErrors.confirmPassword}</p>
                         )}
                       </div>
 
                       <button
                         type="submit"
-                        className="w-full py-3 mt-4 rounded-lg bg-slate-900/80 hover:bg-slate-800 text-white font-semibold text-sm shadow-lg border border-white/10 transition-all active:scale-[0.98]"
+                        className="lofi-btn-dark w-full py-3 mt-4 rounded-lg bg-slate-900/80 hover:bg-slate-800 text-white font-semibold text-sm shadow-lg border border-white/10 transition-all"
                       >
                         Reset Password
                       </button>
@@ -642,14 +626,14 @@ export const AuthContainer = () => {
 
                   {/* STEP 4: SUCCESS */}
                   {forgotStep === 4 && (
-                    <div className="text-center py-4 space-y-4">
-                      <div className="w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto border border-emerald-500/40">
+                    <div className="text-center py-4 space-y-4" style={{ textAlign: 'center' }}>
+                      <div className="w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto border border-emerald-500/40" style={{ width: '48px', height: '48px', margin: '0 auto 1rem', borderRadius: '50%', background: 'rgba(16, 185, 129, 0.2)', color: '#34d399', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <CheckCircle2 size={28} />
                       </div>
                       <p className="text-sm text-white">Password reset successfully!</p>
                       <button
                         onClick={() => switchView('login')}
-                        className="w-full py-3 rounded-lg bg-slate-900/80 hover:bg-slate-800 text-white font-semibold text-sm border border-white/10 transition-all"
+                        className="lofi-btn-dark w-full py-3 rounded-lg bg-slate-900/80 hover:bg-slate-800 text-white font-semibold text-sm border border-white/10 transition-all"
                       >
                         Back to Login
                       </button>
@@ -658,11 +642,12 @@ export const AuthContainer = () => {
 
                   {/* Back to Login Link */}
                   {forgotStep < 4 && (
-                    <div className="text-center text-xs text-white/70 mt-6">
+                    <div className="text-center text-xs text-white/70 mt-6" style={{ textAlign: 'center', marginTop: '1.5rem', fontSize: '0.85rem' }}>
                       Remember your password?{' '}
                       <button
                         onClick={() => switchView('login')}
                         className="text-white font-semibold hover:text-emerald-300 transition-colors ml-1 underline"
+                        style={{ background: 'none', border: 'none', color: '#ffffff', cursor: 'pointer' }}
                       >
                         Login
                       </button>
@@ -676,7 +661,7 @@ export const AuthContainer = () => {
       </main>
 
       {/* Footer */}
-      <footer className="relative z-10 w-full py-4 text-center text-xs text-white/60 drop-shadow-md">
+      <footer className="relative z-10 w-full py-4 text-center text-xs text-white/60 drop-shadow-md" style={{ textAlign: 'center', padding: '1rem 0', fontSize: '0.8rem', color: 'rgba(255,255,255,0.6)' }}>
         PriceLens &copy; {new Date().getFullYear()} — Modern Aesthetic Glassmorphic Interface.
       </footer>
     </div>
