@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { Input } from '../common/Input';
+import { Checkbox } from '../common/Checkbox';
 import { Button } from '../common/Button';
 import { SocialLogin } from './SocialLogin';
 import { User, Mail, Phone, Lock, Eye, EyeOff, UserPlus } from 'lucide-react';
@@ -13,17 +14,18 @@ export const Signup = ({ onSwitchToLogin }) => {
     email: '',
     mobile: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    acceptTerms: false
   });
 
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: type === 'checkbox' ? checked : value
     }));
 
     if (errors[name]) {
@@ -68,6 +70,10 @@ export const Signup = ({ onSwitchToLogin }) => {
       newErrors.confirmPassword = 'Passwords do not match.';
     }
 
+    if (!formData.acceptTerms) {
+      newErrors.acceptTerms = 'You must accept the Terms of Service & Privacy Policy.';
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -76,10 +82,12 @@ export const Signup = ({ onSwitchToLogin }) => {
     e.preventDefault();
     if (!validateForm()) return;
 
-    console.log('Signup Successful (Simulated):', {
+    // TODO: POST /api/v1/auth/signup API call (See API_CONTRACTS.md)
+    console.log('TODO: Execute POST /api/v1/auth/signup payload:', {
       fullName: formData.fullName,
       email: formData.email,
-      mobile: formData.mobile
+      mobile: formData.mobile,
+      password: formData.password
     });
 
     try {
@@ -90,7 +98,7 @@ export const Signup = ({ onSwitchToLogin }) => {
         password: formData.password
       });
     } catch (err) {
-      // Error state handled in AuthContext
+      // Error handled in AuthContext
     }
   };
 
@@ -111,7 +119,7 @@ export const Signup = ({ onSwitchToLogin }) => {
           name="fullName"
           value={formData.fullName}
           onChange={handleChange}
-          placeholder="John Doe"
+          placeholder="Alex Johnson"
           leftIcon={User}
           error={errors.fullName}
           required
@@ -180,6 +188,21 @@ export const Signup = ({ onSwitchToLogin }) => {
           required
         />
 
+        {/* Terms Checkbox */}
+        <div style={{ marginTop: '0.2rem' }}>
+          <Checkbox
+            name="acceptTerms"
+            checked={formData.acceptTerms}
+            onChange={handleChange}
+            label="I agree to the Terms of Service & Privacy Policy"
+          />
+          {errors.acceptTerms && (
+            <div className="input-error-msg" style={{ marginTop: '0.25rem' }}>
+              <span>{errors.acceptTerms}</span>
+            </div>
+          )}
+        </div>
+
         {/* Submit Button */}
         <Button
           type="submit"
@@ -187,7 +210,7 @@ export const Signup = ({ onSwitchToLogin }) => {
           isLoading={isLoading}
           icon={UserPlus}
         >
-          Sign Up
+          Create Account
         </Button>
       </form>
 
@@ -206,12 +229,11 @@ export const Signup = ({ onSwitchToLogin }) => {
           className="switch-mode-btn"
           onClick={onSwitchToLogin}
         >
-          Sign In
+          Log In
         </button>
       </div>
     </div>
   );
 };
 
-// Also export as SignUpForm for backward compatibility
 export const SignUpForm = Signup;

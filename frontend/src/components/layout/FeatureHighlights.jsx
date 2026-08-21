@@ -4,19 +4,23 @@ import { TrendingDown, MessageSquareQuote, ShieldCheck, Sparkles } from 'lucide-
 export const FeatureHighlights = () => {
   return (
     <div className="showcase-panel">
+      {/* Capsule Badge Tag */}
       <div className="showcase-badge">
         <Sparkles size={14} />
-        <span>Next-Gen Shopping Intelligence</span>
+        <span>✦ Next-Gen Shopping Intelligence</span>
       </div>
 
+      {/* Main Heading */}
       <h1 className="showcase-title">
         Buy Smarter with <span>AI-Driven Insights</span>
       </h1>
 
+      {/* Subtitle */}
       <p className="showcase-desc">
         PriceLens aggregates real-time prices across major online stores and analyzes thousands of customer reviews to give you instant, trustworthy purchase recommendations.
       </p>
 
+      {/* 3 Feature Cards */}
       <div className="features-list">
         <div className="feature-item-card">
           <div className="feature-icon-box feature-icon-emerald">

@@ -4,7 +4,7 @@ import { Button } from '../common/Button';
 import { Mail, Phone, KeyRound, Lock, Eye, EyeOff, CheckCircle2, ArrowLeft, RefreshCw } from 'lucide-react';
 
 export const ForgotPassword = ({ onBackToLogin }) => {
-  // Step 1: Request OTP, Step 2: Verify OTP, Step 3: Reset Password, Step 4: Success Message
+  // Step 1: Request OTP, Step 2: Verify OTP, Step 3: Reset Password, Step 4: Success Banner
   const [step, setStep] = useState(1);
 
   // Step 1 State
@@ -41,7 +41,10 @@ export const ForgotPassword = ({ onBackToLogin }) => {
     }
 
     setIdentifierError('');
-    console.log('OTP Sent to:', val);
+
+    // TODO: POST /api/v1/auth/forgot-password/request-otp API call (See API_CONTRACTS.md)
+    console.log('TODO: Execute POST /api/v1/auth/forgot-password/request-otp payload:', { identifier: val });
+
     setStep(2);
   };
 
@@ -60,18 +63,27 @@ export const ForgotPassword = ({ onBackToLogin }) => {
     }
 
     setOtpError('');
-    console.log('OTP Verified successfully:', cleanOtp);
+
+    // TODO: POST /api/v1/auth/forgot-password/verify-otp API call (See API_CONTRACTS.md)
+    console.log('TODO: Execute POST /api/v1/auth/forgot-password/verify-otp payload:', {
+      identifier,
+      otp: cleanOtp
+    });
+
     setStep(3);
   };
 
   const handleResendOtp = () => {
     setIsResending(true);
     setResendMessage('');
+
+    // TODO: POST /api/v1/auth/forgot-password/request-otp API call
+    console.log('TODO: Execute POST /api/v1/auth/forgot-password/request-otp resend payload:', { identifier });
+
     setTimeout(() => {
       setIsResending(false);
-      setResendMessage('A new 6-digit OTP has been sent!');
-      console.log('Resent OTP to:', identifier);
-    }, 1000);
+      setResendMessage('A new 6-digit OTP code has been sent!');
+    }, 800);
   };
 
   // Step 3 Handler: Validate Passwords & Reset
@@ -97,8 +109,15 @@ export const ForgotPassword = ({ onBackToLogin }) => {
     }
 
     setPasswordErrors({});
-    console.log('Password successfully reset for:', identifier);
-    setStep(4); // Success state
+
+    // TODO: POST /api/v1/auth/forgot-password/reset API call (See API_CONTRACTS.md)
+    console.log('TODO: Execute POST /api/v1/auth/forgot-password/reset payload:', {
+      identifier,
+      newPassword,
+      confirmPassword
+    });
+
+    setStep(4); // Success Banner
   };
 
   return (
@@ -122,7 +141,7 @@ export const ForgotPassword = ({ onBackToLogin }) => {
           }}
         >
           <ArrowLeft size={16} />
-          <span>Back to Sign In</span>
+          <span>Back to Log In</span>
         </button>
       )}
 
@@ -195,7 +214,7 @@ export const ForgotPassword = ({ onBackToLogin }) => {
             </div>
             <h2 className="form-title">Enter OTP Code</h2>
             <p className="form-subtitle">
-              We sent a 6-digit OTP code to <strong style={{ color: 'var(--text-primary)' }}>{identifier}</strong>.
+              We sent a 6-digit verification code to <strong style={{ color: 'var(--text-primary)' }}>{identifier}</strong>.
             </p>
           </div>
 
@@ -231,7 +250,7 @@ export const ForgotPassword = ({ onBackToLogin }) => {
               style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}
             >
               <RefreshCw size={12} className={isResending ? 'spin' : ''} />
-              <span>{isResending ? 'Sending...' : 'Resend OTP'}</span>
+              <span>{isResending ? 'Sending...' : 'Resend Code'}</span>
             </button>
           </div>
 
@@ -264,7 +283,7 @@ export const ForgotPassword = ({ onBackToLogin }) => {
             </div>
             <h2 className="form-title">Set New Password</h2>
             <p className="form-subtitle">
-              Your identity is verified! Enter a strong new password below.
+              Your identity is verified! Enter your new password below.
             </p>
           </div>
 
@@ -315,7 +334,7 @@ export const ForgotPassword = ({ onBackToLogin }) => {
         </>
       )}
 
-      {/* STEP 4: SUCCESS CONFIRMATION */}
+      {/* STEP 4: SUCCESS BANNER */}
       {step === 4 && (
         <div style={{ textAlign: 'center', padding: '1rem 0' }}>
           <div
@@ -335,13 +354,13 @@ export const ForgotPassword = ({ onBackToLogin }) => {
             <CheckCircle2 size={32} />
           </div>
 
-          <h2 className="form-title" style={{ fontSize: '1.6rem' }}>Password Reset Complete!</h2>
+          <h2 className="form-title" style={{ fontSize: '1.6rem' }}>Password Reset Successful!</h2>
           <p className="form-subtitle" style={{ marginBottom: '1.75rem' }}>
-            Your password has been updated successfully. You can now sign in with your new credentials.
+            Your password has been updated. You can now log in with your new credentials.
           </p>
 
           <Button variant="primary" onClick={onBackToLogin}>
-            Sign In Now
+            Log In Now
           </Button>
         </div>
       )}

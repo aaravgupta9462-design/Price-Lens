@@ -4,7 +4,7 @@ import { Input } from '../common/Input';
 import { Checkbox } from '../common/Checkbox';
 import { Button } from '../common/Button';
 import { SocialLogin } from './SocialLogin';
-import { Mail, Lock, Eye, EyeOff, LogIn, Phone } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, LogIn, Phone, ArrowRight } from 'lucide-react';
 
 export const Login = ({ onSwitchToSignUp, onOpenForgotPassword }) => {
   const { login, isLoading } = useAuth();
@@ -32,8 +32,8 @@ export const Login = ({ onSwitchToSignUp, onOpenForgotPassword }) => {
 
   const validateForm = () => {
     const newErrors = {};
-
     const identifierVal = formData.identifier.trim();
+
     if (!identifierVal) {
       newErrors.identifier = 'Email address or Mobile number is required.';
     } else {
@@ -41,7 +41,7 @@ export const Login = ({ onSwitchToSignUp, onOpenForgotPassword }) => {
       const mobileRegex = /^\d{10}$/;
 
       if (!emailRegex.test(identifierVal) && !mobileRegex.test(identifierVal)) {
-        newErrors.identifier = 'Enter a valid Email or 10-digit Mobile Number.';
+        newErrors.identifier = 'Please enter a valid Email or 10-digit Mobile Number.';
       }
     }
 
@@ -59,8 +59,10 @@ export const Login = ({ onSwitchToSignUp, onOpenForgotPassword }) => {
     e.preventDefault();
     if (!validateForm()) return;
 
-    console.log('Login Submitted:', {
+    // TODO: POST /api/v1/auth/login API call (See API_CONTRACTS.md)
+    console.log('TODO: Execute POST /api/v1/auth/login payload:', {
       identifier: formData.identifier,
+      password: formData.password,
       rememberMe: formData.rememberMe
     });
 
@@ -71,21 +73,24 @@ export const Login = ({ onSwitchToSignUp, onOpenForgotPassword }) => {
         rememberMe: formData.rememberMe
       });
     } catch (err) {
-      // Error feedback is handled via AuthContext Toast
+      // Handled in AuthContext via Toast
     }
   };
 
   return (
     <div className="glass-card">
+      {/* Logo & Tagline Header */}
       <div className="form-header">
-        <h2 className="form-title">PriceLens</h2>
+        <h2 className="form-title" style={{ display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
+          PriceLens<span style={{ color: 'var(--primary-emerald)' }}>.</span>
+        </h2>
         <p className="form-subtitle" style={{ color: 'var(--primary-emerald)', fontWeight: '500' }}>
           Compare Prices. Trust Reviews. Buy Smarter.
         </p>
       </div>
 
       <form onSubmit={handleSubmit} className="form-stack" noValidate>
-        {/* Email OR Mobile Number Input */}
+        {/* Email Address or Mobile Number Field */}
         <Input
           label="Email Address or Mobile Number"
           type="text"
@@ -98,7 +103,7 @@ export const Login = ({ onSwitchToSignUp, onOpenForgotPassword }) => {
           required
         />
 
-        {/* Password Input with Show/Hide Toggle */}
+        {/* Password Field with Eye/EyeOff Toggle */}
         <Input
           label="Password"
           type={showPassword ? 'text' : 'password'}
@@ -123,7 +128,7 @@ export const Login = ({ onSwitchToSignUp, onOpenForgotPassword }) => {
           }
         />
 
-        {/* Remember Me & Forgot Password Row */}
+        {/* Remember Me Checkbox & Forgot Password Link */}
         <div className="form-options-row">
           <Checkbox
             name="rememberMe"
@@ -143,27 +148,28 @@ export const Login = ({ onSwitchToSignUp, onOpenForgotPassword }) => {
           </a>
         </div>
 
-        {/* Login Button */}
+        {/* Full-width Emerald/Cyan Gradient Button → Login */}
         <Button
           type="submit"
           variant="primary"
           isLoading={isLoading}
-          icon={LogIn}
+          icon={ArrowRight}
         >
           Login
         </Button>
       </form>
 
-      {/* Social Login */}
+      {/* Divider */}
       <div className="divider-container">
         <div className="divider-line" />
         <span className="divider-text">Or continue with</span>
         <div className="divider-line" />
       </div>
 
+      {/* Google Login Button */}
       <SocialLogin />
 
-      {/* Switch to Signup */}
+      {/* View Switcher */}
       <div className="switch-mode-text">
         Don't have an account?
         <button
@@ -178,5 +184,4 @@ export const Login = ({ onSwitchToSignUp, onOpenForgotPassword }) => {
   );
 };
 
-// Also export as LoginForm for backward compatibility
 export const LoginForm = Login;
