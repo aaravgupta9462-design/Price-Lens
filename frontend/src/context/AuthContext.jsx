@@ -54,6 +54,24 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Google OAuth handler
+  const loginWithGoogle = async () => {
+    setIsLoading(true);
+    try {
+      // TODO: POST /api/v1/auth/google API call (See API_CONTRACTS.md)
+      console.log('TODO: Execute POST /api/v1/auth/google payload');
+      addToast('Connecting to Google OAuth...', 'info');
+      setTimeout(() => {
+        setIsLoading(false);
+        setUser({ id: 'usr_google_123', name: 'Google User', email: 'user@gmail.com' });
+        addToast('Welcome! Signed in with Google.', 'success');
+      }, 1000);
+    } catch (err) {
+      addToast(err.message || 'Google Auth failed', 'error');
+      setIsLoading(false);
+    }
+  };
+
   // Logout handler
   const logout = () => {
     setUser(null);
@@ -84,6 +102,7 @@ export const AuthProvider = ({ children }) => {
         isLoading,
         login,
         signup,
+        loginWithGoogle,
         logout,
         resetPassword,
         toasts,

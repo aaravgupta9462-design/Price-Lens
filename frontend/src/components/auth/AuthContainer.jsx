@@ -6,8 +6,33 @@ import { PriceLens3D } from '../common/PriceLens3D';
 import { PriceInsightCard } from '../common/PriceInsightCard';
 import './AuthContainer.css';
 
+// SVG Social Icons
+const FacebookIcon = () => (
+  <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+  </svg>
+);
+
+const TwitterIcon = () => (
+  <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+  </svg>
+);
+
+const LinkedinIcon = () => (
+  <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+    <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.762-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+  </svg>
+);
+
+const InstagramIcon = () => (
+  <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+  </svg>
+);
+
 export const AuthContainer = () => {
-  const { login, signup, isLoading, addToast } = useAuth();
+  const { login, signup, loginWithGoogle, isLoading, addToast } = useAuth();
 
   // Dynamic Price Intelligence Insights Data (Default / API ready)
   const [priceInsights] = useState({
@@ -43,6 +68,16 @@ export const AuthContainer = () => {
     setIsHovered(false);
     mouseX.set(0);
     mouseY.set(0);
+  };
+
+  // Google OAuth Trigger Handler
+  const handleGoogleAuth = () => {
+    if (loginWithGoogle) {
+      loginWithGoogle();
+    } else {
+      console.log('TODO: Execute POST /api/v1/auth/google payload (See API_CONTRACTS.md)');
+      if (addToast) addToast('Connecting to Google OAuth...', 'info');
+    }
   };
 
   // Login State
@@ -323,11 +358,11 @@ export const AuthContainer = () => {
                   exit="exit"
                   className="w-full"
                 >
-                  <h2 className="lofi-title text-3xl font-bold text-center text-white mb-8 tracking-wide">
+                  <h2 className="lofi-title text-2xl font-bold text-center text-white mb-6 tracking-wide">
                     Login
                   </h2>
 
-                  <form onSubmit={handleLoginSubmit} className="space-y-6" noValidate>
+                  <form onSubmit={handleLoginSubmit} className="space-y-4" noValidate>
                     {/* Email / Mobile Input */}
                     <div className="lofi-input-group relative">
                       <div className="lofi-input-wrapper flex items-center border-b border-white/40 pb-2 focus-within:border-white transition-colors">
@@ -395,19 +430,47 @@ export const AuthContainer = () => {
                       </button>
                     </div>
 
-                    {/* Submit Button with 3D Push Tap Effect */}
+                    {/* Divider: OR */}
+                    <div className="relative my-2 flex items-center justify-center select-none">
+                      <div className="absolute inset-0 flex items-center">
+                        <div className="w-full border-t border-white/20" />
+                      </div>
+                      <div className="relative bg-slate-950/80 px-3 text-[10px] uppercase font-bold tracking-widest text-slate-400 rounded-full border border-white/10">
+                        OR
+                      </div>
+                    </div>
+
+                    {/* Google OAuth Glassmorphism Button */}
+                    <motion.button
+                      whileHover={{ scale: 1.02, y: -1 }}
+                      whileTap={{ scale: 0.96 }}
+                      type="button"
+                      onClick={handleGoogleAuth}
+                      disabled={isLoading}
+                      className="w-full py-2.5 px-4 rounded-lg bg-slate-900/60 hover:bg-slate-800/80 text-white font-medium text-xs border border-white/20 shadow-md backdrop-blur-md flex items-center justify-center gap-2 transition-all duration-200 hover:border-amber-400/40 hover:shadow-[0_0_15px_rgba(245,158,11,0.15)] cursor-pointer"
+                    >
+                      <svg className="w-4 h-4 mr-1" viewBox="0 0 24 24">
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
+                      </svg>
+                      <span>Continue with Google</span>
+                    </motion.button>
+
+                    {/* Submit Button */}
                     <motion.button
                       whileTap={{ scale: 0.95 }}
                       type="submit"
                       disabled={isLoading}
-                      className="lofi-btn-dark w-full py-3 mt-4 rounded-lg bg-slate-900/80 hover:bg-slate-800 text-white font-semibold text-sm shadow-lg border border-white/10 transition-all"
+                      className="lofi-btn-dark w-full py-2.5 rounded-lg bg-slate-900/80 hover:bg-slate-800 text-white font-semibold text-sm shadow-lg border border-white/10 transition-all"
                     >
                       {isLoading ? 'Logging in...' : 'Login'}
                     </motion.button>
                   </form>
 
                   {/* Register Switcher */}
-                  <div className="text-center text-xs text-white/70 mt-6" style={{ textAlign: 'center', marginTop: '1.5rem', fontSize: '0.85rem' }}>
+                  <div className="text-center text-xs text-white/70 mt-3" style={{ textAlign: 'center', fontSize: '0.85rem' }}>
                     Don't have an account?{' '}
                     <button
                       onClick={() => switchView('register')}
@@ -416,6 +479,22 @@ export const AuthContainer = () => {
                     >
                       Register
                     </button>
+                  </div>
+
+                  {/* Social Icons Footer Row */}
+                  <div className="flex items-center justify-center gap-3 pt-3 border-t border-white/10 mt-3">
+                    <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-white/5 hover:bg-white/15 border border-white/15 text-slate-300 hover:text-white transition-all hover:scale-110 hover:border-amber-400/40 shadow-sm" aria-label="Facebook">
+                      <FacebookIcon />
+                    </a>
+                    <a href="https://x.com" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-white/5 hover:bg-white/15 border border-white/15 text-slate-300 hover:text-white transition-all hover:scale-110 hover:border-amber-400/40 shadow-sm" aria-label="X / Twitter">
+                      <TwitterIcon />
+                    </a>
+                    <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-white/5 hover:bg-white/15 border border-white/15 text-slate-300 hover:text-white transition-all hover:scale-110 hover:border-amber-400/40 shadow-sm" aria-label="LinkedIn">
+                      <LinkedinIcon />
+                    </a>
+                    <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-white/5 hover:bg-white/15 border border-white/15 text-slate-300 hover:text-white transition-all hover:scale-110 hover:border-amber-400/40 shadow-sm" aria-label="Instagram">
+                      <InstagramIcon />
+                    </a>
                   </div>
                 </motion.div>
               )}
@@ -430,14 +509,14 @@ export const AuthContainer = () => {
                   exit="exit"
                   className="w-full"
                 >
-                  <h2 className="lofi-title text-3xl font-bold text-center text-white mb-6 tracking-wide">
+                  <h2 className="lofi-title text-2xl font-bold text-center text-white mb-4 tracking-wide">
                     Register
                   </h2>
 
-                  <form onSubmit={handleRegisterSubmit} className="space-y-5" noValidate>
+                  <form onSubmit={handleRegisterSubmit} className="space-y-3" noValidate>
                     {/* Full Name */}
                     <div className="lofi-input-group relative">
-                      <div className="lofi-input-wrapper flex items-center border-b border-white/40 pb-2 focus-within:border-white transition-colors">
+                      <div className="lofi-input-wrapper flex items-center border-b border-white/40 pb-1.5 focus-within:border-white transition-colors">
                         <input
                           type="text"
                           value={registerData.fullName}
@@ -457,7 +536,7 @@ export const AuthContainer = () => {
 
                     {/* Email */}
                     <div className="lofi-input-group relative">
-                      <div className="lofi-input-wrapper flex items-center border-b border-white/40 pb-2 focus-within:border-white transition-colors">
+                      <div className="lofi-input-wrapper flex items-center border-b border-white/40 pb-1.5 focus-within:border-white transition-colors">
                         <input
                           type="email"
                           value={registerData.email}
@@ -477,7 +556,7 @@ export const AuthContainer = () => {
 
                     {/* Mobile */}
                     <div className="lofi-input-group relative">
-                      <div className="lofi-input-wrapper flex items-center border-b border-white/40 pb-2 focus-within:border-white transition-colors">
+                      <div className="lofi-input-wrapper flex items-center border-b border-white/40 pb-1.5 focus-within:border-white transition-colors">
                         <input
                           type="tel"
                           value={registerData.mobile}
@@ -498,7 +577,7 @@ export const AuthContainer = () => {
 
                     {/* Password */}
                     <div className="lofi-input-group relative">
-                      <div className="lofi-input-wrapper flex items-center border-b border-white/40 pb-2 focus-within:border-white transition-colors">
+                      <div className="lofi-input-wrapper flex items-center border-b border-white/40 pb-1.5 focus-within:border-white transition-colors">
                         <input
                           type={showRegisterPassword ? 'text' : 'password'}
                           value={registerData.password}
@@ -522,19 +601,47 @@ export const AuthContainer = () => {
                       )}
                     </div>
 
-                    {/* Submit Button with 3D Push Tap Effect */}
+                    {/* Sign Up Submit Button */}
                     <motion.button
                       whileTap={{ scale: 0.95 }}
                       type="submit"
                       disabled={isLoading}
-                      className="lofi-btn-dark w-full py-3 mt-4 rounded-lg bg-slate-900/80 hover:bg-slate-800 text-white font-semibold text-sm shadow-lg border border-white/10 transition-all"
+                      className="lofi-btn-dark w-full py-2.5 rounded-lg bg-slate-900/80 hover:bg-slate-800 text-white font-semibold text-sm shadow-lg border border-white/10 transition-all"
                     >
                       {isLoading ? 'Creating Account...' : 'Sign Up'}
+                    </motion.button>
+
+                    {/* Divider: OR */}
+                    <div className="relative my-2 flex items-center justify-center select-none">
+                      <div className="absolute inset-0 flex items-center">
+                        <div className="w-full border-t border-white/20" />
+                      </div>
+                      <div className="relative bg-slate-950/80 px-3 text-[10px] uppercase font-bold tracking-widest text-slate-400 rounded-full border border-white/10">
+                        OR
+                      </div>
+                    </div>
+
+                    {/* Google OAuth Glassmorphism Button */}
+                    <motion.button
+                      whileHover={{ scale: 1.02, y: -1 }}
+                      whileTap={{ scale: 0.96 }}
+                      type="button"
+                      onClick={handleGoogleAuth}
+                      disabled={isLoading}
+                      className="w-full py-2.5 px-4 rounded-lg bg-slate-900/60 hover:bg-slate-800/80 text-white font-medium text-xs border border-white/20 shadow-md backdrop-blur-md flex items-center justify-center gap-2 transition-all duration-200 hover:border-amber-400/40 hover:shadow-[0_0_15px_rgba(245,158,11,0.15)] cursor-pointer"
+                    >
+                      <svg className="w-4 h-4 mr-1" viewBox="0 0 24 24">
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
+                      </svg>
+                      <span>Continue with Google</span>
                     </motion.button>
                   </form>
 
                   {/* Login Switcher */}
-                  <div className="text-center text-xs text-white/70 mt-6" style={{ textAlign: 'center', marginTop: '1.5rem', fontSize: '0.85rem' }}>
+                  <div className="text-center text-xs text-white/70 mt-3" style={{ textAlign: 'center', fontSize: '0.85rem' }}>
                     Already have an account?{' '}
                     <button
                       onClick={() => switchView('login')}
@@ -543,6 +650,22 @@ export const AuthContainer = () => {
                     >
                       Login
                     </button>
+                  </div>
+
+                  {/* Social Icons Footer Row */}
+                  <div className="flex items-center justify-center gap-3 pt-3 border-t border-white/10 mt-3">
+                    <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-white/5 hover:bg-white/15 border border-white/15 text-slate-300 hover:text-white transition-all hover:scale-110 hover:border-amber-400/40 shadow-sm" aria-label="Facebook">
+                      <FacebookIcon />
+                    </a>
+                    <a href="https://x.com" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-white/5 hover:bg-white/15 border border-white/15 text-slate-300 hover:text-white transition-all hover:scale-110 hover:border-amber-400/40 shadow-sm" aria-label="X / Twitter">
+                      <TwitterIcon />
+                    </a>
+                    <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-white/5 hover:bg-white/15 border border-white/15 text-slate-300 hover:text-white transition-all hover:scale-110 hover:border-amber-400/40 shadow-sm" aria-label="LinkedIn">
+                      <LinkedinIcon />
+                    </a>
+                    <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-white/5 hover:bg-white/15 border border-white/15 text-slate-300 hover:text-white transition-all hover:scale-110 hover:border-amber-400/40 shadow-sm" aria-label="Instagram">
+                      <InstagramIcon />
+                    </a>
                   </div>
                 </motion.div>
               )}
