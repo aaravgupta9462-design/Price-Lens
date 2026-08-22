@@ -169,7 +169,7 @@
   justify-content: center;
   position: relative;
   overflow: hidden;
-  min-h: 400px;
+  min-height: 400px;
 }
 
 .spline-scene-box {
