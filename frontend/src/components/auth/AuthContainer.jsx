@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence, useMotionValue, useTransform, useSpring } from 'framer-motion';
 import { Mail, Lock, User, Phone, Eye, EyeOff, X, KeyRound, CheckCircle2, RefreshCw } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import { TwinklingStars } from '../common/TwinklingStars';
 import './AuthContainer.css';
 
 export const AuthContainer = () => {
@@ -226,9 +225,6 @@ export const AuthContainer = () => {
     <div className="lofi-bg-viewport min-h-screen w-full bg-cover bg-center bg-no-repeat relative flex flex-col justify-between overflow-hidden">
       {/* Dark Vignette Overlay */}
       <div className="lofi-overlay absolute inset-0 bg-black/40 backdrop-brightness-90 pointer-events-none" style={{ zIndex: -5 }} />
-
-      {/* Twinkling Stars & Shooting Stars Overlay */}
-      <TwinklingStars />
 
       {/* Top Navbar */}
       <header className="lofi-navbar relative z-10 w-full px-8 py-6 flex items-center justify-between">
