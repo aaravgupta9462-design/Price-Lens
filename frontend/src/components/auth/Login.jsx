@@ -32,7 +32,7 @@ export const Login = ({ onSwitchToSignUp, onOpenForgotPassword }) => {
     const emailVal = formData.email.trim();
 
     if (!emailVal) {
-      newErrors.email = 'Email is required.';
+      newErrors.email = 'Email address is required.';
     } else {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(emailVal)) {
@@ -68,38 +68,40 @@ export const Login = ({ onSwitchToSignUp, onOpenForgotPassword }) => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F5F7FA] flex items-center justify-center p-6 font-sans text-gray-900">
-      {/* Main Login Card */}
-      <div className="w-full max-w-[1000px] min-h-[600px] bg-white rounded-[2.5rem] flex flex-col md:flex-row overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+    <div className="min-h-screen bg-[#F4F7F9] flex items-center justify-center p-4 md:p-8 font-sans text-gray-900">
+      {/* Main Card Container */}
+      <div className="w-full max-w-[1050px] min-h-[650px] bg-white rounded-[2rem] flex flex-col md:flex-row overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.03)] border border-gray-100">
         
-        {/* LEFT SECTION (3D Animation - 50% Width) */}
-        <div className="w-full md:w-1/2 bg-[#F8FAFC] flex flex-col items-center justify-center p-10 relative">
-          {/* Top Left Logo */}
-          <div className="absolute top-8 left-8 text-xl font-extrabold tracking-tight flex items-center gap-2 text-gray-900">
-            <img src="/logo.jpg" alt="PriceLens Logo" className="w-7 h-7 object-contain rounded-md shadow-sm" />
-            <span>Price<span className="text-emerald-500">Lens</span></span>
+        {/* LEFT SECTION (Visuals & 3D - 50% Width) */}
+        <div className="hidden md:flex w-1/2 bg-[#F8FAFC] flex-col items-center justify-center p-10 relative">
+          {/* Brand Logo (Top Left) */}
+          <div className="absolute top-10 left-10 flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-black text-emerald-400 font-black text-sm flex items-center justify-center shadow-sm">
+              PL
+            </div>
+            <span className="text-xl font-extrabold text-slate-900 tracking-tight">PriceLens</span>
           </div>
 
-          {/* Floating 3D Character Illustration */}
+          {/* 3D Floating Animation */}
           <motion.div
             animate={{ y: [-15, 15, -15] }}
             transition={{ repeat: Infinity, duration: 4, ease: 'easeInOut' }}
-            className="flex items-center justify-center my-auto pt-8"
+            className="flex items-center justify-center my-auto"
           >
             <img
-              src="https://static.vecteezy.com/system/resources/previews/009/312/016/original/3d-render-cute-boy-with-laptop-png.png"
-              alt="3D AI Assistant"
-              className="w-[80%] max-w-[320px] object-contain drop-shadow-xl"
+              src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Laptop.png"
+              alt="3D Laptop AI Assistant"
+              className="w-64 h-64 object-contain drop-shadow-2xl"
             />
           </motion.div>
         </div>
 
         {/* RIGHT SECTION (Minimalist Form - 50% Width) */}
-        <div className="w-full md:w-1/2 bg-white flex flex-col justify-center px-12 py-12">
-          <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2 text-gray-900">
+        <div className="w-full md:w-1/2 bg-white px-10 py-12 md:px-16 flex flex-col justify-center">
+          <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2 text-[#111]">
             Welcome back
           </h1>
-          <p className="text-gray-500 text-sm md:text-base mb-8">
+          <p className="text-gray-500 text-sm mb-10">
             Please enter your details to sign in.
           </p>
 
@@ -112,7 +114,7 @@ export const Login = ({ onSwitchToSignUp, onOpenForgotPassword }) => {
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="Enter your email"
-                className="w-full bg-[#F5F7FA] border-none rounded-xl px-5 py-4 text-gray-800 placeholder-gray-400 focus:bg-white focus:ring-2 focus:ring-emerald-500 transition-all outline-none"
+                className="w-full bg-[#F5F7FA] border-none rounded-xl px-5 py-4 text-gray-800 placeholder-gray-400 focus:bg-white focus:ring-2 focus:ring-black transition-all outline-none"
               />
               {errors.email && (
                 <p className="text-rose-500 text-xs mt-1 font-medium">{errors.email}</p>
@@ -127,7 +129,7 @@ export const Login = ({ onSwitchToSignUp, onOpenForgotPassword }) => {
                 value={formData.password}
                 onChange={handleChange}
                 placeholder="••••••••"
-                className="w-full bg-[#F5F7FA] border-none rounded-xl px-5 py-4 text-gray-800 placeholder-gray-400 focus:bg-white focus:ring-2 focus:ring-emerald-500 transition-all outline-none pr-12"
+                className="w-full bg-[#F5F7FA] border-none rounded-xl px-5 py-4 text-gray-800 placeholder-gray-400 focus:bg-white focus:ring-2 focus:ring-black transition-all outline-none pr-12"
               />
               <button
                 type="button"
@@ -141,9 +143,9 @@ export const Login = ({ onSwitchToSignUp, onOpenForgotPassword }) => {
               )}
             </div>
 
-            {/* Options Row */}
-            <div className="flex items-center justify-between text-sm mb-2">
-              <label className="flex items-center gap-2 cursor-pointer text-gray-600 select-none">
+            {/* Form Options (Row) */}
+            <div className="flex justify-between items-center my-4">
+              <label className="flex items-center gap-2 cursor-pointer text-sm text-gray-600 select-none">
                 <input
                   type="checkbox"
                   name="rememberMe"
@@ -157,7 +159,7 @@ export const Login = ({ onSwitchToSignUp, onOpenForgotPassword }) => {
               <button
                 type="button"
                 onClick={onOpenForgotPassword}
-                className="text-sm font-semibold text-gray-900 hover:underline cursor-pointer"
+                className="text-sm font-semibold text-black hover:underline cursor-pointer"
               >
                 Forgot password?
               </button>
@@ -167,7 +169,7 @@ export const Login = ({ onSwitchToSignUp, onOpenForgotPassword }) => {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-black hover:bg-gray-800 text-white rounded-xl py-4 text-base font-semibold transition-all mt-6 shadow-md cursor-pointer active:scale-[0.99]"
+              className="w-full bg-black hover:bg-gray-800 text-white rounded-xl py-4 font-semibold text-base transition-all mt-2 cursor-pointer active:scale-[0.99]"
             >
               {isLoading ? 'Signing in...' : 'Sign in'}
             </button>
@@ -178,7 +180,7 @@ export const Login = ({ onSwitchToSignUp, onOpenForgotPassword }) => {
               onClick={() => {
                 if (addToast) addToast('Google OAuth Authentication Triggered', 'info');
               }}
-              className="w-full bg-white border border-gray-200 text-gray-900 hover:bg-gray-50 rounded-xl py-3.5 flex items-center justify-center gap-2 mt-4 font-semibold text-base transition-all cursor-pointer shadow-sm"
+              className="w-full bg-white border border-gray-200 text-gray-900 hover:bg-gray-50 rounded-xl py-3.5 flex items-center justify-center gap-3 mt-4 font-semibold transition-all shadow-sm cursor-pointer"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path
@@ -203,12 +205,12 @@ export const Login = ({ onSwitchToSignUp, onOpenForgotPassword }) => {
           </form>
 
           {/* Footer */}
-          <div className="text-center text-sm text-gray-500 font-medium mt-8">
+          <div className="text-center text-sm text-gray-500 mt-10">
             Don't have an account?{' '}
             <button
               type="button"
               onClick={onSwitchToSignUp}
-              className="text-black font-bold hover:underline ml-1 cursor-pointer"
+              className="text-black font-bold hover:underline cursor-pointer"
             >
               Sign up
             </button>
