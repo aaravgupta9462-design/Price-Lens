@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
-import { Eye, EyeOff } from 'lucide-react';
+import { Input } from '../common/Input';
+import { Checkbox } from '../common/Checkbox';
+import { Button } from '../common/Button';
+import { SocialLogin } from './SocialLogin';
+import { Mail, Lock, Eye, EyeOff, LogIn, Phone, ArrowRight } from 'lucide-react';
 
 export const Login = ({ onSwitchToSignUp, onOpenForgotPassword }) => {
-  const { login, isLoading, addToast } = useAuth();
+  const { login, isLoading } = useAuth();
 
   const [formData, setFormData] = useState({
-    email: '',
+    identifier: '', // Email OR 10-digit Mobile Number
     password: '',
     rememberMe: false
   });
@@ -29,21 +32,23 @@ export const Login = ({ onSwitchToSignUp, onOpenForgotPassword }) => {
 
   const validateForm = () => {
     const newErrors = {};
-    const emailVal = formData.email.trim();
+    const identifierVal = formData.identifier.trim();
 
-    if (!emailVal) {
-      newErrors.email = 'Email address is required.';
+    if (!identifierVal) {
+      newErrors.identifier = 'Email address or Mobile number is required.';
     } else {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(emailVal)) {
-        newErrors.email = 'Please enter a valid email address.';
+      const mobileRegex = /^\d{10}$/;
+
+      if (!emailRegex.test(identifierVal) && !mobileRegex.test(identifierVal)) {
+        newErrors.identifier = 'Please enter a valid Email or 10-digit Mobile Number.';
       }
     }
 
     if (!formData.password) {
       newErrors.password = 'Password is required.';
     } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters.';
+      newErrors.password = 'Password must be at least 6 characters long.';
     }
 
     setErrors(newErrors);
@@ -54,168 +59,126 @@ export const Login = ({ onSwitchToSignUp, onOpenForgotPassword }) => {
     e.preventDefault();
     if (!validateForm()) return;
 
-    console.log('TODO: Execute POST /api/v1/auth/login payload:', formData);
+    // TODO: POST /api/v1/auth/login API call (See API_CONTRACTS.md)
+    console.log('TODO: Execute POST /api/v1/auth/login payload:', {
+      identifier: formData.identifier,
+      password: formData.password,
+      rememberMe: formData.rememberMe
+    });
 
     try {
       await login({
-        email: formData.email,
+        email: formData.identifier,
         password: formData.password,
         rememberMe: formData.rememberMe
       });
     } catch (err) {
-      // Handled via AuthContext Toast
+      // Handled in AuthContext via Toast
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#F4F7F9] flex items-center justify-center p-4 md:p-8 font-sans text-gray-900">
-      {/* Main Card Container */}
-      <div className="w-full max-w-[1050px] min-h-[650px] bg-white rounded-[2rem] flex flex-col md:flex-row overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.03)] border border-gray-100">
-        
-        {/* LEFT SECTION (Visuals & 3D - 50% Width) */}
-        <div className="hidden md:flex w-1/2 bg-[#F8FAFC] flex-col items-center justify-center p-10 relative">
-          {/* Brand Logo (Top Left) */}
-          <div className="absolute top-10 left-10 flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-black text-emerald-400 font-black text-sm flex items-center justify-center shadow-sm">
-              PL
-            </div>
-            <span className="text-xl font-extrabold text-slate-900 tracking-tight">PriceLens</span>
-          </div>
+    <div className="glass-card">
+      {/* Logo & Tagline Header */}
+      <div className="form-header">
+        <h2 className="form-title" style={{ display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
+          PriceLens<span style={{ color: 'var(--primary-emerald)' }}>.</span>
+        </h2>
+        <p className="form-subtitle" style={{ color: 'var(--primary-emerald)', fontWeight: '500' }}>
+          Compare Prices. Trust Reviews. Buy Smarter.
+        </p>
+      </div>
 
-          {/* 3D Floating Animation */}
-          <motion.div
-            animate={{ y: [-15, 15, -15] }}
-            transition={{ repeat: Infinity, duration: 4, ease: 'easeInOut' }}
-            className="flex items-center justify-center my-auto"
+      <form onSubmit={handleSubmit} className="form-stack" noValidate>
+        {/* Email Address or Mobile Number Field */}
+        <Input
+          label="Email Address or Mobile Number"
+          type="text"
+          name="identifier"
+          value={formData.identifier}
+          onChange={handleChange}
+          placeholder="name@example.com or 9876543210"
+          leftIcon={formData.identifier && /^\d+$/.test(formData.identifier) ? Phone : Mail}
+          error={errors.identifier}
+          required
+        />
+
+        {/* Password Field with Eye/EyeOff Toggle */}
+        <Input
+          label="Password"
+          type={showPassword ? 'text' : 'password'}
+          name="password"
+          value={formData.password}
+          onChange={handleChange}
+          placeholder="••••••••"
+          leftIcon={Lock}
+          error={errors.password}
+          required
+          autoComplete="current-password"
+          rightElement={
+            <button
+              type="button"
+              className="input-toggle-btn"
+              onClick={() => setShowPassword(!showPassword)}
+              title={showPassword ? 'Hide password' : 'Show password'}
+              aria-label={showPassword ? 'Hide password' : 'Show password'}
+            >
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
+          }
+        />
+
+        {/* Remember Me Checkbox & Forgot Password Link */}
+        <div className="form-options-row">
+          <Checkbox
+            name="rememberMe"
+            checked={formData.rememberMe}
+            onChange={handleChange}
+            label="Remember Me"
+          />
+          <a
+            href="#forgot-password"
+            className="forgot-link"
+            onClick={(e) => {
+              e.preventDefault();
+              if (onOpenForgotPassword) onOpenForgotPassword();
+            }}
           >
-            <img
-              src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Laptop.png"
-              alt="3D Laptop AI Assistant"
-              className="w-64 h-64 object-contain drop-shadow-2xl"
-            />
-          </motion.div>
+            Forgot Password?
+          </a>
         </div>
 
-        {/* RIGHT SECTION (Minimalist Form - 50% Width) */}
-        <div className="w-full md:w-1/2 bg-white px-10 py-12 md:px-16 flex flex-col justify-center">
-          <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2 text-[#111]">
-            Welcome back
-          </h1>
-          <p className="text-gray-500 text-sm mb-10">
-            Please enter your details to sign in.
-          </p>
+        {/* Full-width Emerald/Cyan Gradient Button → Login */}
+        <Button
+          type="submit"
+          variant="primary"
+          isLoading={isLoading}
+          icon={ArrowRight}
+        >
+          Login
+        </Button>
+      </form>
 
-          <form onSubmit={handleSubmit} noValidate>
-            {/* Email Input */}
-            <div className="mb-4">
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="Enter your email"
-                className="w-full bg-[#F5F7FA] border-none rounded-xl px-5 py-4 text-gray-800 placeholder-gray-400 focus:bg-white focus:ring-2 focus:ring-black transition-all outline-none"
-              />
-              {errors.email && (
-                <p className="text-rose-500 text-xs mt-1 font-medium">{errors.email}</p>
-              )}
-            </div>
+      {/* Divider */}
+      <div className="divider-container">
+        <div className="divider-line" />
+        <span className="divider-text">Or continue with</span>
+        <div className="divider-line" />
+      </div>
 
-            {/* Password Input */}
-            <div className="mb-4 relative">
-              <input
-                type={showPassword ? 'text' : 'password'}
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                placeholder="••••••••"
-                className="w-full bg-[#F5F7FA] border-none rounded-xl px-5 py-4 text-gray-800 placeholder-gray-400 focus:bg-white focus:ring-2 focus:ring-black transition-all outline-none pr-12"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none"
-              >
-                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-              </button>
-              {errors.password && (
-                <p className="text-rose-500 text-xs mt-1 font-medium">{errors.password}</p>
-              )}
-            </div>
+      {/* Google Login Button */}
+      <SocialLogin />
 
-            {/* Form Options (Row) */}
-            <div className="flex justify-between items-center my-4">
-              <label className="flex items-center gap-2 cursor-pointer text-sm text-gray-600 select-none">
-                <input
-                  type="checkbox"
-                  name="rememberMe"
-                  checked={formData.rememberMe}
-                  onChange={handleChange}
-                  className="w-4 h-4 text-black rounded border-gray-300 focus:ring-black"
-                />
-                <span>Remember for 30 days</span>
-              </label>
-
-              <button
-                type="button"
-                onClick={onOpenForgotPassword}
-                className="text-sm font-semibold text-black hover:underline cursor-pointer"
-              >
-                Forgot password?
-              </button>
-            </div>
-
-            {/* Primary Black Button */}
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="w-full bg-black hover:bg-gray-800 text-white rounded-xl py-4 font-semibold text-base transition-all mt-2 cursor-pointer active:scale-[0.99]"
-            >
-              {isLoading ? 'Signing in...' : 'Sign in'}
-            </button>
-
-            {/* Google Button */}
-            <button
-              type="button"
-              onClick={() => {
-                if (addToast) addToast('Google OAuth Authentication Triggered', 'info');
-              }}
-              className="w-full bg-white border border-gray-200 text-gray-900 hover:bg-gray-50 rounded-xl py-3.5 flex items-center justify-center gap-3 mt-4 font-semibold transition-all shadow-sm cursor-pointer"
-            >
-              <svg className="w-5 h-5" viewBox="0 0 24 24">
-                <path
-                  fill="#4285F4"
-                  d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                />
-                <path
-                  fill="#34A853"
-                  d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                />
-                <path
-                  fill="#FBBC05"
-                  d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
-                />
-                <path
-                  fill="#EA4335"
-                  d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
-                />
-              </svg>
-              <span>Sign in with Google</span>
-            </button>
-          </form>
-
-          {/* Footer */}
-          <div className="text-center text-sm text-gray-500 mt-10">
-            Don't have an account?{' '}
-            <button
-              type="button"
-              onClick={onSwitchToSignUp}
-              className="text-black font-bold hover:underline cursor-pointer"
-            >
-              Sign up
-            </button>
-          </div>
-        </div>
+      {/* View Switcher */}
+      <div className="switch-mode-text">
+        Don't have an account?
+        <button
+          type="button"
+          className="switch-mode-btn"
+          onClick={onSwitchToSignUp}
+        >
+          Sign Up
+        </button>
       </div>
     </div>
   );
