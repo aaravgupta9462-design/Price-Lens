@@ -16,8 +16,8 @@ export const PriceLens3D = () => {
 
       {/* Floating Realistic 3D Magnifying Glass */}
       <motion.div
-        animate={{ y: [0, -14, 0], rotateZ: [-1, 2, -1] }}
-        transition={{ repeat: Infinity, duration: 5.5, ease: 'easeInOut' }}
+        animate={{ y: [0, -11, 0], rotateZ: [-1, 1.5, -1] }}
+        transition={{ repeat: Infinity, duration: 5.5, delay: 0.2, ease: 'easeInOut' }}
         className="relative flex flex-col items-center justify-center"
       >
         {/* 3D Multi-Layered Metallic Outer Rim & Glass Lens */}
@@ -172,8 +172,12 @@ export const PriceLens3D = () => {
         </div>
       </motion.div>
 
-      {/* Realistic Shadow on Floor */}
-      <div className="absolute bottom-2 w-52 h-4 rounded-full bg-black/75 blur-md transform scale-x-125" />
+      {/* Realistic Shadow on Floor dynamically reacting to float */}
+      <motion.div
+        animate={{ scaleX: [1.25, 1.05, 1.25], opacity: [0.75, 0.5, 0.75] }}
+        transition={{ repeat: Infinity, duration: 5.5, delay: 0.2, ease: 'easeInOut' }}
+        className="absolute bottom-2 w-52 h-4 rounded-full bg-black/75 blur-md"
+      />
     </motion.div>
   );
 };

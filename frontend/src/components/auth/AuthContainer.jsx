@@ -748,6 +748,10 @@ export const AuthContainer = () => {
             subtitle="Compared to last week"
             type="drop"
             delay={0.3}
+            floatDuration={4.8}
+            floatY={[0, -7, 0]}
+            floatRotate={[0, -0.75, 0]}
+            floatDelay={0.0}
           />
           <PriceInsightCard
             title="BEST PRICE"
@@ -755,6 +759,10 @@ export const AuthContainer = () => {
             subtitle="Lowest verified price"
             type="best"
             delay={0.45}
+            floatDuration={5.2}
+            floatY={[0, -9, 0]}
+            floatRotate={[0, 0.75, 0]}
+            floatDelay={0.5}
           />
           <PriceInsightCard
             title="SAVE MORE"
@@ -762,6 +770,10 @@ export const AuthContainer = () => {
             subtitle="Average buyer savings"
             type="save"
             delay={0.6}
+            floatDuration={5.6}
+            floatY={[0, -6, 0]}
+            floatRotate={[0, -0.5, 0]}
+            floatDelay={1.0}
           />
         </div>
 

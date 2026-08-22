@@ -7,7 +7,11 @@ export const PriceInsightCard = ({
   value,
   subtitle,
   type = 'drop',
-  delay = 0
+  delay = 0,
+  floatDuration = 5.0,
+  floatY = [0, -8, 0],
+  floatRotate = [0, 0.5, 0],
+  floatDelay = 0
 }) => {
   // Theme color maps for fintech aesthetics
   const themes = {
@@ -37,9 +41,21 @@ export const PriceInsightCard = ({
   return (
     <motion.div
       initial={{ opacity: 0, x: 40, scale: 0.9 }}
-      animate={{ opacity: 1, x: 0, scale: 1 }}
-      transition={{ duration: 0.5, ease: 'easeOut', delay }}
-      whileHover={{ y: -4, scale: 1.02 }}
+      animate={{
+        opacity: 1,
+        x: 0,
+        scale: 1,
+        y: floatY,
+        rotateZ: floatRotate
+      }}
+      transition={{
+        opacity: { duration: 0.5, ease: 'easeOut', delay },
+        x: { duration: 0.5, ease: 'easeOut', delay },
+        scale: { duration: 0.5, ease: 'easeOut', delay },
+        y: { repeat: Infinity, duration: floatDuration, delay: floatDelay, ease: 'easeInOut' },
+        rotateZ: { repeat: Infinity, duration: floatDuration, delay: floatDelay, ease: 'easeInOut' }
+      }}
+      whileHover={{ scale: 1.03, transition: { duration: 0.2 } }}
       className={`w-full max-w-[260px] backdrop-blur-xl bg-slate-900/60 border border-white/15 rounded-xl p-4 shadow-xl transition-all duration-300 ${activeTheme.glow} relative overflow-hidden group`}
     >
       {/* Subtle Specular Top Highlight Beam */}
