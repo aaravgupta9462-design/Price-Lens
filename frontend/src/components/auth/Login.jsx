@@ -32,7 +32,7 @@ export const Login = ({ onSwitchToSignUp, onOpenForgotPassword }) => {
     const emailVal = formData.email.trim();
 
     if (!emailVal) {
-      newErrors.email = 'Email address is required.';
+      newErrors.email = 'Email is required.';
     } else {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(emailVal)) {
@@ -68,44 +68,39 @@ export const Login = ({ onSwitchToSignUp, onOpenForgotPassword }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4 md:p-8 font-sans">
-      {/* Main Container Card */}
-      <div className="bg-white w-full max-w-[1000px] min-h-[600px] rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.05)] flex flex-col md:flex-row overflow-hidden border border-gray-100">
+    <div className="min-h-screen bg-[#F5F7FA] flex items-center justify-center p-6 font-sans text-gray-900">
+      {/* Main Login Card */}
+      <div className="w-full max-w-[1000px] min-h-[600px] bg-white rounded-[2.5rem] flex flex-col md:flex-row overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
         
-        {/* LEFT SIDE (The 3D Animation Section - 50% width) */}
-        <div className="w-full md:w-1/2 bg-gradient-to-br from-emerald-50 to-teal-100 flex flex-col items-center justify-center p-8 relative min-h-[350px] md:min-h-full">
-          {/* Top Left Branding */}
-          <div className="absolute top-6 left-8 flex items-center gap-2 text-slate-900 font-extrabold text-xl tracking-tight">
-            <img src="/logo.jpg" alt="PriceLens" className="w-7 h-7 object-contain rounded-md shadow-sm" />
-            <span>Price<span className="text-emerald-600">Lens</span></span>
+        {/* LEFT SECTION (3D Animation - 50% Width) */}
+        <div className="w-full md:w-1/2 bg-[#F8FAFC] flex flex-col items-center justify-center p-10 relative">
+          {/* Top Left Logo */}
+          <div className="absolute top-8 left-8 text-xl font-extrabold tracking-tight flex items-center gap-2 text-gray-900">
+            <img src="/logo.jpg" alt="PriceLens Logo" className="w-7 h-7 object-contain rounded-md shadow-sm" />
+            <span>Price<span className="text-emerald-500">Lens</span></span>
           </div>
 
           {/* Floating 3D Character Illustration */}
           <motion.div
             animate={{ y: [-15, 15, -15] }}
             transition={{ repeat: Infinity, duration: 4, ease: 'easeInOut' }}
-            className="flex flex-col items-center justify-center my-auto pt-6"
+            className="flex items-center justify-center my-auto pt-8"
           >
             <img
               src="https://static.vecteezy.com/system/resources/previews/009/312/016/original/3d-render-cute-boy-with-laptop-png.png"
               alt="3D AI Assistant"
-              className="w-full max-w-[320px] object-contain drop-shadow-2xl"
+              className="w-[80%] max-w-[320px] object-contain drop-shadow-xl"
             />
           </motion.div>
-
-          {/* Bottom Headline */}
-          <h3 className="text-teal-800 font-bold text-xl mt-6 tracking-tight text-center">
-            AI-Powered Price Comparison
-          </h3>
         </div>
 
-        {/* RIGHT SIDE (The Minimalist Login Form - 50% width) */}
-        <div className="w-full md:w-1/2 bg-white flex flex-col justify-center px-10 py-12 md:px-14">
-          <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight mb-2">
-            Welcome Back
+        {/* RIGHT SECTION (Minimalist Form - 50% Width) */}
+        <div className="w-full md:w-1/2 bg-white flex flex-col justify-center px-12 py-12">
+          <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2 text-gray-900">
+            Welcome back
           </h1>
-          <p className="text-gray-500 text-sm mb-8">
-            Enter your details to access your account.
+          <p className="text-gray-500 text-sm md:text-base mb-8">
+            Please enter your details to sign in.
           </p>
 
           <form onSubmit={handleSubmit} noValidate>
@@ -116,8 +111,8 @@ export const Login = ({ onSwitchToSignUp, onOpenForgotPassword }) => {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                placeholder="Email address"
-                className="w-full bg-gray-50 border border-gray-200 rounded-xl px-5 py-4 text-gray-800 focus:bg-white focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none transition-all"
+                placeholder="Enter your email"
+                className="w-full bg-[#F5F7FA] border-none rounded-xl px-5 py-4 text-gray-800 placeholder-gray-400 focus:bg-white focus:ring-2 focus:ring-emerald-500 transition-all outline-none"
               />
               {errors.email && (
                 <p className="text-rose-500 text-xs mt-1 font-medium">{errors.email}</p>
@@ -131,8 +126,8 @@ export const Login = ({ onSwitchToSignUp, onOpenForgotPassword }) => {
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                placeholder="Password"
-                className="w-full bg-gray-50 border border-gray-200 rounded-xl px-5 py-4 text-gray-800 focus:bg-white focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none transition-all pr-12"
+                placeholder="••••••••"
+                className="w-full bg-[#F5F7FA] border-none rounded-xl px-5 py-4 text-gray-800 placeholder-gray-400 focus:bg-white focus:ring-2 focus:ring-emerald-500 transition-all outline-none pr-12"
               />
               <button
                 type="button"
@@ -154,36 +149,36 @@ export const Login = ({ onSwitchToSignUp, onOpenForgotPassword }) => {
                   name="rememberMe"
                   checked={formData.rememberMe}
                   onChange={handleChange}
-                  className="w-4 h-4 text-emerald-500 rounded border-gray-300 focus:ring-emerald-500"
+                  className="w-4 h-4 text-black rounded border-gray-300 focus:ring-black"
                 />
-                <span>Remember me</span>
+                <span>Remember for 30 days</span>
               </label>
 
               <button
                 type="button"
                 onClick={onOpenForgotPassword}
-                className="text-emerald-600 font-semibold hover:underline cursor-pointer"
+                className="text-sm font-semibold text-gray-900 hover:underline cursor-pointer"
               >
                 Forgot password?
               </button>
             </div>
 
-            {/* Primary Emerald Login Button */}
+            {/* Primary Black Button */}
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl py-4 text-lg font-bold shadow-[0_8px_20px_rgba(16,185,129,0.25)] transition-all mt-6 cursor-pointer active:scale-[0.99]"
+              className="w-full bg-black hover:bg-gray-800 text-white rounded-xl py-4 text-base font-semibold transition-all mt-6 shadow-md cursor-pointer active:scale-[0.99]"
             >
-              {isLoading ? 'Logging in...' : 'Login'}
+              {isLoading ? 'Signing in...' : 'Sign in'}
             </button>
 
-            {/* Google Login Button */}
+            {/* Google Button */}
             <button
               type="button"
               onClick={() => {
                 if (addToast) addToast('Google OAuth Authentication Triggered', 'info');
               }}
-              className="w-full bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 rounded-xl py-3.5 flex items-center justify-center gap-3 mt-4 font-semibold cursor-pointer transition-colors"
+              className="w-full bg-white border border-gray-200 text-gray-900 hover:bg-gray-50 rounded-xl py-3.5 flex items-center justify-center gap-2 mt-4 font-semibold text-base transition-all cursor-pointer shadow-sm"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path
@@ -203,7 +198,7 @@ export const Login = ({ onSwitchToSignUp, onOpenForgotPassword }) => {
                   d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
                 />
               </svg>
-              <span>Login with Google</span>
+              <span>Sign in with Google</span>
             </button>
           </form>
 
@@ -213,7 +208,7 @@ export const Login = ({ onSwitchToSignUp, onOpenForgotPassword }) => {
             <button
               type="button"
               onClick={onSwitchToSignUp}
-              className="text-emerald-600 font-bold hover:underline ml-1 cursor-pointer"
+              className="text-black font-bold hover:underline ml-1 cursor-pointer"
             >
               Sign up
             </button>
