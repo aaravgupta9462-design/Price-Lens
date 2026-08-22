@@ -2,10 +2,19 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence, useMotionValue, useTransform, useSpring } from 'framer-motion';
 import { Mail, Lock, User, Phone, Eye, EyeOff, X, KeyRound, CheckCircle2, RefreshCw } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { PriceLens3D } from '../common/PriceLens3D';
+import { PriceInsightCard } from '../common/PriceInsightCard';
 import './AuthContainer.css';
 
 export const AuthContainer = () => {
   const { login, signup, isLoading, addToast } = useAuth();
+
+  // Dynamic Price Intelligence Insights Data (Default / API ready)
+  const [priceInsights] = useState({
+    priceDropPercentage: 32,
+    bestPrice: 999,
+    savingsAmount: 500
+  });
 
   // State: 'login' | 'register' | 'forgot'
   const [viewState, setViewState] = useState('login');
@@ -254,10 +263,18 @@ export const AuthContainer = () => {
         </nav>
       </header>
 
-      {/* Main Centered Pure Glassmorphism Modal Container with 3D Tilt, Spring Entrance & Infinite Float */}
-      <main className="lofi-main-center relative z-10 flex-1 flex items-center justify-center p-4">
-        <div className="w-full max-w-md style-3d-perspective" style={{ perspective: 1000 }}>
-          <motion.div
+      {/* 3-Column Composition: Left (3D Lens) | Center (Login Modal) | Right (3 Price Cards) */}
+      <main className="lofi-main-center relative z-10 flex-1 flex items-center justify-center p-4 lg:p-8">
+        <div className="w-full max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-6 lg:gap-10">
+
+          {/* LEFT COLUMN: 3D Price Lens Magnifying Glass */}
+          <div className="flex-1 hidden lg:flex justify-center items-center">
+            <PriceLens3D />
+          </div>
+
+          {/* CENTER COLUMN: Existing Login Modal */}
+          <div className="w-full max-w-md style-3d-perspective flex-shrink-0 z-10" style={{ perspective: 1000 }}>
+            <motion.div
             initial={{ scale: 0.8, opacity: 0, rotateY: 15 }}
             animate={
               isHovered
@@ -722,7 +739,34 @@ export const AuthContainer = () => {
             </AnimatePresence>
           </motion.div>
         </div>
-      </main>
+
+        {/* RIGHT COLUMN: 3 Floating Price Information Cards */}
+        <div className="flex-1 flex flex-col sm:flex-row lg:flex-col items-center justify-center gap-4.5 flex-wrap z-10">
+          <PriceInsightCard
+            title="PRICE DROP"
+            value={`-${priceInsights.priceDropPercentage}%`}
+            subtitle="Compared to last week"
+            type="drop"
+            delay={0.3}
+          />
+          <PriceInsightCard
+            title="BEST PRICE"
+            value={`₹${priceInsights.bestPrice}`}
+            subtitle="Lowest verified price"
+            type="best"
+            delay={0.45}
+          />
+          <PriceInsightCard
+            title="SAVE MORE"
+            value={`₹${priceInsights.savingsAmount}`}
+            subtitle="Average buyer savings"
+            type="save"
+            delay={0.6}
+          />
+        </div>
+
+      </div>
+    </main>
     </div>
   );
 };
