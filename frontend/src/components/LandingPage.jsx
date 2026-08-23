@@ -10,11 +10,6 @@ const LandingPage = ({ onGetStarted, isAuthenticated }) => {
 
   return (
     <div className="lp-root">
-      {/* ─── Floating Background Blobs ───────────────────────────────────────── */}
-      <div className="lp-blob lp-blob-1" />
-      <div className="lp-blob lp-blob-2" />
-      <div className="lp-blob lp-blob-3" />
-
       {/* ─── Top Navbar ──────────────────────────────────────────────────────── */}
       <header className="lp-navbar">
         <div className="lp-nav-container">
@@ -53,6 +48,15 @@ const LandingPage = ({ onGetStarted, isAuthenticated }) => {
 
       {/* ─── Hero Section ────────────────────────────────────────────────────── */}
       <main className="lp-hero">
+        <video
+          className="lp-hero-video"
+          src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260820_010308_b1636845-4c15-4ab6-b0c9-9a29bfb0c6e3.mp4"
+          autoPlay
+          muted
+          loop
+          playsInline
+          aria-hidden="true"
+        />
         <div className="lp-hero-content">
           {/* Badge */}
           <div className="lp-hero-badge">

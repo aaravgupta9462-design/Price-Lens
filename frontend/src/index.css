@@ -1,6 +1,41 @@
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+body {
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+  background: #000;
+}
+
+.font-instrument {
+  font-family: "Instrument Serif", serif;
+}
+
+button,
+input {
+  font: inherit;
+}
+
 /* ==========================================================================
    PriceLens - Design System & Global CSS
-   Theme: Ultimate 3D Glassmorphism AI SaaS Platform
+   Theme: Premium Dark SaaS + Glassmorphism
    ========================================================================== */
 
 :root {

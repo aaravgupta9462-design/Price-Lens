@@ -234,6 +234,16 @@
   align-items: center;
 }
 
+.lp-hero-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: bottom;
+  z-index: -1;
+}
+
 .lp-hero-content {
   display: flex;
   flex-direction: column;
