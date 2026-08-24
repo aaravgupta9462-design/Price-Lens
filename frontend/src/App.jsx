@@ -1,24 +1,18 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { AuthContainer } from './components/auth/AuthContainer';
 import LandingPage from './components/LandingPage';
 
 const AppContent = () => {
   const { isAuthenticated } = useAuth();
-  const [showAuth, setShowAuth] = useState(false);
 
-  // If auth form was requested and user is now authenticated, go back to landing
+  // If user is authenticated, show the approved Home Landing Page
   if (isAuthenticated) {
-    return <LandingPage onGetStarted={() => {}} isAuthenticated />;
+    return <LandingPage onGetStarted={() => {}} isAuthenticated={true} />;
   }
 
-  // Show auth form when user clicks Get Started
-  if (showAuth) {
-    return <AuthContainer />;
-  }
-
-  // Default: show marketing landing page
-  return <LandingPage onGetStarted={() => setShowAuth(true)} isAuthenticated={false} />;
+  // Default for unauthenticated users: show the Login / Register Auth Page
+  return <AuthContainer />;
 };
 
 export default function App() {

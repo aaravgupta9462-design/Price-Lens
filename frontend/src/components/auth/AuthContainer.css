@@ -1,29 +1,22 @@
 /* ==========================================================================
-   PriceLens - Aesthetic Pure Glassmorphism & Centered Auth Layout CSS
+   PriceLens - Modern SaaS Clean Off-White Auth Layout CSS
+   Matching Home Page Palette: Off-White/Cream, Navy/Slate Text, Electric Blue & Lime Accents
    ========================================================================== */
 
-.lofi-bg-viewport {
+.saas-bg-viewport {
   min-height: 100vh;
   width: 100%;
-  background-image: url('/bg-auth.png');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  background-color: #f8fafc;
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(37, 99, 235, 0.05) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.05) 0px, transparent 50%);
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
 
-.lofi-overlay {
-  position: absolute;
-  inset: 0;
-  background-color: rgba(0, 0, 0, 0.45);
-  backdrop-filter: brightness(0.9);
-  pointer-events: none;
-}
-
-.lofi-navbar {
+.saas-navbar {
   position: relative;
   z-index: 10;
   width: 100%;
@@ -33,221 +26,241 @@
   justify-content: space-between;
 }
 
-.lofi-brand-badge {
+.saas-brand-badge {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 0.45rem 1.1rem;
+  padding: 0.5rem 1.25rem;
   border-radius: 9999px;
-  background: rgba(0, 0, 0, 0.65);
-  border: 1px solid rgba(245, 158, 11, 0.35);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6), 0 0 15px rgba(245, 158, 11, 0.15);
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
   transition: all 0.3s ease;
   text-decoration: none;
 }
 
-.lofi-brand-badge:hover {
-  border-color: rgba(245, 158, 11, 0.6);
-  box-shadow: 0 6px 25px rgba(245, 158, 11, 0.3);
+.saas-brand-badge:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
 }
 
-.lofi-brand-img {
-  width: 2.25rem;
-  height: 2.25rem;
+.saas-brand-img {
+  width: 2rem;
+  height: 2rem;
   object-fit: contain;
   border-radius: 0.5rem;
-  filter: drop-shadow(0 2px 8px rgba(245, 158, 11, 0.5));
 }
 
-.brand-name {
-  font-family: var(--font-heading, 'Outfit', sans-serif);
-  font-weight: 900;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  font-size: 1.2rem;
+.saas-brand-name {
+  font-family: var(--font-heading, 'Inter', system-ui, sans-serif);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  font-size: 1.25rem;
   display: flex;
   align-items: center;
 }
 
-.brand-name .text-price {
-  color: #ffffff;
-  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
+.saas-brand-name .text-price {
+  color: #0f172a;
 }
 
-.brand-name .text-lens {
-  background: linear-gradient(135deg, #fef08a 0%, #f59e0b 50%, #d97706 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  margin-left: 0.35rem;
-  filter: drop-shadow(0 2px 8px rgba(245, 158, 11, 0.5));
-  font-weight: 900;
+.saas-brand-name .text-lens {
+  color: #2563eb;
+  margin-left: 0.2rem;
 }
 
-.lofi-nav-links {
+.saas-nav-links {
   display: flex;
   align-items: center;
   gap: 2rem;
 }
 
-.lofi-nav-link {
-  color: #ffffff;
+.saas-nav-link {
+  color: #475569;
   text-decoration: none;
   font-size: 0.9rem;
   font-weight: 500;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
   transition: color 0.2s ease;
 }
 
-.lofi-nav-link:hover {
-  color: #34d399;
+.saas-nav-link:hover {
+  color: #2563eb;
 }
 
-.lofi-nav-btn {
+.saas-nav-btn {
   padding: 0.5rem 1.25rem;
   border-radius: 9999px;
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  backdrop-filter: blur(12px);
+  background: #2563eb;
   color: #ffffff;
   font-weight: 600;
+  border: none;
   cursor: pointer;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
   transition: all 0.2s ease;
 }
 
-.lofi-nav-btn:hover {
-  background: rgba(255, 255, 255, 0.25);
+.saas-nav-btn:hover {
+  background: #1d4ed8;
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
 }
 
-.lofi-main-center {
+.saas-main-center {
   position: relative;
   z-index: 10;
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1.5rem;
+  padding: 2rem 1.5rem;
 }
 
-.lofi-glass-card {
+.saas-card {
   width: 100%;
   max-width: 440px;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-  border-radius: 1.25rem;
-  padding: 2rem;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.08), 0 0 1px rgba(15, 23, 42, 0.12);
+  border-radius: 1.5rem;
+  padding: 2.25rem;
   position: relative;
   overflow: hidden;
-  color: #ffffff;
+  color: #0f172a;
 }
 
-.lofi-close-btn {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background: transparent;
-  border: none;
-  color: rgba(255, 255, 255, 0.7);
-  cursor: pointer;
-  padding: 0.35rem;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: color 0.2s ease, background-color 0.2s ease;
-}
-
-.lofi-close-btn:hover {
-  color: #ffffff;
-  background-color: rgba(255, 255, 255, 0.12);
-}
-
-.lofi-title {
-  font-size: 1.85rem;
-  font-weight: 700;
+.saas-title {
+  font-size: 1.75rem;
+  font-weight: 800;
   text-align: center;
-  color: #ffffff;
+  color: #0f172a;
+  margin-bottom: 0.35rem;
+  letter-spacing: -0.02em;
+}
+
+.saas-subtitle {
+  font-size: 0.85rem;
+  color: #64748b;
+  text-align: center;
   margin-bottom: 1.75rem;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-.lofi-input-group {
+.saas-input-group {
   position: relative;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.25rem;
 }
 
-.lofi-input-wrapper {
+.saas-input-label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 0.4rem;
+}
+
+.saas-input-wrapper {
   display: flex;
   align-items: center;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.4);
-  padding-bottom: 0.5rem;
-  transition: border-color 0.2s ease;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  transition: all 0.2s ease;
 }
 
-.lofi-input-wrapper:focus-within {
-  border-bottom-color: #ffffff;
+.saas-input-wrapper:focus-within {
+  background: #ffffff;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
 }
 
-.lofi-input {
+.saas-input {
   width: 100%;
   background: transparent;
   border: none;
   outline: none;
-  color: #ffffff;
+  color: #0f172a;
   font-size: 0.9rem;
-  padding-right: 2rem;
+  font-weight: 500;
 }
 
-.lofi-input::placeholder {
-  color: rgba(255, 255, 255, 0.6);
+.saas-input::placeholder {
+  color: #94a3b8;
 }
 
-.lofi-input-icon {
-  position: absolute;
-  right: 0;
-  color: rgba(255, 255, 255, 0.8);
-  pointer-events: none;
+.saas-input-icon {
+  color: #64748b;
+  margin-right: 0.6rem;
+  flex-shrink: 0;
 }
 
-.lofi-toggle-btn {
-  position: absolute;
-  right: 0;
+.saas-toggle-btn {
   background: transparent;
   border: none;
-  color: rgba(255, 255, 255, 0.8);
+  color: #64748b;
   cursor: pointer;
   padding: 0.2rem;
   display: flex;
   align-items: center;
+  transition: color 0.2s ease;
 }
 
-.lofi-btn-dark {
+.saas-toggle-btn:hover {
+  color: #0f172a;
+}
+
+.saas-btn-primary {
   width: 100%;
   padding: 0.85rem;
-  border-radius: 0.6rem;
-  background-color: rgba(15, 23, 42, 0.85);
+  border-radius: 0.75rem;
+  background-color: #2563eb;
   color: #ffffff;
-  font-weight: 600;
-  font-size: 0.9rem;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  font-weight: 700;
+  font-size: 0.95rem;
+  border: none;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
   cursor: pointer;
   transition: all 0.2s ease;
-  margin-top: 1rem;
+  margin-top: 0.75rem;
 }
 
-.lofi-btn-dark:hover {
-  background-color: rgba(30, 41, 59, 0.95);
-  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.25);
+.saas-btn-primary:hover {
+  background-color: #1d4ed8;
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
 }
 
-.lofi-error-text {
-  color: #f87171;
+.saas-btn-google {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  background-color: #ffffff;
+  color: #334155;
+  font-weight: 600;
+  font-size: 0.875rem;
+  border: 1px solid #cbd5e1;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  transition: all 0.2s ease;
+}
+
+.saas-btn-google:hover {
+  background-color: #f8fafc;
+  border-color: #94a3b8;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.saas-error-text {
+  color: #ef4444;
   font-size: 0.75rem;
+  font-weight: 500;
   margin-top: 0.3rem;
+}
+
+.saas-footer-text {
+  color: #94a3b8;
+  font-size: 0.8rem;
+  text-align: center;
+  padding-bottom: 1.5rem;
 }
