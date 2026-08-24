@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mail, Lock, User, Phone, Eye, EyeOff, KeyRound, CheckCircle2, TrendingDown, Bell, Tag, ArrowRight } from 'lucide-react';
+import { Mail, Lock, User, Phone, Eye, EyeOff, KeyRound, CheckCircle2, TrendingDown, RefreshCw, Zap, ShieldCheck } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import './AuthContainer.css';
 
@@ -248,133 +248,191 @@ export const AuthContainer = () => {
 
       {/* ─── Main 2-Column Creative Desktop Layout ───────────────────────── */}
       <main className="saas-main-container">
-        <div className="w-full max-w-6xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-16">
+        <div className="w-full max-w-6xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-14">
 
-          {/* ─── LEFT COLUMN: Price Intelligence Visual Showcase ───────────── */}
+          {/* ─── LEFT COLUMN: Price Intelligence Engine Dashboard ───────────── */}
           <div className="flex-1 hidden lg:flex flex-col justify-center space-y-6">
-            {/* Tag Badge */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.4 }}
-              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-50 border border-blue-200/80 text-blue-700 text-xs font-bold shadow-sm w-fit"
-            >
-              <Tag size={13} className="text-blue-600" />
-              <span>AI-POWERED PRICE INTELLIGENCE</span>
-            </motion.div>
-
             {/* Headline */}
             <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
             >
               <h1 className="text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight tracking-tight">
-                {viewState === 'register' ? (
-                  <>
-                    START SAVING <br />
-                    <span className="text-blue-600">SMARTER TODAY.</span>
-                  </>
-                ) : (
-                  <>
-                    SHOP SMARTER. <br />
-                    <span className="text-blue-600">PAY LESS.</span>
-                  </>
-                )}
+                SHOP SMARTER. <br />
+                <span className="text-blue-600">PAY LESS.</span>
               </h1>
-              <p className="text-slate-600 text-base mt-3 max-w-md font-medium leading-relaxed">
-                PriceLens tracks prices across top e-commerce stores in real time so you never overpay.
+              <p className="text-slate-600 text-sm mt-3 max-w-md font-medium leading-relaxed">
+                PriceLens continuously analyzes prices, deals and price drops across stores so you can buy with confidence.
               </p>
             </motion.div>
 
-            {/* 3 Floating Price Intelligence Cards */}
-            <div className="space-y-4 pt-2">
-              {/* CARD 1: PRICE DROP */}
+            {/* CENTRAL "PRICE INTELLIGENCE ENGINE" RADAR & GRAPH COMPOSITION */}
+            <div className="relative w-full max-w-lg py-4">
+              {/* Central Background Radar Ring & Soft Radial Glow */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-blue-500/10 rounded-full blur-2xl pointer-events-none" />
+
+              {/* Central Price Analytics Card */}
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: [0, -6, 0] }}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5, delay: 0.1 }}
+                className="bg-white/90 backdrop-blur-xl border border-blue-100 shadow-xl rounded-2xl p-5 relative overflow-hidden"
+              >
+                {/* Engine Header Bar */}
+                <div className="flex items-center justify-between border-b border-slate-100 pb-3 mb-3">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                    <span className="text-xs font-bold text-slate-900 uppercase tracking-wider">PRICE INTELLIGENCE ENGINE</span>
+                  </div>
+                  <span className="text-[10px] font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md">LIVE SYNC</span>
+                </div>
+
+                {/* SVG Live Price Drop Trend Graph */}
+                <div className="relative h-32 w-full">
+                  <svg className="w-full h-full overflow-visible" viewBox="0 0 400 120">
+                    <defs>
+                      <linearGradient id="priceGraphGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#2563eb" stopOpacity="0.25" />
+                        <stop offset="100%" stopColor="#2563eb" stopOpacity="0.0" />
+                      </linearGradient>
+                    </defs>
+
+                    {/* Dotted Grid Lines */}
+                    <line x1="0" y1="20" x2="400" y2="20" stroke="#e2e8f0" strokeDasharray="3 3" />
+                    <line x1="0" y1="60" x2="400" y2="60" stroke="#e2e8f0" strokeDasharray="3 3" />
+                    <line x1="0" y1="100" x2="400" y2="100" stroke="#e2e8f0" strokeDasharray="3 3" />
+
+                    {/* Graph Line */}
+                    <path
+                      d="M 10 20 L 150 55 L 280 65 L 390 100"
+                      fill="none"
+                      stroke="#2563eb"
+                      strokeWidth="3"
+                      strokeLinecap="round"
+                    />
+
+                    {/* Gradient Fill under graph */}
+                    <path
+                      d="M 10 20 L 150 55 L 280 65 L 390 100 L 390 120 L 10 120 Z"
+                      fill="url(#priceGraphGradient)"
+                    />
+
+                    {/* Data Points */}
+                    <circle cx="10" cy="20" r="5" fill="#2563eb" stroke="#ffffff" strokeWidth="2" />
+                    <text x="18" y="24" fill="#64748b" fontSize="10" fontWeight="bold">₹1,20,000</text>
+
+                    <circle cx="150" cy="55" r="5" fill="#2563eb" stroke="#ffffff" strokeWidth="2" />
+                    <text x="160" y="52" fill="#64748b" fontSize="10" fontWeight="bold">₹1,14,900</text>
+
+                    <circle cx="390" cy="100" r="7" fill="#10b981" stroke="#ffffff" strokeWidth="2" className="animate-ping opacity-75" />
+                    <circle cx="390" cy="100" r="6" fill="#10b981" stroke="#ffffff" strokeWidth="2" />
+                    <text x="310" y="112" fill="#10b981" fontSize="11" fontWeight="extrabold">₹1,09,990 ✓</text>
+                  </svg>
+                </div>
+
+                {/* 7-Day History Line */}
+                <div className="flex items-center justify-between text-xs border-t border-slate-100 pt-2.5 mt-2">
+                  <span className="font-bold text-slate-500 text-[11px]">7 DAYS TREND</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-slate-400 line-through">₹119,900</span>
+                    <span className="text-slate-400">→</span>
+                    <span className="text-slate-600 font-semibold">₹114,900</span>
+                    <span className="text-slate-400">→</span>
+                    <span className="text-emerald-600 font-extrabold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                      ● TODAY: BEST PRICE FOUND
+                    </span>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* 3 FLOATING UI WIDGETS AROUND THE CENTRAL ENGINE */}
+              {/* WIDGET 1: LIVE PRICE TRACKING (Top Left) */}
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: [0, -5, 0] }}
                 transition={{
                   opacity: { duration: 0.4, delay: 0.2 },
                   y: { repeat: Infinity, duration: 4, ease: 'easeInOut' }
                 }}
-                className="price-card-glass max-w-sm flex items-center justify-between"
+                className="absolute -top-4 -left-4 bg-white/95 border border-slate-200 rounded-xl p-2.5 shadow-lg shadow-slate-900/5 flex items-center gap-2.5 backdrop-blur-md"
               >
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">
-                    <TrendingDown size={20} />
-                  </div>
-                  <div>
-                    <div className="text-[10px] font-extrabold text-emerald-700 uppercase tracking-wider">PRICE DROP</div>
-                    <div className="text-sm font-bold text-slate-900">iPhone 16 Pro</div>
-                  </div>
+                <div className="w-7 h-7 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center font-bold">
+                  <RefreshCw size={14} className="animate-spin" style={{ animationDuration: '6s' }} />
                 </div>
-                <div className="text-right">
-                  <div className="text-sm font-bold text-slate-900">₹108,900</div>
-                  <div className="text-xs font-extrabold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200 inline-block mt-0.5">
-                    ↓ Save ₹11,000
+                <div>
+                  <div className="text-[10px] font-extrabold text-blue-600 uppercase tracking-wider flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse" /> LIVE TRACKING
                   </div>
+                  <div className="text-xs font-bold text-slate-900">124 STORES ANALYZED</div>
+                  <div className="text-[9px] text-slate-600 font-medium">Updated 12 sec ago</div>
                 </div>
               </motion.div>
 
-              {/* CARD 2: BEST PRICE COMPARISON */}
+              {/* WIDGET 2: BEST DEAL FOUND (Top Right) */}
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: [0, 6, 0] }}
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: [0, 5, 0] }}
                 transition={{
                   opacity: { duration: 0.4, delay: 0.3 },
                   y: { repeat: Infinity, duration: 4.5, ease: 'easeInOut' }
                 }}
-                className="price-card-glass max-w-md"
+                className="absolute -top-4 -right-4 bg-white/95 border border-emerald-200 rounded-xl p-2.5 shadow-lg shadow-slate-900/5 flex items-center gap-2.5 backdrop-blur-md"
               >
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-[10px] font-extrabold text-blue-700 uppercase tracking-wider">BEST PRICE COMPARISON</span>
-                  <span className="text-xs text-slate-500 font-medium">Real-time sync</span>
+                <div className="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold">
+                  <CheckCircle2 size={15} />
                 </div>
-                <div className="grid grid-cols-3 gap-2 text-center">
-                  <div className="p-2 rounded-lg bg-emerald-50 border border-emerald-300 ring-2 ring-emerald-500/20">
-                    <div className="text-[10px] font-bold text-slate-600">Croma</div>
-                    <div className="text-xs font-extrabold text-emerald-700">₹1,09,990 ✓</div>
-                  </div>
-                  <div className="p-2 rounded-lg bg-slate-50 border border-slate-200">
-                    <div className="text-[10px] font-bold text-slate-500">Amazon</div>
-                    <div className="text-xs font-bold text-slate-800">₹1,14,900</div>
-                  </div>
-                  <div className="p-2 rounded-lg bg-slate-50 border border-slate-200">
-                    <div className="text-[10px] font-bold text-slate-500">Flipkart</div>
-                    <div className="text-xs font-bold text-slate-800">₹1,17,490</div>
-                  </div>
+                <div>
+                  <div className="text-[10px] font-extrabold text-emerald-600 uppercase tracking-wider">✓ BEST DEAL</div>
+                  <div className="text-xs font-extrabold text-slate-900">₹1,09,990</div>
+                  <div className="text-[9px] font-bold text-emerald-600">Save ₹9,900</div>
                 </div>
               </motion.div>
 
-              {/* CARD 3: PRICE ALERT TRACKER */}
+              {/* WIDGET 3: PRICE DROP (Bottom Right) */}
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: [0, -5, 0] }}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: [0, -4, 0] }}
                 transition={{
                   opacity: { duration: 0.4, delay: 0.4 },
                   y: { repeat: Infinity, duration: 3.8, ease: 'easeInOut' }
                 }}
-                className="price-card-glass max-w-sm"
+                className="absolute -bottom-4 -right-2 bg-white/95 border border-slate-200 rounded-xl p-2.5 shadow-lg shadow-slate-900/5 flex items-center gap-2.5 backdrop-blur-md"
               >
-                <div className="flex items-center justify-between mb-1.5">
-                  <div className="flex items-center gap-1.5 text-xs font-bold text-slate-800">
-                    <Bell size={14} className="text-blue-600" />
-                    <span>PRICE ALERT</span>
-                  </div>
-                  <span className="text-xs font-extrabold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md">88% to target</span>
+                <div className="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold">
+                  <TrendingDown size={15} />
                 </div>
-                <div className="flex justify-between text-xs text-slate-600 mb-1.5">
-                  <span>Target: <b>₹22,000</b></span>
-                  <span>Current: <b>₹26,990</b></span>
-                </div>
-                <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
-                  <div className="h-full bg-blue-600 rounded-full w-[88%]" />
+                <div>
+                  <div className="text-[10px] font-extrabold text-emerald-600 uppercase tracking-wider">↓ PRICE DROP</div>
+                  <div className="text-xs font-bold text-slate-900">-8.3% Detected</div>
+                  <div className="text-[9px] text-slate-600 font-medium">Better price detected</div>
                 </div>
               </motion.div>
             </div>
+
+            {/* BRAND STATISTICS ROW (Bottom Left) */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.5 }}
+              className="grid grid-cols-3 gap-3 pt-2 border-t border-slate-200/80 max-w-lg"
+            >
+              <div className="bg-white/80 p-2.5 rounded-xl border border-slate-200 text-center">
+                <div className="text-base font-extrabold text-slate-900">100+</div>
+                <div className="text-[10px] font-bold text-slate-600 uppercase tracking-wider">STORES TRACKED</div>
+              </div>
+              <div className="bg-white/80 p-2.5 rounded-xl border border-slate-200 text-center">
+                <div className="text-base font-extrabold text-blue-600">24/7</div>
+                <div className="text-[10px] font-bold text-slate-600 uppercase tracking-wider">PRICE MONITORING</div>
+              </div>
+              <div className="bg-white/80 p-2.5 rounded-xl border border-slate-200 text-center">
+                <div className="text-base font-extrabold text-emerald-600">₹500+</div>
+                <div className="text-[10px] font-bold text-slate-600 uppercase tracking-wider">AVG. SAVINGS</div>
+              </div>
+            </motion.div>
           </div>
 
-          {/* ─── RIGHT COLUMN: Translucent Premium Form Card ───────────────── */}
+          {/* ─── RIGHT COLUMN: Clean Translucent Auth Card ──────────────────── */}
           <div className="w-full max-w-md flex-shrink-0">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
