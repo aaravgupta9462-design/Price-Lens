@@ -1,20 +1,64 @@
-import React from 'react';
-import { ExternalLink, Share2, Sparkles, Star } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ExternalLink, Share2, Sparkles, Star, Loader2 } from 'lucide-react';
 import { PRODUCTS, PLATFORM_COMPARISONS, formatPrice } from '../../data/mockData';
 import { useDashboard } from '../../context/DashboardContext';
+import { apiService } from '../../services/api';
 
 const PriceComparison = () => {
   const { selectedProductId, setSelectedProductId, openShareModal } = useDashboard();
+  const [loading, setLoading] = useState(false);
+  const [liveOffers, setLiveOffers] = useState(null);
 
   const selectedProduct = PRODUCTS.find((p) => p.id === selectedProductId) || PRODUCTS[0];
-  const platforms = PLATFORM_COMPARISONS[selectedProduct.id] || PLATFORM_COMPARISONS['iphone-16-128'];
 
-  const bestPlatform = platforms.find((p) => p.isBestPrice) || platforms[0];
-  const highestPrice = Math.max(...platforms.map((p) => p.price));
-  const maxSavings = highestPrice - bestPlatform.price;
+  useEffect(() => {
+    let isMounted = true;
+    setLoading(true);
+
+    apiService
+      .compareProduct(selectedProduct.id)
+      .then((data) => {
+        if (isMounted && data?.offers) {
+          setLiveOffers(data.offers);
+        }
+      })
+      .catch((err) => {
+        console.warn('[PriceComparison] Live compare error, using fallback:', err.message);
+        if (isMounted) setLiveOffers(null);
+      })
+      .finally(() => {
+        if (isMounted) setLoading(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [selectedProduct.id]);
+
+  const fallbackPlatforms =
+    PLATFORM_COMPARISONS[selectedProduct.id] || PLATFORM_COMPARISONS['iphone-16-128'];
+
+  const platforms = liveOffers?.length
+    ? liveOffers.map((o) => ({
+        platform: o.store,
+        emoji: o.storeEmoji || '🏬',
+        price: o.price,
+        rating: o.rating,
+        delivery: o.delivery,
+        url: o.productUrl,
+        isBestPrice: o.isBestPrice,
+        barPercent: o.barPercent
+      }))
+    : fallbackPlatforms;
+
+  const bestPlatform = platforms.find((p) => p.isBestPrice) || platforms[0] || {};
+  const highestPrice = platforms.length > 0 ? Math.max(...platforms.map((p) => p.price)) : 0;
+  const maxSavings = highestPrice - (bestPlatform.price || 0);
 
   const handleOpenStore = (url) => {
-    window.open(url, '_blank', 'noopener,noreferrer');
+    if (url && url !== '#') {
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
   };
 
   const handleShare = (plat) => {
@@ -62,69 +106,76 @@ const PriceComparison = () => {
         </div>
       )}
 
-      <div className="db-store-comparison-list">
-        {platforms.map((plat) => {
-          return (
-            <div
-              key={plat.platform}
-              className={`db-store-row ${plat.isBestPrice ? 'best' : ''}`}
-            >
-              <div className="db-store-top">
-                <div className="db-store-info">
-                  <span className="db-store-emoji">{plat.emoji}</span>
-                  <div>
-                    <span className="db-store-name">{plat.platform}</span>
-                    {plat.isBestPrice && (
-                      <span className="db-store-best-badge" style={{ marginLeft: '0.4rem' }}>
-                        BEST PRICE
-                      </span>
-                    )}
+      {loading ? (
+        <div style={{ padding: '2rem 1rem', textAlign: 'center', color: 'var(--db-text-secondary)' }}>
+          <Loader2 size={24} className="animate-spin" style={{ margin: '0 auto 0.5rem', color: '#2563EB' }} />
+          <span style={{ fontSize: '0.85rem' }}>Querying store adapters...</span>
+        </div>
+      ) : (
+        <div className="db-store-comparison-list">
+          {platforms.map((plat) => {
+            return (
+              <div
+                key={plat.platform}
+                className={`db-store-row ${plat.isBestPrice ? 'best' : ''}`}
+              >
+                <div className="db-store-top">
+                  <div className="db-store-info">
+                    <span className="db-store-emoji">{plat.emoji}</span>
+                    <div>
+                      <span className="db-store-name">{plat.platform}</span>
+                      {plat.isBestPrice && (
+                        <span className="db-store-best-badge" style={{ marginLeft: '0.4rem' }}>
+                          BEST PRICE
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <div className={`db-store-price ${plat.isBestPrice ? 'best' : ''}`}>
+                    {formatPrice(plat.price)}
                   </div>
                 </div>
-                <div className={`db-store-price ${plat.isBestPrice ? 'best' : ''}`}>
-                  {formatPrice(plat.price)}
-                </div>
-              </div>
 
-              {/* Horizontal Comparison Bar */}
-              <div className="db-compare-bar-track">
-                <div
-                  className={`db-compare-bar-fill ${plat.isBestPrice ? 'best' : ''}`}
-                  style={{ width: `${plat.barPercent}%` }}
-                />
-              </div>
-
-              <div className="db-store-foot">
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '2px', color: '#F59E0B' }}>
-                    <Star size={12} fill="#F59E0B" /> {plat.rating}
-                  </span>
-                  <span>· {plat.delivery}</span>
+                {/* Horizontal Comparison Bar */}
+                <div className="db-compare-bar-track">
+                  <div
+                    className={`db-compare-bar-fill ${plat.isBestPrice ? 'best' : ''}`}
+                    style={{ width: `${plat.barPercent}%` }}
+                  />
                 </div>
 
-                <div className="db-store-actions">
-                  <button
-                    className="db-btn-clean db-btn-clean-primary"
-                    style={{ fontSize: '0.72rem', padding: '0.3rem 0.6rem' }}
-                    onClick={() => handleOpenStore(plat.url)}
-                  >
-                    View Product <ExternalLink size={11} />
-                  </button>
-                  <button
-                    className="db-btn-clean db-btn-clean-icon"
-                    style={{ width: '26px', height: '26px' }}
-                    onClick={() => handleShare(plat)}
-                    title="Share link"
-                    aria-label="Share link"
-                  >
-                    <Share2 size={12} />
-                  </button>
+                <div className="db-store-foot">
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '2px', color: '#F59E0B' }}>
+                      <Star size={12} fill="#F59E0B" /> {plat.rating}
+                    </span>
+                    <span>· {plat.delivery}</span>
+                  </div>
+
+                  <div className="db-store-actions">
+                    <button
+                      className="db-btn-clean db-btn-clean-primary"
+                      style={{ fontSize: '0.72rem', padding: '0.3rem 0.6rem' }}
+                      onClick={() => handleOpenStore(plat.url)}
+                    >
+                      View Product <ExternalLink size={11} />
+                    </button>
+                    <button
+                      className="db-btn-clean db-btn-clean-icon"
+                      style={{ width: '26px', height: '26px' }}
+                      onClick={() => handleShare(plat)}
+                      title="Share link"
+                      aria-label="Share link"
+                    >
+                      <Share2 size={12} />
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 };

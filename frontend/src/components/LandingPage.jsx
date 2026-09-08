@@ -26,7 +26,15 @@ const LandingPage = ({ onGetStarted, isAuthenticated }) => {
             <a href="#" className="lp-nav-link active">Home</a>
             <a href="#features" className="lp-nav-link">Features</a>
             <a href="#how" className="lp-nav-link">How It Works</a>
-            <a href="#pricing" className="lp-nav-link">Pricing</a>
+            {isAuthenticated && (
+              <button
+                onClick={onGetStarted}
+                className="lp-nav-link"
+                style={{ background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600, color: '#2563EB' }}
+              >
+                Dashboard →
+              </button>
+            )}
           </nav>
 
           {/* Right Side — Auth CTA or User Pill */}
@@ -82,9 +90,9 @@ const LandingPage = ({ onGetStarted, isAuthenticated }) => {
           <div className="lp-hero-actions">
             {isAuthenticated ? (
               <>
-                <a href="#features" className="lp-btn-start">
-                  Explore Features <ArrowRight size={18} />
-                </a>
+                <button className="lp-btn-start" onClick={onGetStarted}>
+                  Go to Compare Dashboard <ArrowRight size={18} />
+                </button>
                 <button className="lp-btn-how" onClick={() => document.getElementById('how')?.scrollIntoView({ behavior: 'smooth' })}>
                   How It Works
                 </button>

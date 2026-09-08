@@ -24,3 +24,32 @@ model User {
   @@index([mobile])
   @@map("users")
 }
+
+model Product {
+  id             String         @id
+  name           String
+  brand          String?
+  category       String?
+  emoji          String?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  priceHistories PriceHistory[]
+
+  @@map("products")
+}
+
+model PriceHistory {
+  id         String   @id @default(uuid())
+  productId  String
+  store      String
+  price      Float
+  currency   String   @default("INR")
+  recordedAt DateTime @default(now())
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+  @@index([store])
+  @@index([recordedAt])
+  @@index([productId, store, recordedAt])
+  @@map("price_histories")
+}

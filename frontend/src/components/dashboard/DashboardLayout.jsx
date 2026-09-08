@@ -44,11 +44,11 @@ const ScreenRenderer = () => {
   }
 };
 
-const DashboardContent = () => {
+const DashboardContent = ({ onGoToLanding }) => {
   return (
     <div className="db-shell-topbar-layout">
       {/* Top Header Navbar with Category Tabs */}
-      <TopNavbar />
+      <TopNavbar onGoToLanding={onGoToLanding} />
 
       {/* Main Content Area */}
       <main className="db-main-full-content">
@@ -67,10 +67,10 @@ const DashboardContent = () => {
   );
 };
 
-export const DashboardLayout = () => {
+export const DashboardLayout = ({ onGoToLanding }) => {
   return (
     <DashboardProvider>
-      <DashboardContent />
+      <DashboardContent onGoToLanding={onGoToLanding} />
     </DashboardProvider>
   );
 };

@@ -1,5 +1,7 @@
 import { Router } from 'express';
 import authRoutes from './auth.routes.js';
+import comparisonRoutes from './comparison.routes.js';
+import priceHistoryRoutes from './priceHistory.routes.js';
 
 const router = Router();
 
@@ -14,4 +16,11 @@ router.get('/', (req, res) => {
 // /v1/auth routes
 router.use('/auth', authRoutes);
 
+// /v1/compare routes (FEATURE 1: Multi-Store Compare)
+router.use('/compare', comparisonRoutes);
+
+// /v1/price-history routes (FEATURE 2: Price History)
+router.use('/price-history', priceHistoryRoutes);
+
 export default router;
+

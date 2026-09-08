@@ -8,8 +8,87 @@
  */
 
 const MOCK_LATENCY = 800; // Simulated network delay in ms
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 export const apiService = {
+  /**
+   * Compare product prices across all enabled stores (Amazon, Flipkart, Croma, Reliance Digital)
+   * @param {string} productId - e.g. 'iphone-16-128', 'macbook-air-m3'
+   * @returns {Promise<Object>}
+   */
+  async compareProduct(productId) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/v1/compare/${productId}`);
+      if (!response.ok) {
+        throw new Error(`Comparison API returned status ${response.status}`);
+      }
+      const data = await response.json();
+      return data.data;
+    } catch (err) {
+      console.warn('[apiService] Backend comparison failed, using fallback:', err.message);
+      throw err;
+    }
+  },
+
+  /**
+   * Search for products and compare offers in real-time across stores
+   * @param {string} query - e.g. 'iphone', 'laptop', 'sony headphones'
+   * @returns {Promise<Object>}
+   */
+  async compareQuery(query) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/v1/compare?q=${encodeURIComponent(query)}`);
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `Search API returned status ${response.status}`);
+      }
+      const data = await response.json();
+      return data.data;
+    } catch (err) {
+      console.warn('[apiService] Backend search compare failed:', err.message);
+      throw err;
+    }
+  },
+
+  /**
+   * List all enabled store adapters
+   * @returns {Promise<Array>}
+   */
+  async getStores() {
+    try {
+      const response = await fetch(`${API_BASE_URL}/v1/compare/stores`);
+      if (!response.ok) throw new Error('Failed to load stores');
+      const data = await response.json();
+      return data.data;
+    } catch (err) {
+      console.warn('[apiService] Backend getStores failed:', err.message);
+      return [];
+    }
+  },
+
+  /**
+   * Retrieve historical price snapshots & analytics for a product
+   * @param {string} productId
+   * @param {string} timeline - '7D' | '30D' | '3M' | '6M'
+   * @returns {Promise<Object>}
+   */
+  async getPriceHistory(productId, timeline = '30D') {
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/v1/price-history/${encodeURIComponent(productId)}?timeline=${encodeURIComponent(timeline)}`
+      );
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `Price History API returned status ${response.status}`);
+      }
+      const data = await response.json();
+      return data.data;
+    } catch (err) {
+      console.warn('[apiService] getPriceHistory error, using fallback:', err.message);
+      throw err;
+    }
+  },
+
   /**
    * Mock Login Request
    * @param {Object} credentials - { email, password, rememberMe }
@@ -88,3 +167,4 @@ export const apiService = {
     };
   }
 };
+

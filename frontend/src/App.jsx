@@ -1,18 +1,30 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { AuthContainer } from './components/auth/AuthContainer';
 import LandingPage from './components/LandingPage';
+import DashboardLayout from './components/dashboard/DashboardLayout';
 
 const AppContent = () => {
   const { isAuthenticated } = useAuth();
+  const [view, setView] = useState('dashboard'); // 'dashboard' | 'landing'
 
-  // If user is authenticated, show the approved Home Landing Page
-  if (isAuthenticated) {
-    return <LandingPage onGetStarted={() => {}} isAuthenticated={true} />;
+  // For unauthenticated users: show Login / Register Auth Page
+  if (!isAuthenticated) {
+    return <AuthContainer />;
   }
 
-  // Default for unauthenticated users: show the Login / Register Auth Page
-  return <AuthContainer />;
+  // If viewing the Landing Page while logged in
+  if (view === 'landing') {
+    return (
+      <LandingPage
+        onGetStarted={() => setView('dashboard')}
+        isAuthenticated={true}
+      />
+    );
+  }
+
+  // For authenticated users: show the PriceLens multi-store comparison dashboard
+  return <DashboardLayout onGoToLanding={() => setView('landing')} />;
 };
 
 export default function App() {
