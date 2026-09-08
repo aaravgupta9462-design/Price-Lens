@@ -3,10 +3,10 @@ import { Button } from '../common/Button';
 import { useAuth } from '../../context/AuthContext';
 
 export const SocialLogin = () => {
-  const { addToast } = useAuth();
+  const { loginWithGoogle } = useAuth();
 
   const handleGoogleClick = () => {
-    addToast('Google Sign-In is a UI demonstration feature for PriceLens Frontend.', 'info');
+    loginWithGoogle();
   };
 
   return (

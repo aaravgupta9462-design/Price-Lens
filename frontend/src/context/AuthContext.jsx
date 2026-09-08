@@ -1,13 +1,30 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { apiService } from '../services/api';
+import { triggerGoogleLogin } from '../services/googleAuth';
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => {
+    try {
+      const saved = localStorage.getItem('pricelens_user');
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
   const [isLoading, setIsLoading] = useState(false);
   const [toasts, setToasts] = useState([]);
   const [isForgotModalOpen, setIsForgotModalOpen] = useState(false);
+
+  // Sync user state with localStorage
+  useEffect(() => {
+    if (user) {
+      localStorage.setItem('pricelens_user', JSON.stringify(user));
+    } else {
+      localStorage.removeItem('pricelens_user');
+    }
+  }, [user]);
 
   // Helper to add toast notifications
   const addToast = (message, type = 'info', duration = 4000) => {
@@ -54,20 +71,19 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Google OAuth handler
+  // Real Google OAuth handler
   const loginWithGoogle = async () => {
     setIsLoading(true);
     try {
-      // TODO: POST /api/v1/auth/google API call (See API_CONTRACTS.md)
-      console.log('TODO: Execute POST /api/v1/auth/google payload');
-      addToast('Connecting to Google OAuth...', 'info');
-      setTimeout(() => {
-        setIsLoading(false);
-        setUser({ id: 'usr_google_123', name: 'Google User', email: 'user@gmail.com' });
-        addToast('Welcome! Signed in with Google.', 'success');
-      }, 1000);
+      addToast('Opening Google Sign-In...', 'info');
+      const result = await triggerGoogleLogin();
+      setUser(result.user);
+      addToast(`Welcome, ${result.user.name}! Signed in with Google.`, 'success');
+      return result;
     } catch (err) {
-      addToast(err.message || 'Google Auth failed', 'error');
+      console.error('Google Auth Error:', err);
+      addToast(err.message || 'Google Sign-In failed', 'error');
+    } finally {
       setIsLoading(false);
     }
   };
@@ -75,6 +91,7 @@ export const AuthProvider = ({ children }) => {
   // Logout handler
   const logout = () => {
     setUser(null);
+    localStorage.removeItem('pricelens_user');
     addToast('Logged out successfully.', 'info');
   };
 
