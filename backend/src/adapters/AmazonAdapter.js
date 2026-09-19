@@ -79,8 +79,8 @@ export class AmazonAdapter extends BaseStoreAdapter {
         matchKeys: ['sony', 'xm5', 'wh-1000xm5', 'headphone', 'audio'],
         raw: {
           title: 'Sony WH-1000XM5 Wireless Industry Leading Noise Canceling Headphones',
-          price: 24990,
-          originalPrice: 34990,
+          price: 47900,
+          originalPrice: 49900,
           productUrl: 'https://www.amazon.in/dp/B09XS7JWHH',
           imageUrl: 'https://m.media-amazon.com/images/I/61+btxzpfDL._SX679_.jpg',
           availability: 'In Stock',
@@ -145,12 +145,9 @@ export class AmazonAdapter extends BaseStoreAdapter {
       }
     ];
 
-    const matched = catalog.filter((item) =>
-      item.matchKeys.some((k) => q.includes(k)) || q.split(' ').some((word) => word.length > 2 && item.matchKeys.includes(word))
-    );
-
-    if (matched.length > 0) {
-      return matched.map((m) => this.normalizeOffer(m.raw));
+    const bestMatch = this.findBestCatalogMatch(q, catalog);
+    if (bestMatch) {
+      return [this.normalizeOffer(bestMatch.raw)];
     }
 
     // Dynamic generation for arbitrary user searches

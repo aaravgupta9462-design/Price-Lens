@@ -61,8 +61,8 @@ export class CromaAdapter extends BaseStoreAdapter {
         matchKeys: ['sony', 'xm5', 'wh-1000xm5', 'headphone', 'audio'],
         raw: {
           title: 'Sony WH-1000XM5 Over-Ear Noise Cancelling Headphones (Silver/Black)',
-          price: 26990,
-          originalPrice: 34990,
+          price: 49900,
+          originalPrice: 49900,
           productUrl: 'https://www.croma.com/sony-wh-1000xm5-wireless-anc-headphones/p/256891',
           imageUrl: 'https://media-ik.croma.com/prod/https://media.croma.com/image/upload/v1669116812/Croma%20Assets/Entertainment/Headphones%20and%20Earphones/Images/256891_0_x77e1j.png',
           availability: 'In Stock',
@@ -127,12 +127,9 @@ export class CromaAdapter extends BaseStoreAdapter {
       }
     ];
 
-    const matched = catalog.filter((item) =>
-      item.matchKeys.some((k) => q.includes(k)) || q.split(' ').some((word) => word.length > 2 && item.matchKeys.includes(word))
-    );
-
-    if (matched.length > 0) {
-      return matched.map((m) => this.normalizeOffer(m.raw));
+    const bestMatch = this.findBestCatalogMatch(q, catalog);
+    if (bestMatch) {
+      return [this.normalizeOffer(bestMatch.raw)];
     }
 
     const formattedTitle = q.replace(/\b\w/g, (c) => c.toUpperCase());

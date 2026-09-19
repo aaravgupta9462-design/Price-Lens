@@ -42,6 +42,55 @@ export class BaseStoreAdapter {
   }
 
   /**
+   * Find the single best matching catalog entry for a search query
+   * Prevents multi-product pollution where generic terms match multiple products
+   * @param {string} query
+   * @param {Array} catalog
+   * @returns {Object|null} Best matching catalog item or null
+   */
+  findBestCatalogMatch(query, catalog) {
+    const q = String(query || '').toLowerCase().trim();
+    if (!q || !Array.isArray(catalog)) return null;
+
+    let bestScore = 0;
+    let bestItem = null;
+
+    const queryWords = q.split(/[\s-]+/).filter((w) => w.length > 1);
+
+    for (const item of catalog) {
+      let score = 0;
+      for (const k of item.matchKeys) {
+        const keyLower = String(k).toLowerCase();
+        if (q === keyLower) {
+          score = Math.max(score, 100);
+        } else if (q.includes(keyLower)) {
+          score = Math.max(score, 50 + keyLower.length * 2);
+        } else if (keyLower.includes(q) && q.length >= 3) {
+          score = Math.max(score, 30 + q.length * 2);
+        }
+      }
+
+      // Also count matching words
+      let wordMatches = 0;
+      for (const word of queryWords) {
+        if (item.matchKeys.some((k) => k.toLowerCase() === word || k.toLowerCase().includes(word))) {
+          wordMatches++;
+        }
+      }
+      if (wordMatches > 0) {
+        score += wordMatches * 10;
+      }
+
+      if (score > bestScore) {
+        bestScore = score;
+        bestItem = item;
+      }
+    }
+
+    return bestScore > 0 ? bestItem : null;
+  }
+
+  /**
    * Normalizes raw store output into the standard PriceLens offer schema
    * @param {Object} raw
    * @returns {Object} Normalized offer

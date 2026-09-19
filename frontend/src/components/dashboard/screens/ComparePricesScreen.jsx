@@ -66,6 +66,7 @@ const ComparePricesScreen = () => {
 
   // Trigger fetch whenever selectedProductId or activeQuery changes
   useEffect(() => {
+    setLiveComparison(null); // Reset live state on product or query change to prevent stale Best Deal pairing
     fetchComparison(selectedProductId, activeQuery);
   }, [selectedProductId, activeQuery, fetchComparison]);
 
@@ -84,7 +85,7 @@ const ComparePricesScreen = () => {
   const fallbackPlatforms =
     PLATFORM_COMPARISONS[currentProduct.id] || PLATFORM_COMPARISONS['iphone-16-128'] || [];
 
-  const platforms = liveComparison?.offers?.length
+  const rawPlatforms = liveComparison?.offers?.length
     ? liveComparison.offers.map((offer) => ({
         platform: offer.store,
         emoji: offer.storeEmoji || '🏬',
@@ -105,16 +106,62 @@ const ComparePricesScreen = () => {
       }))
     : fallbackPlatforms.map((p) => ({ ...p, isAvailable: true }));
 
-  const bestPlatform =
-    (liveComparison?.bestDeal
-      ? platforms.find((p) => p.platform === liveComparison.bestDeal.store)
-      : null) ||
-    platforms.find((p) => p.isBestPrice) ||
-    platforms.find((p) => p.isAvailable) ||
-    platforms[0] ||
-    {};
+  // 1. Identify lowest valid and available offer currently displayed in UI (Requirement 2)
+  const validAvailablePlatforms = rawPlatforms
+    .filter((p) => p.isAvailable !== false && typeof p.price === 'number' && p.price > 0 && !isNaN(p.price))
+    .sort((a, b) => a.price - b.price);
+
+  const lowestDisplayedOffer = validAvailablePlatforms[0] || rawPlatforms[0] || {};
+
+  // 2. Best Deal Resolution (Requirements 7, 8, 9):
+  // Directly render backend bestDeal when provided (Requirement 8)
+  // Defensively correct if backend bestDeal does not match lowest available displayed offer (Requirement 9)
+  let resolvedBestDeal = null;
+
+  if (liveComparison?.bestDeal && liveComparison.bestDeal.store) {
+    const backendStore = liveComparison.bestDeal.store;
+    const backendPrice = liveComparison.bestDeal.price;
+    const matchingPlatform = rawPlatforms.find((p) => p.platform === backendStore);
+
+    if (
+      matchingPlatform &&
+      matchingPlatform.price === lowestDisplayedOffer.price &&
+      matchingPlatform.platform === lowestDisplayedOffer.platform
+    ) {
+      // Backend bestDeal is fully consistent with the lowest displayed offer -> use directly
+      resolvedBestDeal = {
+        ...matchingPlatform,
+        platform: backendStore,
+        price: backendPrice,
+        originalPrice: liveComparison.bestDeal.originalPrice || matchingPlatform.originalPrice
+      };
+    } else {
+      // Defensive fallback: align Best Deal with the lowest available displayed offer
+      console.warn(
+        `[ComparePricesScreen] Defensive correction: backend bestDeal (${backendStore} @ ₹${backendPrice}) ` +
+        `did not match lowest displayed offer (${lowestDisplayedOffer.platform} @ ₹${lowestDisplayedOffer.price}). ` +
+        `Aligning Best Deal with displayed offer.`
+      );
+      resolvedBestDeal = lowestDisplayedOffer;
+    }
+  } else {
+    resolvedBestDeal = lowestDisplayedOffer;
+  }
+
+  const bestPlatform = resolvedBestDeal || {};
+
+  // 3. Synchronize isBestPrice on all displayed platforms to strictly match the selected Best Deal
+  const platforms = rawPlatforms.map((plat) => ({
+    ...plat,
+    isBestPrice: Boolean(
+      bestPlatform.platform &&
+      plat.platform === bestPlatform.platform &&
+      plat.price === bestPlatform.price
+    )
+  }));
+
   const highestPrice = platforms.length > 0 ? Math.max(...platforms.map((p) => p.price)) : 0;
-  const maxSavings = highestPrice - (bestPlatform.price || 0);
+  const maxSavings = Math.max(0, highestPrice - (bestPlatform.price || 0));
 
   const isSaved = savedProducts.some(
     (s) => s.productId === currentProduct.id || s.id === currentProduct.id
@@ -327,10 +374,12 @@ const ComparePricesScreen = () => {
 
               <div className="db-compare-savings-banner">
                 <div>
-                  <div className="db-cs-label">Lowest Price Found</div>
+                  <div className="db-cs-label">
+                    Best deal on <strong>{bestPlatform.platform}</strong>
+                  </div>
                   <div className="db-cs-val" style={{ color: '#16A34A' }}>
                     {formatPrice(bestPlatform.price)}{' '}
-                    <span style={{ fontSize: '0.8rem', fontWeight: 600 }}>on {bestPlatform.platform}</span>
+                    <span style={{ fontSize: '0.8rem', fontWeight: 600 }}>· Lowest Price</span>
                   </div>
                 </div>
 

@@ -63,8 +63,8 @@ export class FlipkartAdapter extends BaseStoreAdapter {
         matchKeys: ['sony', 'xm5', 'wh-1000xm5', 'headphone', 'audio'],
         raw: {
           title: 'SONY WH-1000XM5 Bluetooth Headset with Active Noise Cancellation',
-          price: 25490,
-          originalPrice: 34990,
+          price: 46900,
+          originalPrice: 49900,
           productUrl: 'https://www.flipkart.com/sony-wh-1000xm5-bluetooth-headset/p/itmd12349087',
           imageUrl: 'https://rukminim2.flixcart.com/image/832/832/l3uhvgw0/headphone/c/h/q/-original-imageuztghyfxu8g.jpeg',
           availability: 'In Stock',
@@ -129,12 +129,9 @@ export class FlipkartAdapter extends BaseStoreAdapter {
       }
     ];
 
-    const matched = catalog.filter((item) =>
-      item.matchKeys.some((k) => q.includes(k)) || q.split(' ').some((word) => word.length > 2 && item.matchKeys.includes(word))
-    );
-
-    if (matched.length > 0) {
-      return matched.map((m) => this.normalizeOffer(m.raw));
+    const bestMatch = this.findBestCatalogMatch(q, catalog);
+    if (bestMatch) {
+      return [this.normalizeOffer(bestMatch.raw)];
     }
 
     const formattedTitle = q.replace(/\b\w/g, (c) => c.toUpperCase());

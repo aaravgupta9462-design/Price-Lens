@@ -7,24 +7,25 @@ import { apiService } from '../../services/api';
 const PriceComparison = () => {
   const { selectedProductId, setSelectedProductId, openShareModal } = useDashboard();
   const [loading, setLoading] = useState(false);
-  const [liveOffers, setLiveOffers] = useState(null);
+  const [liveComparison, setLiveComparison] = useState(null);
 
   const selectedProduct = PRODUCTS.find((p) => p.id === selectedProductId) || PRODUCTS[0];
 
   useEffect(() => {
     let isMounted = true;
     setLoading(true);
+    setLiveComparison(null); // Clear previous product comparison to avoid stale state
 
     apiService
       .compareProduct(selectedProduct.id)
       .then((data) => {
-        if (isMounted && data?.offers) {
-          setLiveOffers(data.offers);
+        if (isMounted && data) {
+          setLiveComparison(data);
         }
       })
       .catch((err) => {
         console.warn('[PriceComparison] Live compare error, using fallback:', err.message);
-        if (isMounted) setLiveOffers(null);
+        if (isMounted) setLiveComparison(null);
       })
       .finally(() => {
         if (isMounted) setLoading(false);
@@ -38,8 +39,8 @@ const PriceComparison = () => {
   const fallbackPlatforms =
     PLATFORM_COMPARISONS[selectedProduct.id] || PLATFORM_COMPARISONS['iphone-16-128'];
 
-  const platforms = liveOffers?.length
-    ? liveOffers.map((o) => ({
+  const rawPlatforms = liveComparison?.offers?.length
+    ? liveComparison.offers.map((o) => ({
         platform: o.store,
         emoji: o.storeEmoji || '🏬',
         price: o.price,
@@ -47,13 +48,62 @@ const PriceComparison = () => {
         delivery: o.delivery,
         url: o.productUrl,
         isBestPrice: o.isBestPrice,
+        isAvailable: o.isAvailable !== false,
         barPercent: o.barPercent
       }))
     : fallbackPlatforms;
 
-  const bestPlatform = platforms.find((p) => p.isBestPrice) || platforms[0] || {};
+  // 1. Identify lowest valid and available offer displayed in UI
+  const validAvailablePlatforms = rawPlatforms
+    .filter((p) => p.isAvailable !== false && typeof p.price === 'number' && p.price > 0 && !isNaN(p.price))
+    .sort((a, b) => a.price - b.price);
+
+  const lowestDisplayedOffer = validAvailablePlatforms[0] || rawPlatforms[0] || {};
+
+  // 2. Best Deal Resolution (Requirements 7, 8, 9):
+  let resolvedBestDeal = null;
+
+  if (liveComparison?.bestDeal && liveComparison.bestDeal.store) {
+    const backendStore = liveComparison.bestDeal.store;
+    const backendPrice = liveComparison.bestDeal.price;
+    const matchingPlatform = rawPlatforms.find((p) => p.platform === backendStore);
+
+    if (
+      matchingPlatform &&
+      matchingPlatform.price === lowestDisplayedOffer.price &&
+      matchingPlatform.platform === lowestDisplayedOffer.platform
+    ) {
+      resolvedBestDeal = {
+        ...matchingPlatform,
+        platform: backendStore,
+        price: backendPrice
+      };
+    } else {
+      console.warn(
+        `[PriceComparison] Defensive correction: backend bestDeal (${backendStore} @ ₹${backendPrice}) ` +
+        `did not match lowest displayed offer (${lowestDisplayedOffer.platform} @ ₹${lowestDisplayedOffer.price}). ` +
+        `Aligning with displayed offer.`
+      );
+      resolvedBestDeal = lowestDisplayedOffer;
+    }
+  } else {
+    resolvedBestDeal = lowestDisplayedOffer;
+  }
+
+  const bestPlatform = resolvedBestDeal || {};
+
+  // 3. Synchronize isBestPrice on all displayed platforms
+  const platforms = rawPlatforms.map((plat) => ({
+    ...plat,
+    isBestPrice: Boolean(
+      bestPlatform.platform &&
+      plat.platform === bestPlatform.platform &&
+      plat.price === bestPlatform.price
+    )
+  }));
+
   const highestPrice = platforms.length > 0 ? Math.max(...platforms.map((p) => p.price)) : 0;
-  const maxSavings = highestPrice - (bestPlatform.price || 0);
+  const maxSavings = Math.max(0, highestPrice - (bestPlatform.price || 0));
 
   const handleOpenStore = (url) => {
     if (url && url !== '#') {

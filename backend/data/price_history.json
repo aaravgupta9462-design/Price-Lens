@@ -31,6 +31,70 @@
       "price": 72900,
       "currency": "INR",
       "recordedAt": "2026-09-08T10:17:42.361Z"
+    },
+    {
+      "id": "ph_1788943299525_2z5f0",
+      "productId": "iphone-16-128",
+      "store": "Flipkart",
+      "price": 68499,
+      "currency": "INR",
+      "recordedAt": "2026-09-09T08:41:35.332Z"
+    },
+    {
+      "id": "ph_1788943303564_e029k",
+      "productId": "iphone-16-128",
+      "store": "Amazon",
+      "price": 69999,
+      "currency": "INR",
+      "recordedAt": "2026-09-09T08:41:39.533Z"
+    },
+    {
+      "id": "ph_1788943307626_aixb8",
+      "productId": "iphone-16-128",
+      "store": "Croma",
+      "price": 70990,
+      "currency": "INR",
+      "recordedAt": "2026-09-09T08:41:43.568Z"
+    },
+    {
+      "id": "ph_1788943311704_a47se",
+      "productId": "iphone-16-128",
+      "store": "Reliance Digital",
+      "price": 72900,
+      "currency": "INR",
+      "recordedAt": "2026-09-09T08:41:47.628Z"
+    },
+    {
+      "id": "ph_1789376017814_n3tg6",
+      "productId": "iphone-16-128",
+      "store": "Flipkart",
+      "price": 68499,
+      "currency": "INR",
+      "recordedAt": "2026-09-14T08:53:33.596Z"
+    },
+    {
+      "id": "ph_1789376021913_trzc7",
+      "productId": "iphone-16-128",
+      "store": "Amazon",
+      "price": 69999,
+      "currency": "INR",
+      "recordedAt": "2026-09-14T08:53:37.835Z"
+    },
+    {
+      "id": "ph_1789376025966_pydnw",
+      "productId": "iphone-16-128",
+      "store": "Croma",
+      "price": 70990,
+      "currency": "INR",
+      "recordedAt": "2026-09-14T08:53:41.919Z"
+    },
+    {
+      "id": "ph_1789376030014_d0mvp",
+      "productId": "iphone-16-128",
+      "store": "Reliance Digital",
+      "price": 72900,
+      "currency": "INR",
+      "recordedAt": "2026-09-14T08:53:45.974Z"
     }
   ],
   "macbook-air-m3": [
@@ -99,6 +163,38 @@
       "price": 27990,
       "currency": "INR",
       "recordedAt": "2026-09-08T10:18:18.733Z"
+    },
+    {
+      "id": "ph_1788865073808_f35gm",
+      "productId": "sony-xm5",
+      "store": "Flipkart",
+      "price": 46900,
+      "currency": "INR",
+      "recordedAt": "2026-09-08T10:57:49.664Z"
+    },
+    {
+      "id": "ph_1788865077883_5hmxw",
+      "productId": "sony-xm5",
+      "store": "Amazon",
+      "price": 47900,
+      "currency": "INR",
+      "recordedAt": "2026-09-08T10:57:53.818Z"
+    },
+    {
+      "id": "ph_1788865081963_uka19",
+      "productId": "sony-xm5",
+      "store": "Croma",
+      "price": 49900,
+      "currency": "INR",
+      "recordedAt": "2026-09-08T10:57:57.895Z"
+    },
+    {
+      "id": "ph_1788865086049_qdu0u",
+      "productId": "sony-xm5",
+      "store": "Reliance Digital",
+      "price": 49900,
+      "currency": "INR",
+      "recordedAt": "2026-09-08T10:58:01.976Z"
     }
   ],
   "samsung-s25": [
@@ -263,6 +359,166 @@
       "price": 72900,
       "currency": "INR",
       "recordedAt": "2026-09-08T10:40:14.227Z"
+    },
+    {
+      "id": "ph_1788864491857_i6w34",
+      "productId": "apple-watch-s10",
+      "store": "Flipkart",
+      "price": 46900,
+      "currency": "INR",
+      "recordedAt": "2026-09-08T10:48:08.362Z"
+    },
+    {
+      "id": "ph_1788864495925_ur1af",
+      "productId": "apple-watch-s10",
+      "store": "Amazon",
+      "price": 47900,
+      "currency": "INR",
+      "recordedAt": "2026-09-08T10:48:11.862Z"
+    },
+    {
+      "id": "ph_1788864500006_8jxys",
+      "productId": "apple-watch-s10",
+      "store": "Croma",
+      "price": 47900,
+      "currency": "INR",
+      "recordedAt": "2026-09-08T10:48:15.926Z"
+    },
+    {
+      "id": "ph_1788864504041_pfpht",
+      "productId": "apple-watch-s10",
+      "store": "Reliance Digital",
+      "price": 48900,
+      "currency": "INR",
+      "recordedAt": "2026-09-08T10:48:20.007Z"
+    },
+    {
+      "id": "ph_1788864508165_cghez",
+      "productId": "apple-watch-s10",
+      "store": "Flipkart",
+      "price": 68499,
+      "currency": "INR",
+      "recordedAt": "2026-09-08T10:48:24.041Z"
+    },
+    {
+      "id": "ph_1788864512248_utlhw",
+      "productId": "apple-watch-s10",
+      "store": "Amazon",
+      "price": 69999,
+      "currency": "INR",
+      "recordedAt": "2026-09-08T10:48:28.166Z"
+    },
+    {
+      "id": "ph_1788864516317_x6p6u",
+      "productId": "apple-watch-s10",
+      "store": "Croma",
+      "price": 70990,
+      "currency": "INR",
+      "recordedAt": "2026-09-08T10:48:32.250Z"
+    },
+    {
+      "id": "ph_1788864520370_v92j7",
+      "productId": "apple-watch-s10",
+      "store": "Reliance Digital",
+      "price": 72900,
+      "currency": "INR",
+      "recordedAt": "2026-09-08T10:48:36.318Z"
+    },
+    {
+      "id": "ph_1788864729159_9ki1g",
+      "productId": "apple-watch-s10",
+      "store": "Flipkart",
+      "price": 46900,
+      "currency": "INR",
+      "recordedAt": "2026-09-08T10:52:04.986Z"
+    },
+    {
+      "id": "ph_1788864733216_5efsz",
+      "productId": "apple-watch-s10",
+      "store": "Amazon",
+      "price": 47900,
+      "currency": "INR",
+      "recordedAt": "2026-09-08T10:52:09.163Z"
+    },
+    {
+      "id": "ph_1788864737285_u7dtf",
+      "productId": "apple-watch-s10",
+      "store": "Croma",
+      "price": 47900,
+      "currency": "INR",
+      "recordedAt": "2026-09-08T10:52:13.217Z"
+    },
+    {
+      "id": "ph_1788864741343_2m5jh",
+      "productId": "apple-watch-s10",
+      "store": "Reliance Digital",
+      "price": 48900,
+      "currency": "INR",
+      "recordedAt": "2026-09-08T10:52:17.287Z"
+    },
+    {
+      "id": "ph_1788864745410_o0mbx",
+      "productId": "apple-watch-s10",
+      "store": "Flipkart",
+      "price": 68499,
+      "currency": "INR",
+      "recordedAt": "2026-09-08T10:52:21.345Z"
+    },
+    {
+      "id": "ph_1788864749482_b2dwv",
+      "productId": "apple-watch-s10",
+      "store": "Amazon",
+      "price": 69999,
+      "currency": "INR",
+      "recordedAt": "2026-09-08T10:52:25.411Z"
+    },
+    {
+      "id": "ph_1788864753564_nos8x",
+      "productId": "apple-watch-s10",
+      "store": "Croma",
+      "price": 70990,
+      "currency": "INR",
+      "recordedAt": "2026-09-08T10:52:29.483Z"
+    },
+    {
+      "id": "ph_1788864757632_z8stv",
+      "productId": "apple-watch-s10",
+      "store": "Reliance Digital",
+      "price": 72900,
+      "currency": "INR",
+      "recordedAt": "2026-09-08T10:52:33.565Z"
+    },
+    {
+      "id": "ph_1788865073817_14s8s",
+      "productId": "apple-watch-s10",
+      "store": "Flipkart",
+      "price": 46900,
+      "currency": "INR",
+      "recordedAt": "2026-09-08T10:57:49.695Z"
+    },
+    {
+      "id": "ph_1788865077888_sbmtc",
+      "productId": "apple-watch-s10",
+      "store": "Amazon",
+      "price": 47900,
+      "currency": "INR",
+      "recordedAt": "2026-09-08T10:57:53.819Z"
+    },
+    {
+      "id": "ph_1788865081972_wa9oa",
+      "productId": "apple-watch-s10",
+      "store": "Croma",
+      "price": 47900,
+      "currency": "INR",
+      "recordedAt": "2026-09-08T10:57:57.896Z"
+    },
+    {
+      "id": "ph_1788865086058_rwnd4",
+      "productId": "apple-watch-s10",
+      "store": "Reliance Digital",
+      "price": 48900,
+      "currency": "INR",
+      "recordedAt": "2026-09-08T10:58:01.976Z"
     }
   ]
 }

@@ -185,25 +185,37 @@ export class ComparisonService {
       };
     }
 
-    // 2. Deduplicate offers by (store + title)
-    const seen = new Set();
-    const uniqueOffers = allOffers.filter((offer) => {
-      const key = `${offer.store.toLowerCase()}-${offer.title.toLowerCase().replace(/\s+/g, '')}`;
-      if (seen.has(key)) return false;
-      seen.add(key);
-      return true;
-    });
+    // 2. Deduplicate offers: guarantee at most ONE offer per store for the target product
+    const storeMap = new Map();
+    for (const offer of allOffers) {
+      const storeKey = offer.store.toLowerCase();
+      if (!storeMap.has(storeKey)) {
+        storeMap.set(storeKey, offer);
+      } else {
+        const existing = storeMap.get(storeKey);
+        const currentAvail = this.isOfferAvailable(offer);
+        const existingAvail = this.isOfferAvailable(existing);
+        if (currentAvail && !existingAvail) {
+          storeMap.set(storeKey, offer);
+        } else if (currentAvail === existingAvail && offer.price < existing.price) {
+          storeMap.set(storeKey, offer);
+        }
+      }
+    }
+    const uniqueOffers = Array.from(storeMap.values());
 
     // 3. Sort offers ascending by current selling price
     const sortedOffers = [...uniqueOffers].sort((a, b) => a.price - b.price);
 
     // 4. Determine Best Deal: Lowest valid price among AVAILABLE offers
     const availableOffers = sortedOffers.filter((o) => this.isOfferAvailable(o));
-    const bestOffer = availableOffers.length > 0 ? availableOffers[0] : null;
+    const bestOffer = availableOffers.length > 0 ? availableOffers[0] : (sortedOffers[0] || null);
 
     const bestDeal = bestOffer
       ? {
           store: bestOffer.store,
+          storeSlug: bestOffer.storeSlug,
+          storeEmoji: bestOffer.storeEmoji,
           price: bestOffer.price,
           originalPrice: bestOffer.originalPrice,
           discount: bestOffer.discount,
@@ -215,8 +227,8 @@ export class ComparisonService {
       : null;
 
     // 5. Compute store metrics
-    const lowestPrice = bestOffer ? bestOffer.price : sortedOffers[0].price;
-    const highestPrice = Math.max(...sortedOffers.map((o) => o.price));
+    const lowestPrice = bestOffer ? bestOffer.price : (sortedOffers[0]?.price || 0);
+    const highestPrice = sortedOffers.length > 0 ? Math.max(...sortedOffers.map((o) => o.price)) : lowestPrice;
     const maxSavings = Math.max(0, highestPrice - lowestPrice);
 
     // 6. Enrich with visual calculation metrics and canonical product association

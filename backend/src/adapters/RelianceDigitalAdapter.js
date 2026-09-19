@@ -61,8 +61,8 @@ export class RelianceDigitalAdapter extends BaseStoreAdapter {
         matchKeys: ['sony', 'xm5', 'wh-1000xm5', 'headphone', 'audio'],
         raw: {
           title: 'Sony WH-1000XM5 Premium Noise Cancelling Headphones',
-          price: 27990,
-          originalPrice: 34990,
+          price: 49900,
+          originalPrice: 49900,
           productUrl: 'https://www.reliancedigital.in/sony-wh-1000xm5-headphones/p/492850381',
           imageUrl: 'https://www.reliancedigital.in/medias/Sony-WH-1000XM5-Headphone-492850381-i-1-1200Wx1200H?context=bWFzdGVyfGltYWdlc3wxMDIwOTR8aW1hZ2UvanBlZ3xpbWFnZXMvaGY4L2g1MC85ODU0MjcyNzg2NDYyLmpwZ3xjNmZhZjAyNDk1OWI5NDFlZmU4MTMyODcyY2FmMDNiNWMxYWYyOTM2NjkzZTVkZDRiZmE0MjM1M2U2NTJmNGFl',
           availability: 'In Stock',
@@ -127,12 +127,9 @@ export class RelianceDigitalAdapter extends BaseStoreAdapter {
       }
     ];
 
-    const matched = catalog.filter((item) =>
-      item.matchKeys.some((k) => q.includes(k)) || q.split(' ').some((word) => word.length > 2 && item.matchKeys.includes(word))
-    );
-
-    if (matched.length > 0) {
-      return matched.map((m) => this.normalizeOffer(m.raw));
+    const bestMatch = this.findBestCatalogMatch(q, catalog);
+    if (bestMatch) {
+      return [this.normalizeOffer(bestMatch.raw)];
     }
 
     const formattedTitle = q.replace(/\b\w/g, (c) => c.toUpperCase());
