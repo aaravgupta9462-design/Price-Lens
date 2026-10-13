@@ -70,14 +70,55 @@ const ComparePricesScreen = () => {
     fetchComparison(selectedProductId, activeQuery);
   }, [selectedProductId, activeQuery, fetchComparison]);
 
-  // Handle Search Submission
+  // Handle Search Submission (supports text query or direct store link)
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    if (searchInput.trim().length >= 2) {
-      setActiveQuery(searchInput.trim());
-      setSearchQuery(searchInput.trim());
-    } else if (searchInput.trim().length === 0) {
+    const text = searchInput.trim();
+    if (!text) {
       setActiveQuery('');
+      return;
+    }
+
+    const lower = text.toLowerCase();
+    const isUrl =
+      lower.startsWith('http://') ||
+      lower.startsWith('https://') ||
+      lower.startsWith('www.') ||
+      lower.includes('flipkart.com') ||
+      lower.includes('amazon.') ||
+      lower.includes('croma.com') ||
+      lower.includes('reliancedigital.in') ||
+      lower.includes('apple.com') ||
+      lower.includes('samsung.com');
+
+    if (isUrl) {
+      // Extract matching product
+      let matchedId = null;
+      if (lower.includes('macbook') || lower.includes('m3') || lower.includes('apple-macbook')) matchedId = 'macbook-air-m3';
+      else if (lower.includes('samsung') || lower.includes('s25') || lower.includes('galaxy')) matchedId = 'samsung-s25';
+      else if (lower.includes('sony') || lower.includes('xm5') || lower.includes('wh-1000xm5')) matchedId = 'sony-xm5';
+      else if (lower.includes('airpods') || lower.includes('airpod')) matchedId = 'airpods-pro-2';
+      else if (lower.includes('watch') || lower.includes('series-10') || lower.includes('s10')) matchedId = 'apple-watch-s10';
+      else if (lower.includes('oneplus') || lower.includes('oneplus-13')) matchedId = 'oneplus-13';
+      else if (lower.includes('ipad') || lower.includes('ipad-air')) matchedId = 'ipad-air-m2';
+      else if (lower.includes('bose') || lower.includes('quietcomfort')) matchedId = 'bose-qc-ultra';
+      else if (lower.includes('iphone') || lower.includes('16')) matchedId = 'iphone-16-128';
+      else {
+        const found = PRODUCTS.find((p) => lower.includes(p.name.toLowerCase()) || lower.includes(p.brand.toLowerCase()));
+        if (found) matchedId = found.id;
+      }
+
+      if (matchedId) {
+        setSelectedProductId(matchedId);
+        setActiveQuery('');
+        setSearchQuery(text);
+        return;
+      }
+    }
+
+    if (text.length >= 2) {
+      setActiveQuery(text);
+      setSearchQuery(text);
     }
   };
 
@@ -196,7 +237,7 @@ const ComparePricesScreen = () => {
                 type="text"
                 className="db-search-input"
                 style={{ paddingLeft: '2.2rem', width: '100%', height: '40px', fontSize: '0.85rem' }}
-                placeholder="Search any product or model..."
+                placeholder="Search product or paste store link..."
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
               />
@@ -283,7 +324,7 @@ const ComparePricesScreen = () => {
       {/* Loading Skeleton Indicator */}
       {loading ? (
         <div className="db-card db-card-primary" style={{ padding: '3rem', textAlign: 'center', marginBottom: '1.5rem' }}>
-          <Loader2 size={32} className="animate-spin" style={{ margin: '0 auto 1rem', color: '#2563EB' }} />
+          <Loader2 size={32} className="animate-spin" style={{ margin: '0 auto 1rem', color: 'var(--db-primary)' }} />
           <h3 style={{ fontSize: '1.05rem', fontWeight: 600, color: 'var(--db-text-main)' }}>
             Querying Store Adapters...
           </h3>
@@ -581,7 +622,7 @@ const ComparePricesScreen = () => {
             </div>
 
             <div style={{ padding: '0.75rem 1.25rem', background: '#F8FAFC', borderTop: '1px solid var(--db-border-clean)', fontSize: '0.75rem', color: 'var(--db-text-muted)', display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <ShieldCheck size={14} color="#2563EB" />
+              <ShieldCheck size={14} color="var(--db-primary)" />
               <span>Prices and store availability reflect tracked store provider snapshots across sales cycles.</span>
             </div>
           </div>

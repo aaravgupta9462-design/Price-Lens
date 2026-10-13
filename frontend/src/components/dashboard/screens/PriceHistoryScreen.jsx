@@ -109,7 +109,7 @@ const PriceHistoryScreen = () => {
       {/* Loading Skeleton */}
       {loading ? (
         <div className="db-card db-card-primary" style={{ padding: '3rem', textAlign: 'center', marginBottom: '1.5rem' }}>
-          <Loader2 size={32} className="animate-spin" style={{ margin: '0 auto 1rem', color: '#2563EB' }} />
+          <Loader2 size={32} className="animate-spin" style={{ margin: '0 auto 1rem', color: 'var(--db-primary)' }} />
           <h3 style={{ fontSize: '1.05rem', fontWeight: 600, color: 'var(--db-text-main)' }}>
             Retrieving Historical Price Snapshots...
           </h3>
@@ -120,7 +120,7 @@ const PriceHistoryScreen = () => {
       ) : !hasHistory ? (
         /* Empty State */
         <div className="db-card db-card-primary" style={{ padding: '3.5rem 2rem', textAlign: 'center', marginBottom: '1.5rem' }}>
-          <div style={{ width: '56px', height: '56px', margin: '0 auto 1.25rem', background: '#EFF6FF', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#2563EB' }}>
+          <div style={{ width: '56px', height: '56px', margin: '0 auto 1.25rem', background: 'var(--db-primary-light)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--db-primary)' }}>
             <Clock size={28} />
           </div>
           <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--db-text-main)', marginBottom: '0.5rem' }}>
@@ -267,7 +267,7 @@ const PriceHistoryScreen = () => {
                   color: 'var(--db-text-secondary)',
                 }}
               >
-                <Info size={14} color="#2563EB" />
+                <Info size={14} color="var(--db-primary)" />
                 <span>
                   Prices reflect tracked store provider snapshots.
                 </span>

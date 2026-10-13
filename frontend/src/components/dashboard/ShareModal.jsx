@@ -71,7 +71,7 @@ const ShareModal = () => {
 
         <div className="db-share-options">
           <button className="db-share-option-btn" onClick={() => window.open(url, '_blank', 'noopener,noreferrer')}>
-            <div className="db-share-option-icon" style={{ background: '#EFF6FF', color: '#2563EB' }}>
+            <div className="db-share-option-icon" style={{ background: 'var(--db-primary-light)', color: 'var(--db-primary)' }}>
               <ExternalLink size={18} />
             </div>
             <div className="db-share-option-text">

@@ -88,8 +88,8 @@ const PriceAlertsScreen = () => {
                     </span>
                   </div>
 
-                  <div className="db-alert-stat-card" style={{ background: '#EFF6FF', borderColor: '#BFDBFE' }}>
-                    <span className="db-stat-label-clean" style={{ color: '#2563EB' }}>Target Price</span>
+                  <div className="db-alert-stat-card" style={{ background: 'var(--db-primary-light)', borderColor: 'var(--db-primary-border)' }}>
+                    <span className="db-stat-label-clean" style={{ color: 'var(--db-primary)' }}>Target Price</span>
                     {isEditing ? (
                       <div style={{ display: 'flex', gap: '0.3rem', marginTop: '0.2rem' }}>
                         <input
@@ -108,7 +108,7 @@ const PriceAlertsScreen = () => {
                         </button>
                       </div>
                     ) : (
-                      <span style={{ fontSize: '1.15rem', fontWeight: 800, color: '#1E40AF' }}>
+                      <span style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--db-primary)' }}>
                         {formatPrice(alert.targetPrice)}
                       </span>
                     )}
@@ -119,9 +119,9 @@ const PriceAlertsScreen = () => {
                 <div style={{ marginTop: '1rem', marginBottom: '0.85rem' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', marginBottom: '0.35rem' }}>
                     <span style={{ color: 'var(--db-text-secondary)', display: 'flex', alignItems: 'center', gap: '3px' }}>
-                      <AlertCircle size={12} color="#2563EB" /> {alert.status}
+                      <AlertCircle size={12} color="var(--db-primary)" /> {alert.status}
                     </span>
-                    <span style={{ fontWeight: 700, color: '#2563EB' }}>
+                    <span style={{ fontWeight: 700, color: 'var(--db-primary)' }}>
                       {diff > 0 ? `₹${diff.toLocaleString('en-IN')} away` : 'Target Met!'}
                     </span>
                   </div>
@@ -131,7 +131,7 @@ const PriceAlertsScreen = () => {
                       className="db-compare-bar-fill"
                       style={{
                         width: `${alert.progressPercent}%`,
-                        background: alert.progressPercent > 80 ? '#16A34A' : '#2563EB',
+                        background: alert.progressPercent > 80 ? 'var(--db-success)' : 'var(--db-primary)',
                       }}
                     />
                   </div>

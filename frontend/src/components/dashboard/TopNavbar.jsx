@@ -17,7 +17,7 @@ import { useDashboard } from '../../context/DashboardContext';
 import { useAuth } from '../../context/AuthContext';
 import NotificationDropdown from './NotificationDropdown';
 
-const TopNavbar = ({ onGoToLanding }) => {
+const TopNavbar = () => {
   const {
     activeNav,
     setActiveNav,
@@ -191,19 +191,6 @@ const TopNavbar = ({ onGoToLanding }) => {
                         <Bell size={15} />
                         <span>Price Alerts ({priceAlerts.length})</span>
                       </button>
-
-                      {onGoToLanding && (
-                        <button
-                          className="db-dropdown-item"
-                          onClick={() => {
-                            setUserMenuOpen(false);
-                            onGoToLanding();
-                          }}
-                        >
-                          <Zap size={15} />
-                          <span>View Landing Page</span>
-                        </button>
-                      )}
 
                       <div className="db-dropdown-divider" />
 

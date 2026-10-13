@@ -22,16 +22,51 @@ const SearchProductsScreen = () => {
   const [priceBracket, setPriceBracket] = useState('all');
   const [sortBy, setSortBy] = useState('recommended');
 
+  // Detect if query is a store URL
+  const detectedStoreFromQuery = useMemo(() => {
+    if (!searchQuery) return null;
+    const val = searchQuery.toLowerCase();
+    if (val.includes('flipkart.com')) return 'Flipkart';
+    if (val.includes('amazon.in') || val.includes('amazon.com')) return 'Amazon';
+    if (val.includes('croma.com')) return 'Croma';
+    if (val.includes('reliancedigital.in')) return 'Reliance Digital';
+    if (val.includes('apple.com')) return 'Apple Store';
+    if (val.includes('samsung.com')) return 'Samsung Store';
+    return null;
+  }, [searchQuery]);
+
+  const isUrlQuery = useMemo(() => {
+    if (!searchQuery) return false;
+    const val = searchQuery.trim().toLowerCase();
+    return (
+      val.startsWith('http://') ||
+      val.startsWith('https://') ||
+      val.startsWith('www.') ||
+      detectedStoreFromQuery !== null
+    );
+  }, [searchQuery, detectedStoreFromQuery]);
+
   const filteredProducts = useMemo(() => {
     return PRODUCTS.filter((p) => {
-      // Query filter
+      // Query or URL filter
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase();
-        const matches =
-          p.name.toLowerCase().includes(q) ||
-          p.brand.toLowerCase().includes(q) ||
-          p.category.toLowerCase().includes(q);
-        if (!matches) return false;
+
+        if (isUrlQuery) {
+          // If URL, check if brand, name, or keywords match the URL string
+          const nameTokens = p.name.toLowerCase().split(/\s+/);
+          const brandMatch = q.includes(p.brand.toLowerCase());
+          const nameMatch = nameTokens.some((tok) => tok.length > 2 && q.includes(tok));
+          const idMatch = q.includes(p.id);
+          if (!brandMatch && !nameMatch && !idMatch) return false;
+        } else {
+          // Standard text search
+          const matches =
+            p.name.toLowerCase().includes(q) ||
+            p.brand.toLowerCase().includes(q) ||
+            p.category.toLowerCase().includes(q);
+          if (!matches) return false;
+        }
       }
 
       // Category filter
@@ -66,7 +101,7 @@ const SearchProductsScreen = () => {
       if (sortBy === 'rating-high') return b.rating - a.rating;
       return 0; // recommended
     });
-  }, [searchQuery, selectedCategory, selectedStore, minRating, minDiscount, priceBracket, sortBy]);
+  }, [searchQuery, isUrlQuery, selectedCategory, selectedStore, minRating, minDiscount, priceBracket, sortBy]);
 
   const handleResetFilters = () => {
     setSelectedCategory('All Categories');
@@ -78,36 +113,102 @@ const SearchProductsScreen = () => {
     setSearchQuery('');
   };
 
+  const handlePasteClipboard = async () => {
+    try {
+      if (navigator.clipboard && navigator.clipboard.readText) {
+        const text = await navigator.clipboard.readText();
+        if (text) setSearchQuery(text);
+      } else {
+        const promptText = window.prompt('Paste your product link here:');
+        if (promptText) setSearchQuery(promptText);
+      }
+    } catch {
+      const promptText = window.prompt('Paste your product link here:');
+      if (promptText) setSearchQuery(promptText);
+    }
+  };
+
   return (
     <div className="db-page-fade">
       <div className="db-screen-header">
-        <h1 className="db-screen-title">Search Products</h1>
+        <h1 className="db-screen-title">Search & Check Online Prices</h1>
         <p className="db-screen-subtitle">
-          Find products and compare real-time prices across verified stores.
+          Search any gadget or paste direct store links from Amazon, Flipkart, Croma, and Reliance Digital.
         </p>
       </div>
 
-      {/* Main Search Bar */}
-      <div className="db-search-large-wrap">
+      {/* Main Search / URL Bar */}
+      <div className="db-search-large-wrap" style={{ position: 'relative' }}>
         <Search size={20} className="db-search-icon" />
         <input
           type="text"
           className="db-search-input"
-          style={{ height: '52px', fontSize: '1rem' }}
-          placeholder="Search products, brands or models..."
+          style={{ height: '52px', fontSize: '0.95rem', paddingRight: '140px' }}
+          placeholder="Search products, brands or paste store link (Flipkart, Amazon, Croma...)"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
-        {searchQuery && (
-          <button
-            className="db-btn-clean db-btn-clean-outline"
-            style={{ position: 'absolute', right: '12px', top: '10px' }}
-            onClick={() => setSearchQuery('')}
-          >
-            Clear
-          </button>
-        )}
+        <div style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', display: 'flex', gap: '6px' }}>
+          {!searchQuery && (
+            <button
+              type="button"
+              className="db-paste-action-btn"
+              onClick={handlePasteClipboard}
+              title="Paste link from clipboard"
+              style={{ position: 'static' }}
+            >
+              Paste Link
+            </button>
+          )}
+          {searchQuery && (
+            <button
+              className="db-btn-clean db-btn-clean-outline"
+              style={{ fontSize: '0.78rem', padding: '0.35rem 0.65rem' }}
+              onClick={() => setSearchQuery('')}
+            >
+              Clear
+            </button>
+          )}
+        </div>
       </div>
+
+      {/* URL Detected Alert Banner */}
+      {isUrlQuery && (
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '0.75rem',
+            padding: '0.75rem 1.25rem',
+            margin: '0.75rem 0 1.25rem 0',
+            borderRadius: '12px',
+            background: 'rgba(91, 69, 255, 0.08)',
+            border: '1px solid rgba(91, 69, 255, 0.25)',
+            color: 'var(--db-text-main)',
+            fontSize: '0.88rem'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <span style={{ fontSize: '1.2rem' }}>🔗</span>
+            <div>
+              <strong>Online Link Detected {detectedStoreFromQuery ? `(${detectedStoreFromQuery})` : ''}</strong>
+              <div style={{ fontSize: '0.78rem', color: 'var(--db-text-secondary)' }}>
+                Comparing prices across all verified retailers for this product...
+              </div>
+            </div>
+          </div>
+          {filteredProducts.length > 0 && (
+            <button
+              className="db-btn-clean db-btn-clean-primary"
+              style={{ fontSize: '0.8rem', padding: '0.4rem 0.85rem' }}
+              onClick={() => viewPriceComparison(filteredProducts[0].id)}
+            >
+              <Scale size={13} /> Compare {filteredProducts[0].name}
+            </button>
+          )}
+        </div>
+      )}
 
       <div className="db-search-layout">
         {/* Filter Sidebar */}

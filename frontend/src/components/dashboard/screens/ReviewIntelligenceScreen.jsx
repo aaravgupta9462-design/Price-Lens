@@ -160,7 +160,7 @@ const ReviewIntelligenceScreen = () => {
       <div className="db-card db-card-primary" style={{ padding: '1.5rem' }}>
         <div className="db-card-header-clean" style={{ padding: '0 0 1rem 0', marginBottom: '1rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <MessageSquare size={18} color="#2563EB" />
+            <MessageSquare size={18} color="var(--db-primary)" />
             <h3 className="db-card-title-sm">Representative Buyer Feedback</h3>
           </div>
           <span className="db-badge-soft-blue">Mock Dataset</span>
