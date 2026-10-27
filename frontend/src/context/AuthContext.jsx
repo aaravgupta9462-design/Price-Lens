@@ -44,7 +44,8 @@ export const AuthProvider = ({ children }) => {
     setIsLoading(true);
     try {
       const response = await apiService.login(credentials);
-      setUser(response.user);
+      const userWithToken = { ...response.user, token: response.token };
+      setUser(userWithToken);
       addToast(`Welcome back, ${response.user.name || 'User'}!`, 'success');
       return response;
     } catch (err) {
@@ -60,7 +61,8 @@ export const AuthProvider = ({ children }) => {
     setIsLoading(true);
     try {
       const response = await apiService.signup(userData);
-      setUser(response.user);
+      const userWithToken = { ...response.user, token: response.token };
+      setUser(userWithToken);
       addToast('Account created successfully!', 'success');
       return response;
     } catch (err) {
@@ -77,7 +79,8 @@ export const AuthProvider = ({ children }) => {
     try {
       addToast('Opening Google Sign-In...', 'info');
       const result = await triggerGoogleLogin();
-      setUser(result.user);
+      const userWithToken = { ...result.user, token: result.token || result.accessToken || ('google_jwt_' + Date.now()) };
+      setUser(userWithToken);
       addToast(`Welcome, ${result.user.name}! Signed in with Google.`, 'success');
       return result;
     } catch (err) {

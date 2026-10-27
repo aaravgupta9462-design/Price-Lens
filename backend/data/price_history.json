@@ -95,6 +95,422 @@
       "price": 72900,
       "currency": "INR",
       "recordedAt": "2026-09-14T08:53:45.974Z"
+    },
+    {
+      "id": "ph_1789799058894_cqwp0",
+      "productId": "iphone-16-128",
+      "store": "Flipkart",
+      "price": 68499,
+      "currency": "INR",
+      "recordedAt": "2026-09-19T06:24:14.801Z"
+    },
+    {
+      "id": "ph_1789799062960_untu9",
+      "productId": "iphone-16-128",
+      "store": "Amazon",
+      "price": 69999,
+      "currency": "INR",
+      "recordedAt": "2026-09-19T06:24:18.897Z"
+    },
+    {
+      "id": "ph_1789799067021_faw44",
+      "productId": "iphone-16-128",
+      "store": "Croma",
+      "price": 70990,
+      "currency": "INR",
+      "recordedAt": "2026-09-19T06:24:22.968Z"
+    },
+    {
+      "id": "ph_1789799071098_21ppi",
+      "productId": "iphone-16-128",
+      "store": "Reliance Digital",
+      "price": 72900,
+      "currency": "INR",
+      "recordedAt": "2026-09-19T06:24:27.040Z"
+    },
+    {
+      "id": "ph_1791886664163_96gj1",
+      "productId": "iphone-16-128",
+      "store": "Flipkart",
+      "price": 68499,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T10:17:40.048Z"
+    },
+    {
+      "id": "ph_1791886668221_gzzwh",
+      "productId": "iphone-16-128",
+      "store": "Amazon",
+      "price": 69999,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T10:17:44.172Z"
+    },
+    {
+      "id": "ph_1791886672273_snmcn",
+      "productId": "iphone-16-128",
+      "store": "Croma",
+      "price": 70990,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T10:17:48.228Z"
+    },
+    {
+      "id": "ph_1791886676354_2jhvw",
+      "productId": "iphone-16-128",
+      "store": "Reliance Digital",
+      "price": 72900,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T10:17:52.276Z"
+    },
+    {
+      "id": "ph_1791887066787_olxkn",
+      "productId": "iphone-16-128",
+      "store": "Amazon.in",
+      "price": 73900,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T10:24:22.732Z"
+    },
+    {
+      "id": "ph_1791887070857_65v2c",
+      "productId": "iphone-16-128",
+      "store": "Vijay Sales",
+      "price": 75100,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T10:24:26.792Z"
+    },
+    {
+      "id": "ph_1791887074977_ola1g",
+      "productId": "iphone-16-128",
+      "store": "Tata CLiQ",
+      "price": 76100,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T10:24:30.867Z"
+    },
+    {
+      "id": "ph_1791888038711_6dw4l",
+      "productId": "iphone-16-128",
+      "store": "nakedcase.in",
+      "price": 399,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T10:40:34.614Z"
+    },
+    {
+      "id": "ph_1791888042774_u7gjd",
+      "productId": "iphone-16-128",
+      "store": "Online Merchant",
+      "price": 920,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T10:40:38.714Z"
+    },
+    {
+      "id": "ph_1791888046860_tp9kj",
+      "productId": "iphone-16-128",
+      "store": "lpbirla.com",
+      "price": 33321,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T10:40:42.776Z"
+    },
+    {
+      "id": "ph_1791888050972_5ng75",
+      "productId": "iphone-16-128",
+      "store": "Olux",
+      "price": 34052,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T10:40:46.861Z"
+    },
+    {
+      "id": "ph_1791888055044_qwwu1",
+      "productId": "iphone-16-128",
+      "store": "Ovantica.com",
+      "price": 39999,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T10:40:50.973Z"
+    },
+    {
+      "id": "ph_1791888059123_52ruc",
+      "productId": "iphone-16-128",
+      "store": "Tradeindia.com",
+      "price": 49000,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T10:40:55.044Z"
+    },
+    {
+      "id": "ph_1791888063175_por8u",
+      "productId": "iphone-16-128",
+      "store": "FoneZone.com",
+      "price": 49480,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T10:40:59.124Z"
+    },
+    {
+      "id": "ph_1791888067243_c3z8u",
+      "productId": "iphone-16-128",
+      "store": "Cashify",
+      "price": 52899,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T10:41:03.177Z"
+    },
+    {
+      "id": "ph_1791888071329_natnc",
+      "productId": "iphone-16-128",
+      "store": "Xiaomi India",
+      "price": 54299,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T10:41:07.244Z"
+    },
+    {
+      "id": "ph_1791888075405_whpmy",
+      "productId": "iphone-16-128",
+      "store": "ubuy.co.in",
+      "price": 57457,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T10:41:11.330Z"
+    },
+    {
+      "id": "ph_1791888079471_wui7m",
+      "productId": "iphone-16-128",
+      "store": "Desertcart.ae",
+      "price": 59649,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T10:41:15.406Z"
+    },
+    {
+      "id": "ph_1791888083556_cqt1h",
+      "productId": "iphone-16-128",
+      "store": "desertcart.com.sa",
+      "price": 62114,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T10:41:19.471Z"
+    },
+    {
+      "id": "ph_1791888087628_dfd8c",
+      "productId": "iphone-16-128",
+      "store": "FoneZone.me",
+      "price": 66650,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T10:41:23.566Z"
+    },
+    {
+      "id": "ph_1791888095821_r0xoo",
+      "productId": "iphone-16-128",
+      "store": "Parvez Mobile Master",
+      "price": 69999,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T10:41:31.734Z"
+    },
+    {
+      "id": "ph_1791888112124_t7jrl",
+      "productId": "iphone-16-128",
+      "store": "desertcart.in",
+      "price": 79860,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T10:41:48.036Z"
+    },
+    {
+      "id": "ph_1791888116204_zyaoh",
+      "productId": "iphone-16-128",
+      "store": "Poojara Telecom",
+      "price": 85999,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T10:41:52.126Z"
+    },
+    {
+      "id": "ph_1791888327975_4yn8m",
+      "productId": "iphone-16-128",
+      "store": "Befach.com",
+      "price": 50721,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T10:45:23.917Z"
+    },
+    {
+      "id": "ph_1791888332055_9qx7t",
+      "productId": "iphone-16-128",
+      "store": "Ovantica.com",
+      "price": 51999,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T10:45:27.980Z"
+    },
+    {
+      "id": "ph_1791888336120_w1pv9",
+      "productId": "iphone-16-128",
+      "store": "Tetro",
+      "price": 64900,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T10:45:32.068Z"
+    },
+    {
+      "id": "ph_1791888763194_1au5r",
+      "productId": "iphone-16-128",
+      "store": "ubuy.co.in",
+      "price": 65783,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T10:52:39.128Z"
+    },
+    {
+      "id": "ph_1791890015865_z57u8",
+      "productId": "iphone-16-128",
+      "store": "buy.budli.in",
+      "price": 42999,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T11:13:31.789Z"
+    },
+    {
+      "id": "ph_1791890019955_g0vex",
+      "productId": "iphone-16-128",
+      "store": "Maple Store",
+      "price": 52999,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T11:13:35.867Z"
+    },
+    {
+      "id": "ph_1791890024036_xn48l",
+      "productId": "iphone-16-128",
+      "store": "Apple India",
+      "price": 69900,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T11:13:39.959Z"
+    },
+    {
+      "id": "ph_1791891179121_jl029",
+      "productId": "iphone-16-128",
+      "store": "ubuy.co.in",
+      "price": 1785566,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T11:32:54.926Z"
+    },
+    {
+      "id": "ph_1791891940671_uj1dm",
+      "productId": "iphone-16-128",
+      "store": "RajsiPoshak",
+      "price": 89900,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T11:45:36.598Z"
+    },
+    {
+      "id": "ph_1791891968592_1qeup",
+      "productId": "iphone-16-128",
+      "store": "Reliance Digital",
+      "price": 59900,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T11:46:04.529Z"
+    },
+    {
+      "id": "ph_1791892180887_95d7m",
+      "productId": "iphone-16-128",
+      "store": "Digihaat",
+      "price": 91237,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T11:49:36.816Z"
+    },
+    {
+      "id": "ph_1792047035623_7et7u",
+      "productId": "iphone-16-128",
+      "store": "Croma",
+      "price": 70990,
+      "currency": "INR",
+      "recordedAt": "2026-10-15T06:50:31.367Z"
+    },
+    {
+      "id": "ph_1793094164520_a1i8l",
+      "productId": "iphone-16-128",
+      "store": "Flipkart",
+      "price": 68499,
+      "currency": "INR",
+      "recordedAt": "2026-10-27T09:42:40.451Z"
+    },
+    {
+      "id": "ph_1793094167631_blsdx",
+      "productId": "iphone-16-128",
+      "store": "Croma",
+      "price": 70990,
+      "currency": "INR",
+      "recordedAt": "2026-10-27T09:42:43.577Z"
+    },
+    {
+      "id": "ph_1793094168591_rt5ia",
+      "productId": "iphone-16-128",
+      "store": "Reliance Digital",
+      "price": 69900,
+      "currency": "INR",
+      "recordedAt": "2026-10-27T09:42:44.545Z"
+    },
+    {
+      "id": "ph_1793094172681_w0jwd",
+      "productId": "iphone-16-128",
+      "store": "Apple India",
+      "price": 69900,
+      "currency": "INR",
+      "recordedAt": "2026-10-27T09:42:48.602Z"
+    },
+    {
+      "id": "ph_1793094176773_q1vam",
+      "productId": "iphone-16-128",
+      "store": "S K Mobile-Vadodara",
+      "price": 69900,
+      "currency": "INR",
+      "recordedAt": "2026-10-27T09:42:52.713Z"
+    },
+    {
+      "id": "ph_1793094180839_gmbhw",
+      "productId": "iphone-16-128",
+      "store": "Amazon",
+      "price": 69999,
+      "currency": "INR",
+      "recordedAt": "2026-10-27T09:42:56.779Z"
+    },
+    {
+      "id": "ph_1793094188959_4xfbo",
+      "productId": "iphone-16-128",
+      "store": "vlebazaar.in",
+      "price": 76472,
+      "currency": "INR",
+      "recordedAt": "2026-10-27T09:43:04.898Z"
+    },
+    {
+      "id": "ph_1793094193025_bpnv4",
+      "productId": "iphone-16-128",
+      "store": "Unicorn Store",
+      "price": 84506,
+      "currency": "INR",
+      "recordedAt": "2026-10-27T09:43:08.965Z"
+    },
+    {
+      "id": "ph_1793094197109_gzrv1",
+      "productId": "iphone-16-128",
+      "store": "Keni Electronics",
+      "price": 89900,
+      "currency": "INR",
+      "recordedAt": "2026-10-27T09:43:13.032Z"
+    },
+    {
+      "id": "ph_1793094201159_kq9qx",
+      "productId": "iphone-16-128",
+      "store": "Telephone Shoppees",
+      "price": 89900,
+      "currency": "INR",
+      "recordedAt": "2026-10-27T09:43:17.116Z"
+    },
+    {
+      "id": "ph_1793094205225_bc0ob",
+      "productId": "iphone-16-128",
+      "store": "EW Shopping",
+      "price": 93906,
+      "currency": "INR",
+      "recordedAt": "2026-10-27T09:43:21.166Z"
+    },
+    {
+      "id": "ph_1793094209286_1ttme",
+      "productId": "iphone-16-128",
+      "store": "Flipshope",
+      "price": 99900,
+      "currency": "INR",
+      "recordedAt": "2026-10-27T09:43:25.233Z"
+    },
+    {
+      "id": "ph_1793094213342_ylrj2",
+      "productId": "iphone-16-128",
+      "store": "desertcart.in",
+      "price": 110219,
+      "currency": "INR",
+      "recordedAt": "2026-10-27T09:43:29.296Z"
     }
   ],
   "macbook-air-m3": [
@@ -129,6 +545,286 @@
       "price": 108990,
       "currency": "INR",
       "recordedAt": "2026-09-08T10:17:30.120Z"
+    },
+    {
+      "id": "ph_1791887050489_2z238",
+      "productId": "macbook-air-m3",
+      "store": "Croma",
+      "price": 99990,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T10:24:06.462Z"
+    },
+    {
+      "id": "ph_1791887054576_96l3k",
+      "productId": "macbook-air-m3",
+      "store": "Amazon.in",
+      "price": 103900,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T10:24:10.491Z"
+    },
+    {
+      "id": "ph_1791887058659_nr38j",
+      "productId": "macbook-air-m3",
+      "store": "Amazon",
+      "price": 104900,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T10:24:14.577Z"
+    },
+    {
+      "id": "ph_1791887062730_g6tsh",
+      "productId": "macbook-air-m3",
+      "store": "Vijay Sales",
+      "price": 105100,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T10:24:18.660Z"
+    },
+    {
+      "id": "ph_1791887066792_g2du0",
+      "productId": "macbook-air-m3",
+      "store": "Flipkart",
+      "price": 105400,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T10:24:22.732Z"
+    },
+    {
+      "id": "ph_1791887070866_c85d9",
+      "productId": "macbook-air-m3",
+      "store": "Reliance Digital",
+      "price": 105890,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T10:24:26.792Z"
+    },
+    {
+      "id": "ph_1791887074982_h0dta",
+      "productId": "macbook-air-m3",
+      "store": "Tata CLiQ",
+      "price": 106100,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T10:24:30.867Z"
+    },
+    {
+      "id": "ph_1791888332065_swvv9",
+      "productId": "macbook-air-m3",
+      "store": "Laptomart",
+      "price": 41034,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T10:45:28.290Z"
+    },
+    {
+      "id": "ph_1791888336131_3mqht",
+      "productId": "macbook-air-m3",
+      "store": "ubuy.co.in",
+      "price": 42548,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T10:45:32.069Z"
+    },
+    {
+      "id": "ph_1791888340201_oz262",
+      "productId": "macbook-air-m3",
+      "store": "Laptop Store",
+      "price": 43648,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T10:45:36.132Z"
+    },
+    {
+      "id": "ph_1791888344273_2orhr",
+      "productId": "macbook-air-m3",
+      "store": "Lapicart",
+      "price": 48599,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T10:45:40.202Z"
+    },
+    {
+      "id": "ph_1791888348351_en5vy",
+      "productId": "macbook-air-m3",
+      "store": "LowestRate Shopping",
+      "price": 54990,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T10:45:44.274Z"
+    },
+    {
+      "id": "ph_1791888352482_xuwzx",
+      "productId": "macbook-air-m3",
+      "store": "iTradeit",
+      "price": 63400,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T10:45:48.353Z"
+    },
+    {
+      "id": "ph_1791888653212_oamlj",
+      "productId": "macbook-air-m3",
+      "store": "ubuy.co.in",
+      "price": 71730,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T10:50:49.161Z"
+    },
+    {
+      "id": "ph_1791888657320_5rsp5",
+      "productId": "macbook-air-m3",
+      "store": "Gadgets Now",
+      "price": 74959,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T10:50:53.236Z"
+    },
+    {
+      "id": "ph_1791888661419_0yr3w",
+      "productId": "macbook-air-m3",
+      "store": "desertcart.in",
+      "price": 78767,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T10:50:57.322Z"
+    },
+    {
+      "id": "ph_1791890028514_fdz6a",
+      "productId": "macbook-air-m3",
+      "store": "Apple India",
+      "price": 79900,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T11:13:44.408Z"
+    },
+    {
+      "id": "ph_1791891940689_9cgpa",
+      "productId": "macbook-air-m3",
+      "store": "Flipkart",
+      "price": 80799,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T11:45:36.599Z"
+    },
+    {
+      "id": "ph_1791891972718_yuegs",
+      "productId": "macbook-air-m3",
+      "store": "Tradeindia.com",
+      "price": 77000,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T11:46:09.019Z"
+    },
+    {
+      "id": "ph_1791891976796_bkvr4",
+      "productId": "macbook-air-m3",
+      "store": "papita.co",
+      "price": 78033,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T11:46:12.720Z"
+    },
+    {
+      "id": "ph_1791891980902_qknpa",
+      "productId": "macbook-air-m3",
+      "store": "Amazon.in",
+      "price": 78990,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T11:46:16.797Z"
+    },
+    {
+      "id": "ph_1791891984985_ffz23",
+      "productId": "macbook-air-m3",
+      "store": "e2zSTORE",
+      "price": 79900,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T11:46:20.903Z"
+    },
+    {
+      "id": "ph_1793094164542_sj07v",
+      "productId": "macbook-air-m3",
+      "store": "Vijay Sales",
+      "price": 71890,
+      "currency": "INR",
+      "recordedAt": "2026-10-27T09:42:44.204Z"
+    },
+    {
+      "id": "ph_1793094168601_520ch",
+      "productId": "macbook-air-m3",
+      "store": "Apple India",
+      "price": 79900,
+      "currency": "INR",
+      "recordedAt": "2026-10-27T09:42:44.546Z"
+    },
+    {
+      "id": "ph_1793094172711_j7r4j",
+      "productId": "macbook-air-m3",
+      "store": "Flipkart",
+      "price": 84900,
+      "currency": "INR",
+      "recordedAt": "2026-10-27T09:42:48.603Z"
+    },
+    {
+      "id": "ph_1793094176779_nw88b",
+      "productId": "macbook-air-m3",
+      "store": "JioMart Electronic",
+      "price": 85900,
+      "currency": "INR",
+      "recordedAt": "2026-10-27T09:42:52.714Z"
+    },
+    {
+      "id": "ph_1793094180844_2zmnh",
+      "productId": "macbook-air-m3",
+      "store": "FoneZone.com",
+      "price": 87000,
+      "currency": "INR",
+      "recordedAt": "2026-10-27T09:42:56.780Z"
+    },
+    {
+      "id": "ph_1793094184897_ncy3s",
+      "productId": "macbook-air-m3",
+      "store": "Croma",
+      "price": 99990,
+      "currency": "INR",
+      "recordedAt": "2026-10-27T09:43:00.845Z"
+    },
+    {
+      "id": "ph_1793094188964_9f0me",
+      "productId": "macbook-air-m3",
+      "store": "Amazon",
+      "price": 104900,
+      "currency": "INR",
+      "recordedAt": "2026-10-27T09:43:04.898Z"
+    },
+    {
+      "id": "ph_1793094193031_sdwo4",
+      "productId": "macbook-air-m3",
+      "store": "Aajjo.com",
+      "price": 107900,
+      "currency": "INR",
+      "recordedAt": "2026-10-27T09:43:08.965Z"
+    },
+    {
+      "id": "ph_1793094197115_h2u5c",
+      "productId": "macbook-air-m3",
+      "store": "Reliance Digital",
+      "price": 108990,
+      "currency": "INR",
+      "recordedAt": "2026-10-27T09:43:13.032Z"
+    },
+    {
+      "id": "ph_1793094201165_bfdma",
+      "productId": "macbook-air-m3",
+      "store": "Telephone Shoppees",
+      "price": 117899,
+      "currency": "INR",
+      "recordedAt": "2026-10-27T09:43:17.117Z"
+    },
+    {
+      "id": "ph_1793094205231_hanfr",
+      "productId": "macbook-air-m3",
+      "store": "Gadgets Now",
+      "price": 132990,
+      "currency": "INR",
+      "recordedAt": "2026-10-27T09:43:21.167Z"
+    },
+    {
+      "id": "ph_1793094209293_i8sc2",
+      "productId": "macbook-air-m3",
+      "store": "Imagine Online",
+      "price": 161910,
+      "currency": "INR",
+      "recordedAt": "2026-10-27T09:43:25.233Z"
+    },
+    {
+      "id": "ph_1793094213344_5fnan",
+      "productId": "macbook-air-m3",
+      "store": "Tradeindia.com",
+      "price": 169000,
+      "currency": "INR",
+      "recordedAt": "2026-10-27T09:43:29.296Z"
     }
   ],
   "sony-xm5": [
@@ -195,6 +891,182 @@
       "price": 49900,
       "currency": "INR",
       "recordedAt": "2026-09-08T10:58:01.976Z"
+    },
+    {
+      "id": "ph_1791887050482_znlzk",
+      "productId": "sony-xm5",
+      "store": "Amazon.in",
+      "price": 27990,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T10:24:06.322Z"
+    },
+    {
+      "id": "ph_1791887054573_zjvvo",
+      "productId": "sony-xm5",
+      "store": "Croma",
+      "price": 28990,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T10:24:10.491Z"
+    },
+    {
+      "id": "ph_1791887058656_1tiji",
+      "productId": "sony-xm5",
+      "store": "Vijay Sales",
+      "price": 29190,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T10:24:14.577Z"
+    },
+    {
+      "id": "ph_1791887062725_d9qu6",
+      "productId": "sony-xm5",
+      "store": "Flipkart",
+      "price": 29490,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T10:24:18.660Z"
+    },
+    {
+      "id": "ph_1791887066790_zsxmm",
+      "productId": "sony-xm5",
+      "store": "Reliance Digital",
+      "price": 29980,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T10:24:22.732Z"
+    },
+    {
+      "id": "ph_1791887070862_z7su8",
+      "productId": "sony-xm5",
+      "store": "Tata CLiQ",
+      "price": 30190,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T10:24:26.792Z"
+    },
+    {
+      "id": "ph_1791887074980_f4vta",
+      "productId": "sony-xm5",
+      "store": "Amazon",
+      "price": 47900,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T10:24:30.867Z"
+    },
+    {
+      "id": "ph_1791888327979_6uvip",
+      "productId": "sony-xm5",
+      "store": "JioMart Electronics",
+      "price": 13990,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T10:45:25.968Z"
+    },
+    {
+      "id": "ph_1791888332060_z6zgm",
+      "productId": "sony-xm5",
+      "store": "Reliance Digital",
+      "price": 13990,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T10:45:27.980Z"
+    },
+    {
+      "id": "ph_1791888336128_keyu7",
+      "productId": "sony-xm5",
+      "store": "NewAsNew",
+      "price": 16490,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T10:45:32.068Z"
+    },
+    {
+      "id": "ph_1791888340199_8d9l8",
+      "productId": "sony-xm5",
+      "store": "Myntra",
+      "price": 16990,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T10:45:36.132Z"
+    },
+    {
+      "id": "ph_1791888344269_cq6zx",
+      "productId": "sony-xm5",
+      "store": "Apple India",
+      "price": 20990,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T10:45:40.202Z"
+    },
+    {
+      "id": "ph_1791888348345_hwlg2",
+      "productId": "sony-xm5",
+      "store": "Furper India",
+      "price": 21599,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T10:45:44.274Z"
+    },
+    {
+      "id": "ph_1791888352463_fjhi4",
+      "productId": "sony-xm5",
+      "store": "LowestRate Shopping",
+      "price": 21880,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T10:45:48.353Z"
+    },
+    {
+      "id": "ph_1791891968597_jewc4",
+      "productId": "sony-xm5",
+      "store": "desertcart.in",
+      "price": 1719,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T11:46:06.258Z"
+    },
+    {
+      "id": "ph_1791891972704_fexby",
+      "productId": "sony-xm5",
+      "store": "Apos",
+      "price": 2090,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T11:46:08.607Z"
+    },
+    {
+      "id": "ph_1791891976787_2qhlv",
+      "productId": "sony-xm5",
+      "store": "ubuy.co.in",
+      "price": 3550,
+      "currency": "INR",
+      "recordedAt": "2026-10-13T11:46:12.719Z"
+    },
+    {
+      "id": "ph_1793094164530_gb9ie",
+      "productId": "sony-xm5",
+      "store": "ubuy.co.in",
+      "price": 19038,
+      "currency": "INR",
+      "recordedAt": "2026-10-27T09:42:41.589Z"
+    },
+    {
+      "id": "ph_1793094168596_ygzks",
+      "productId": "sony-xm5",
+      "store": "Flipkart",
+      "price": 46900,
+      "currency": "INR",
+      "recordedAt": "2026-10-27T09:42:44.545Z"
+    },
+    {
+      "id": "ph_1793094172692_9cds7",
+      "productId": "sony-xm5",
+      "store": "Amazon",
+      "price": 47900,
+      "currency": "INR",
+      "recordedAt": "2026-10-27T09:42:48.603Z"
+    },
+    {
+      "id": "ph_1793094176776_utmy6",
+      "productId": "sony-xm5",
+      "store": "Croma",
+      "price": 49900,
+      "currency": "INR",
+      "recordedAt": "2026-10-27T09:42:52.714Z"
+    },
+    {
+      "id": "ph_1793094180841_slmgt",
+      "productId": "sony-xm5",
+      "store": "Reliance Digital",
+      "price": 49900,
+      "currency": "INR",
+      "recordedAt": "2026-10-27T09:42:56.780Z"
     }
   ],
   "samsung-s25": [
@@ -229,6 +1101,126 @@
       "price": 74499,
       "currency": "INR",
       "recordedAt": "2026-09-08T10:29:14.143Z"
+    },
+    {
+      "id": "ph_1792047047745_zbfkr",
+      "productId": "samsung-s25",
+      "store": "GudFast",
+      "price": 46999,
+      "currency": "INR",
+      "recordedAt": "2026-10-15T06:50:43.627Z"
+    },
+    {
+      "id": "ph_1792047052019_1inlf",
+      "productId": "samsung-s25",
+      "store": "cliktodeal",
+      "price": 59900,
+      "currency": "INR",
+      "recordedAt": "2026-10-15T06:50:47.747Z"
+    },
+    {
+      "id": "ph_1792047056513_t8bgu",
+      "productId": "samsung-s25",
+      "store": "Amazon.in",
+      "price": 64999,
+      "currency": "INR",
+      "recordedAt": "2026-10-15T06:50:52.086Z"
+    },
+    {
+      "id": "ph_1792047060561_nycif",
+      "productId": "samsung-s25",
+      "store": "Mobile Express",
+      "price": 66999,
+      "currency": "INR",
+      "recordedAt": "2026-10-15T06:50:56.514Z"
+    },
+    {
+      "id": "ph_1792047064622_byykn",
+      "productId": "samsung-s25",
+      "store": "Amazon",
+      "price": 71999,
+      "currency": "INR",
+      "recordedAt": "2026-10-15T06:51:00.562Z"
+    },
+    {
+      "id": "ph_1792047068687_f798o",
+      "productId": "samsung-s25",
+      "store": "Flipkart",
+      "price": 72499,
+      "currency": "INR",
+      "recordedAt": "2026-10-15T06:51:04.623Z"
+    },
+    {
+      "id": "ph_1792047072742_2j4qs",
+      "productId": "samsung-s25",
+      "store": "Croma",
+      "price": 73999,
+      "currency": "INR",
+      "recordedAt": "2026-10-15T06:51:08.688Z"
+    },
+    {
+      "id": "ph_1792047076802_ot21m",
+      "productId": "samsung-s25",
+      "store": "Reliance Digital",
+      "price": 74499,
+      "currency": "INR",
+      "recordedAt": "2026-10-15T06:51:12.742Z"
+    },
+    {
+      "id": "ph_1792047080857_d0s1s",
+      "productId": "samsung-s25",
+      "store": "cainid.in",
+      "price": 74999,
+      "currency": "INR",
+      "recordedAt": "2026-10-15T06:51:16.804Z"
+    },
+    {
+      "id": "ph_1792047084907_kbzrr",
+      "productId": "samsung-s25",
+      "store": "Telephone Shoppees",
+      "price": 84999,
+      "currency": "INR",
+      "recordedAt": "2026-10-15T06:51:20.858Z"
+    },
+    {
+      "id": "ph_1792047088990_koqyq",
+      "productId": "samsung-s25",
+      "store": "Manik Mobile Shopee",
+      "price": 84999,
+      "currency": "INR",
+      "recordedAt": "2026-10-15T06:51:24.908Z"
+    },
+    {
+      "id": "ph_1792047093042_v6zjb",
+      "productId": "samsung-s25",
+      "store": "Suraj Business",
+      "price": 85325,
+      "currency": "INR",
+      "recordedAt": "2026-10-15T06:51:28.991Z"
+    },
+    {
+      "id": "ph_1792047097076_l2iis",
+      "productId": "samsung-s25",
+      "store": "papita.co",
+      "price": 92660,
+      "currency": "INR",
+      "recordedAt": "2026-10-15T06:51:33.044Z"
+    },
+    {
+      "id": "ph_1792047101126_9fffn",
+      "productId": "samsung-s25",
+      "store": "Keni Electronics",
+      "price": 111999,
+      "currency": "INR",
+      "recordedAt": "2026-10-15T06:51:37.078Z"
+    },
+    {
+      "id": "ph_1792047105222_s2tlx",
+      "productId": "samsung-s25",
+      "store": "Sangeetha Mobiles",
+      "price": 111999,
+      "currency": "INR",
+      "recordedAt": "2026-10-15T06:51:41.133Z"
     }
   ],
   "apple-watch-s10": [

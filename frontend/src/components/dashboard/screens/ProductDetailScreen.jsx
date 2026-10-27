@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Star, Scale, ExternalLink, Share2, Heart, ShieldCheck, ArrowLeft, CheckCircle2 } from 'lucide-react';
+import { Star, Scale, ExternalLink, Share2, Heart, ShieldCheck, ArrowLeft, CheckCircle2, Bell } from 'lucide-react';
 import { PRODUCTS, PLATFORM_COMPARISONS, formatPrice } from '../../../data/mockData';
 import { useDashboard } from '../../../context/DashboardContext';
 
@@ -9,6 +9,7 @@ const ProductDetailScreen = () => {
     setSelectedProductId,
     viewPriceComparison,
     openShareModal,
+    openCreateAlertModal,
     toggleSaveProduct,
     savedProducts,
     setActiveNav,
@@ -95,6 +96,20 @@ const ProductDetailScreen = () => {
               onClick={() => viewPriceComparison(product.id)}
             >
               <Scale size={14} /> Compare All {platforms.length} Stores
+            </button>
+            <button
+              className="db-btn-clean db-btn-clean-outline"
+              style={{ padding: '0.65rem 1.25rem', fontSize: '0.85rem' }}
+              onClick={() =>
+                openCreateAlertModal({
+                  id: product.id,
+                  name: product.name,
+                  currentPrice: product.currentPrice,
+                  stores: platforms.map((p) => p.platform)
+                })
+              }
+            >
+              <Bell size={14} /> Set Price Alert
             </button>
             <button
               className="db-btn-clean db-btn-clean-outline"

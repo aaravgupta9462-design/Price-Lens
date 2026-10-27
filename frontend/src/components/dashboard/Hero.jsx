@@ -9,17 +9,16 @@ const Hero = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setSearchQuery(inputValue);
-    setActiveNav('search');
+    if (inputValue && inputValue.trim().length >= 2) {
+      setSearchQuery(inputValue.trim());
+      setActiveNav('compare');
+    }
   };
 
   const handleChip = (term) => {
     setInputValue(term);
     setSearchQuery(term);
-    if (term.toLowerCase().includes('iphone')) setSelectedProductId('iphone-16-128');
-    else if (term.toLowerCase().includes('macbook')) setSelectedProductId('macbook-air-m3');
-    else if (term.toLowerCase().includes('samsung')) setSelectedProductId('samsung-s25');
-    else if (term.toLowerCase().includes('sony')) setSelectedProductId('sony-xm5');
+    setActiveNav('compare');
   };
 
   return (
@@ -50,10 +49,7 @@ const Hero = () => {
               className="db-search-input-hero"
               placeholder="Search smartphones, laptops, audio, or paste store link..."
               value={inputValue}
-              onChange={(e) => {
-                setInputValue(e.target.value);
-                setSearchQuery(e.target.value);
-              }}
+              onChange={(e) => setInputValue(e.target.value)}
             />
             <div className="db-search-stores-inline">
               <span className="db-store-tag">Flipkart</span>

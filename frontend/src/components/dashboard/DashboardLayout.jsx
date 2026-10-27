@@ -3,6 +3,7 @@ import { DashboardProvider, useDashboard } from '../../context/DashboardContext'
 import TopNavbar from './TopNavbar';
 import DashboardFooter from './DashboardFooter';
 import ShareModal from './ShareModal';
+import CreateAlertModal from './CreateAlertModal';
 import Toast from './Toast';
 
 // Screens
@@ -44,11 +45,11 @@ const ScreenRenderer = () => {
   }
 };
 
-const DashboardContent = ({ onGoToLanding }) => {
+const DashboardContent = () => {
   return (
     <div className="db-shell-topbar-layout">
       {/* Top Header Navbar with Category Tabs */}
-      <TopNavbar onGoToLanding={onGoToLanding} />
+      <TopNavbar />
 
       {/* Main Content Area */}
       <main className="db-main-full-content">
@@ -62,15 +63,16 @@ const DashboardContent = ({ onGoToLanding }) => {
 
       {/* Global Overlays & Modals */}
       <ShareModal />
+      <CreateAlertModal />
       <Toast />
     </div>
   );
 };
 
-export const DashboardLayout = ({ onGoToLanding }) => {
+export const DashboardLayout = () => {
   return (
     <DashboardProvider>
-      <DashboardContent onGoToLanding={onGoToLanding} />
+      <DashboardContent />
     </DashboardProvider>
   );
 };

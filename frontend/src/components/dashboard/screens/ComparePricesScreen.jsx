@@ -4,26 +4,26 @@ import {
   Share2,
   Sparkles,
   Star,
-  CheckCircle2,
   ShieldCheck,
   Heart,
   Search,
   RefreshCw,
   AlertCircle,
+  AlertTriangle,
   Loader2,
-  TrendingDown
+  TrendingDown,
+  Bell,
+  CheckCircle2,
+  Tag
 } from 'lucide-react';
-import { PRODUCTS, PLATFORM_COMPARISONS, formatPrice } from '../../../data/mockData';
+import { PRODUCTS, formatPrice } from '../../../data/mockData';
 import { useDashboard } from '../../../context/DashboardContext';
-import { apiService } from '../../../services/api';
+import { searchCompare } from '../../../services/compareApi';
 
 const ComparePricesScreen = () => {
   const {
-    selectedProductId,
-    setSelectedProductId,
     openShareModal,
-    toggleSaveProduct,
-    savedProducts,
+    openCreateAlertModal,
     searchQuery,
     setSearchQuery,
     viewPriceHistory
@@ -34,159 +34,68 @@ const ComparePricesScreen = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [liveComparison, setLiveComparison] = useState(null);
+  const [hasSearched, setHasSearched] = useState(false);
 
-  // Maintain consistent canonical product identity
-  const resolvedProductId = liveComparison?.productId || selectedProductId;
-  const currentProduct =
-    PRODUCTS.find((p) => p.id === resolvedProductId) ||
-    PRODUCTS.find((p) => p.id === selectedProductId) ||
-    PRODUCTS[0];
+  // Execute live comparison search (strictly triggered on Enter or Button Click)
+  const executeSearch = useCallback(async (query) => {
+    const cleanQuery = String(query || '').trim();
+    if (cleanQuery.length < 2) return;
 
-  // Fetch comparison from backend API
-  const fetchComparison = useCallback(async (productId, query) => {
     setLoading(true);
     setError(null);
+    setHasSearched(true);
+    setActiveQuery(cleanQuery);
 
     try {
-      let data;
-      if (query && query.trim().length >= 2) {
-        data = await apiService.compareQuery(query.trim());
-      } else {
-        data = await apiService.compareProduct(productId);
-      }
+      const data = await searchCompare(cleanQuery);
       setLiveComparison(data);
     } catch (err) {
-      console.warn('[ComparePricesScreen] API failed, falling back to local data:', err.message);
-      setError('Could not connect to live store comparison backend. Displaying cached data.');
+      console.warn('[ComparePricesScreen] Live search failed:', err.message);
+      // Requirement 6: Display clear failure notice; do NOT silently fall back to mock data
+      setError(err.message || 'Live data nahi mila');
       setLiveComparison(null);
     } finally {
       setLoading(false);
     }
   }, []);
 
-  // Trigger fetch whenever selectedProductId or activeQuery changes
-  useEffect(() => {
-    setLiveComparison(null); // Reset live state on product or query change to prevent stale Best Deal pairing
-    fetchComparison(selectedProductId, activeQuery);
-  }, [selectedProductId, activeQuery, fetchComparison]);
-
-  // Handle Search Submission
+  // Form submit handler (triggers only on form submission - Enter or button click)
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     if (searchInput.trim().length >= 2) {
-      setActiveQuery(searchInput.trim());
       setSearchQuery(searchInput.trim());
-    } else if (searchInput.trim().length === 0) {
-      setActiveQuery('');
+      executeSearch(searchInput.trim());
     }
   };
 
-  // Derive platforms / offers list from live API or fallback
-  const fallbackPlatforms =
-    PLATFORM_COMPARISONS[currentProduct.id] || PLATFORM_COMPARISONS['iphone-16-128'] || [];
-
-  const rawPlatforms = liveComparison?.offers?.length
-    ? liveComparison.offers.map((offer) => ({
-        platform: offer.store,
-        emoji: offer.storeEmoji || '🏬',
-        price: offer.price,
-        originalPrice: offer.originalPrice,
-        discount: offer.discount,
-        rating: offer.rating,
-        reviewCount: offer.reviewCount,
-        stock: offer.availability,
-        delivery: offer.delivery,
-        bankOffer: offer.bankOffer || 'Bank discount available at checkout',
-        url: offer.productUrl,
-        isBestPrice: offer.isBestPrice,
-        isAvailable: offer.isAvailable !== false,
-        barPercent: offer.barPercent,
-        isDevelopmentProvider: offer.isDevelopmentProvider,
-        productId: offer.productId || resolvedProductId
-      }))
-    : fallbackPlatforms.map((p) => ({ ...p, isAvailable: true }));
-
-  // 1. Identify lowest valid and available offer currently displayed in UI (Requirement 2)
-  const validAvailablePlatforms = rawPlatforms
-    .filter((p) => p.isAvailable !== false && typeof p.price === 'number' && p.price > 0 && !isNaN(p.price))
-    .sort((a, b) => a.price - b.price);
-
-  const lowestDisplayedOffer = validAvailablePlatforms[0] || rawPlatforms[0] || {};
-
-  // 2. Best Deal Resolution (Requirements 7, 8, 9):
-  // Directly render backend bestDeal when provided (Requirement 8)
-  // Defensively correct if backend bestDeal does not match lowest available displayed offer (Requirement 9)
-  let resolvedBestDeal = null;
-
-  if (liveComparison?.bestDeal && liveComparison.bestDeal.store) {
-    const backendStore = liveComparison.bestDeal.store;
-    const backendPrice = liveComparison.bestDeal.price;
-    const matchingPlatform = rawPlatforms.find((p) => p.platform === backendStore);
-
-    if (
-      matchingPlatform &&
-      matchingPlatform.price === lowestDisplayedOffer.price &&
-      matchingPlatform.platform === lowestDisplayedOffer.platform
-    ) {
-      // Backend bestDeal is fully consistent with the lowest displayed offer -> use directly
-      resolvedBestDeal = {
-        ...matchingPlatform,
-        platform: backendStore,
-        price: backendPrice,
-        originalPrice: liveComparison.bestDeal.originalPrice || matchingPlatform.originalPrice
-      };
-    } else {
-      // Defensive fallback: align Best Deal with the lowest available displayed offer
-      console.warn(
-        `[ComparePricesScreen] Defensive correction: backend bestDeal (${backendStore} @ ₹${backendPrice}) ` +
-        `did not match lowest displayed offer (${lowestDisplayedOffer.platform} @ ₹${lowestDisplayedOffer.price}). ` +
-        `Aligning Best Deal with displayed offer.`
-      );
-      resolvedBestDeal = lowestDisplayedOffer;
+  // If searchQuery was provided externally (e.g. from Hero or nav), run search once
+  useEffect(() => {
+    if (searchQuery && searchQuery.trim().length >= 2 && searchQuery !== activeQuery) {
+      setSearchInput(searchQuery.trim());
+      executeSearch(searchQuery.trim());
     }
-  } else {
-    resolvedBestDeal = lowestDisplayedOffer;
-  }
+  }, [searchQuery, activeQuery, executeSearch]);
 
-  const bestPlatform = resolvedBestDeal || {};
-
-  // 3. Synchronize isBestPrice on all displayed platforms to strictly match the selected Best Deal
-  const platforms = rawPlatforms.map((plat) => ({
-    ...plat,
-    isBestPrice: Boolean(
-      bestPlatform.platform &&
-      plat.platform === bestPlatform.platform &&
-      plat.price === bestPlatform.price
-    )
-  }));
-
-  const highestPrice = platforms.length > 0 ? Math.max(...platforms.map((p) => p.price)) : 0;
-  const maxSavings = Math.max(0, highestPrice - (bestPlatform.price || 0));
-
-  const isSaved = savedProducts.some(
-    (s) => s.productId === currentProduct.id || s.id === currentProduct.id
-  );
-
-  const handleOpenStore = (url) => {
-    if (url && url !== '#') {
-      window.open(url, '_blank', 'noopener,noreferrer');
-    }
-  };
+  const offers = liveComparison?.offers || [];
+  const minPrice = offers.length > 0 ? Math.min(...offers.map((o) => Number(o.price) || Infinity)) : 0;
+  const bestDeal = liveComparison?.bestDeal || (offers.find((o) => o.price === minPrice) || offers[0]);
+  const highestPrice = offers.length > 0 ? Math.max(...offers.map((o) => Number(o.price) || 0)) : 0;
+  const maxSavings = highestPrice > minPrice ? highestPrice - minPrice : 0;
 
   return (
     <div className="db-page-fade">
-      {/* Screen Header */}
+      {/* ─── Screen Header ─────────────────────────────────────────────────── */}
       <div className="db-screen-header">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
           <div>
             <h1 className="db-screen-title">Compare Prices</h1>
             <p className="db-screen-subtitle">
-              Multi-store price comparisons across Amazon, Flipkart, Croma, and Reliance Digital.
+              Live multi-store price comparisons across Amazon, Flipkart, Croma, and verified Indian retailers.
             </p>
           </div>
 
-          {/* Search Input Bar for On-the-fly Multi-Store Comparison */}
-          <form onSubmit={handleSearchSubmit} style={{ display: 'flex', gap: '0.5rem', minWidth: '320px' }}>
+          {/* Search Input Bar (Submits only on Enter or Button Click - No keystroke API calls) */}
+          <form onSubmit={handleSearchSubmit} style={{ display: 'flex', gap: '0.5rem', minWidth: '320px', flex: '1 1 360px', maxWidth: '520px' }}>
             <div style={{ position: 'relative', flex: 1 }}>
               <Search
                 size={16}
@@ -195,42 +104,26 @@ const ComparePricesScreen = () => {
               <input
                 type="text"
                 className="db-search-input"
-                style={{ paddingLeft: '2.2rem', width: '100%', height: '40px', fontSize: '0.85rem' }}
-                placeholder="Search any product or model..."
+                style={{ paddingLeft: '2.2rem', width: '100%', height: '42px', fontSize: '0.88rem' }}
+                placeholder="Search any product (e.g. iphone 15, macbook air)..."
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
               />
             </div>
-            <button type="submit" className="db-btn-clean db-btn-clean-primary" style={{ height: '40px', padding: '0 1rem' }}>
-              Compare
+            <button
+              type="submit"
+              disabled={loading}
+              className="db-btn-clean db-btn-clean-primary"
+              style={{ height: '42px', padding: '0 1.25rem', whiteSpace: 'nowrap' }}
+            >
+              {loading ? <Loader2 size={15} className="animate-spin" /> : 'Compare'}
             </button>
           </form>
         </div>
       </div>
 
-      {/* Product Selector Carousel / Pills */}
-      <div className="db-selector-scroll-wrap">
-        <span className="db-selector-label">Quick Select:</span>
-        <div className="db-selector-scroll-list">
-          {PRODUCTS.map((prod) => (
-            <button
-              key={prod.id}
-              className={`db-selector-pill ${prod.id === currentProduct.id && !activeQuery ? 'active' : ''}`}
-              onClick={() => {
-                setActiveQuery('');
-                setSearchInput('');
-                setSelectedProductId(prod.id);
-              }}
-            >
-              <span>{prod.emoji}</span>
-              <span>{prod.name}</span>
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Error / Fallback Notice Banner */}
-      {error && (
+      {/* ─── Low Confidence Warning Banner ─────────────────────────────────── */}
+      {liveComparison?.lowConfidence && (
         <div
           style={{
             display: 'flex',
@@ -242,105 +135,142 @@ const ComparePricesScreen = () => {
             background: '#FEF3C7',
             border: '1px solid #FDE68A',
             color: '#92400E',
-            fontSize: '0.85rem'
+            fontSize: '0.86rem'
           }}
         >
-          <AlertCircle size={17} style={{ flexShrink: 0 }} />
-          <span style={{ flex: 1 }}>{error}</span>
-          <button
-            className="db-btn-clean"
-            style={{ fontSize: '0.75rem', padding: '0.2rem 0.6rem', background: '#F59E0B', color: '#fff', borderRadius: '6px' }}
-            onClick={() => fetchComparison(selectedProductId, activeQuery)}
-          >
-            <RefreshCw size={12} style={{ display: 'inline', marginRight: '4px' }} /> Retry
-          </button>
+          <AlertTriangle size={18} style={{ flexShrink: 0, color: '#D97706' }} />
+          <div style={{ flex: 1, fontWeight: 600 }}>
+            {liveComparison.confidenceMessage || 'Kam reliable results mile'}
+          </div>
         </div>
       )}
 
-      {/* Partial Store Provider Failure Warning */}
-      {!loading && liveComparison?.failedStores?.length > 0 && (
+      {/* ─── Error Notice (Friendly Hinglish / English - No silent mock fallback) ─── */}
+      {error && (
         <div
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '0.75rem',
-            padding: '0.75rem 1.25rem',
+            gap: '0.85rem',
+            padding: '1rem 1.25rem',
             marginBottom: '1.25rem',
             borderRadius: '10px',
             background: '#FEF2F2',
             border: '1px solid #FECACA',
             color: '#991B1B',
-            fontSize: '0.85rem'
+            fontSize: '0.88rem'
           }}
         >
-          <AlertCircle size={16} style={{ flexShrink: 0 }} />
-          <span style={{ flex: 1 }}>
-            Store provider unavailable: {liveComparison.failedStores.map((f) => `${f.store} (${f.error || 'Connection failed'})`).join(', ')}. Showing results from responding retailers.
-          </span>
+          <AlertCircle size={20} style={{ flexShrink: 0, color: '#DC2626' }} />
+          <div style={{ flex: 1 }}>
+            <div style={{ fontWeight: 700, fontSize: '0.94rem', marginBottom: '0.15rem' }}>
+              Live prices abhi available nahi hain
+            </div>
+            <div style={{ fontSize: '0.84rem', color: '#7F1D1D' }}>
+              Server se connect nahi ho pa raha hai. Kripya thodi der baad dobara koshish karein ya connection check karein.
+            </div>
+          </div>
+          <button
+            className="db-btn-clean"
+            style={{
+              fontSize: '0.78rem',
+              padding: '0.35rem 0.8rem',
+              background: '#DC2626',
+              color: '#FFFFFF',
+              borderRadius: '6px'
+            }}
+            onClick={() => executeSearch(activeQuery || searchInput)}
+          >
+            <RefreshCw size={13} style={{ display: 'inline', marginRight: '4px' }} /> Retry
+          </button>
         </div>
       )}
 
-      {/* Loading Skeleton Indicator */}
+      {/* ─── Loading State ─────────────────────────────────────────────────── */}
       {loading ? (
-        <div className="db-card db-card-primary" style={{ padding: '3rem', textAlign: 'center', marginBottom: '1.5rem' }}>
-          <Loader2 size={32} className="animate-spin" style={{ margin: '0 auto 1rem', color: '#2563EB' }} />
-          <h3 style={{ fontSize: '1.05rem', fontWeight: 600, color: 'var(--db-text-main)' }}>
-            Querying Store Adapters...
+        <div className="db-card db-card-primary" style={{ padding: '3.5rem 2rem', textAlign: 'center', marginBottom: '1.5rem' }}>
+          <Loader2 size={36} className="animate-spin" style={{ margin: '0 auto 1rem', color: '#2563EB' }} />
+          <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--db-text-main)' }}>
+            Stores se live prices fetch kar rahe hain...
           </h3>
-          <p style={{ fontSize: '0.85rem', color: 'var(--db-text-secondary)', marginTop: '0.35rem' }}>
-            Fetching offers from Amazon, Flipkart, Croma, and Reliance Digital.
+          <p style={{ fontSize: '0.85rem', color: 'var(--db-text-secondary)', marginTop: '0.4rem' }}>
+            "{activeQuery}" ke best offers dhoondhe ja rahe hain across Indian stores.
           </p>
         </div>
-      ) : platforms.length === 0 ? (
-        /* Empty State */
-        <div className="db-card db-card-primary" style={{ padding: '3rem', textAlign: 'center', marginBottom: '1.5rem' }}>
-          <div style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>🔍</div>
+      ) : !hasSearched ? (
+        /* ─── Initial State (Before First Search) ─────────────────────────── */
+        <div className="db-card db-card-primary" style={{ padding: '3rem 2rem', textAlign: 'center', marginBottom: '1.5rem' }}>
+          <div style={{ fontSize: '2.5rem', marginBottom: '0.6rem' }}>⚖️</div>
           <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--db-text-main)' }}>
-            No matching store offers found
+            Real-Time Multi-Store Price Comparison
           </h3>
-          <p style={{ fontSize: '0.85rem', color: 'var(--db-text-secondary)', marginTop: '0.4rem', maxWidth: '400px', margin: '0.4rem auto 1.25rem' }}>
-            We couldn't locate any matching deals for "{activeQuery}". Try searching with a different product name or select from the quick list.
+          <p style={{ fontSize: '0.85rem', color: 'var(--db-text-secondary)', marginTop: '0.35rem', maxWidth: '460px', margin: '0.35rem auto 1.25rem' }}>
+            Kisi bhi product ka naam search bar mein enter karein aur live prices compare karein.
           </p>
-          <button
-            className="db-btn-clean db-btn-clean-primary"
-            onClick={() => {
-              setActiveQuery('');
-              setSearchInput('');
-              setSelectedProductId('iphone-16-128');
-            }}
-          >
-            Reset to Popular Products
-          </button>
+          <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+            {['iphone 15', 'macbook air m3', 'sony xm5'].map((example) => (
+              <button
+                key={example}
+                type="button"
+                className="db-selector-pill"
+                onClick={() => {
+                  setSearchInput(example);
+                  setSearchQuery(example);
+                  executeSearch(example);
+                }}
+              >
+                🔍 {example}
+              </button>
+            ))}
+          </div>
+        </div>
+      ) : offers.length === 0 ? (
+        /* ─── Empty Results State ─────────────────────────────────────────── */
+        <div className="db-card db-card-primary" style={{ padding: '3.5rem 2rem', textAlign: 'center', marginBottom: '1.5rem' }}>
+          <div style={{ fontSize: '3rem', marginBottom: '0.6rem' }}>🔍</div>
+          <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--db-text-main)' }}>
+            Koi offers nahi mile
+          </h3>
+          <p style={{ fontSize: '0.85rem', color: 'var(--db-text-secondary)', marginTop: '0.4rem', maxWidth: '420px', margin: '0.4rem auto 1.25rem' }}>
+            "{activeQuery}" ke liye koi verified offers nahi mile. Kripya doosra keyword ya model try karein.
+          </p>
         </div>
       ) : (
+        /* ─── Results View ────────────────────────────────────────────────── */
         <>
-          {/* Large Product Information Panel */}
-          <div className="db-compare-hero-panel">
-            <div className="db-compare-hero-visual" style={{ background: currentProduct.bgGradient }}>
-              <span style={{ fontSize: '4.5rem' }}>{currentProduct.emoji}</span>
+          {/* Summary / Best Deal Banner */}
+          <div className="db-compare-hero-panel" style={{ marginBottom: '1.5rem' }}>
+            <div className="db-compare-hero-visual" style={{ background: 'linear-gradient(135deg, #1E293B 0%, #0F172A 100%)' }}>
+              <span style={{ fontSize: '4rem' }}>📱</span>
             </div>
 
             <div className="db-compare-hero-info">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '0.5rem' }}>
                 <div>
-                  <span className="db-deal-store">
-                    {activeQuery ? `Search: "${activeQuery}"` : `${currentProduct.brand} · ${currentProduct.category}`}
-                  </span>
+                  <span className="db-deal-store">Live Comparison · "{activeQuery}"</span>
                   <h2 className="db-compare-hero-title">
-                    {activeQuery ? (liveComparison?.offers?.[0]?.title || activeQuery) : currentProduct.name}
+                    {liveComparison.productName || offers[0]?.title || activeQuery}
                   </h2>
                 </div>
                 <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
                   <button
-                    className={`db-btn-clean db-btn-clean-outline ${isSaved ? 'active' : ''}`}
-                    onClick={() => toggleSaveProduct(currentProduct)}
+                    className="db-btn-clean db-btn-clean-outline"
+                    onClick={() =>
+                      openCreateAlertModal({
+                        id: liveComparison.productId || activeQuery.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+                        name: liveComparison.productName || offers[0]?.title || activeQuery,
+                        currentPrice: minPrice,
+                        stores: offers.map((o) => o.store)
+                      })
+                    }
+                    title="Set Price Alert"
                   >
-                    <Heart size={14} fill={isSaved ? '#EF4444' : 'none'} color={isSaved ? '#EF4444' : 'currentColor'} />
-                    <span>{isSaved ? 'Saved' : 'Save'}</span>
+                    <Bell size={14} />
+                    <span>Set Alert</span>
                   </button>
                   <button
                     className="db-btn-clean db-btn-clean-outline"
-                    onClick={() => viewPriceHistory(currentProduct.id)}
+                    onClick={() => viewPriceHistory(liveComparison.productId || 'iphone-16-128')}
                     title="View Price History"
                   >
                     <TrendingDown size={14} />
@@ -350,36 +280,32 @@ const ComparePricesScreen = () => {
               </div>
 
               <div className="db-deal-meta" style={{ marginTop: '0.4rem' }}>
-                <Star size={14} fill="#F59E0B" color="#F59E0B" />
-                <strong style={{ color: 'var(--db-text-main)', fontSize: '0.9rem' }}>
-                  {bestPlatform.rating || currentProduct.rating}
+                <ShieldCheck size={14} style={{ color: '#16A34A' }} />
+                <strong style={{ color: 'var(--db-text-main)', fontSize: '0.88rem' }}>
+                  {offers.length} Offers Found
                 </strong>
-                <span>· {(bestPlatform.reviewCount || currentProduct.reviewCount).toLocaleString()} verified reviews</span>
-                <span>
-                  · <ShieldCheck size={13} style={{ display: 'inline', verticalAlign: '-1px', color: '#16A34A' }} />{' '}
-                  {platforms.length} Stores Checked
-                </span>
-                {liveComparison?.latencyMs && (
+                <span>· Total checked: {liveComparison.totalStoresChecked || offers.length}</span>
+                {liveComparison.isCached && (
+                  <span style={{ color: '#2563EB', fontWeight: 600, fontSize: '0.78rem' }}>
+                    · ⚡ Cached
+                  </span>
+                )}
+                {liveComparison.latencyMs && (
                   <span style={{ color: 'var(--db-text-muted)', fontSize: '0.75rem' }}>
                     ({liveComparison.latencyMs}ms)
                   </span>
                 )}
               </div>
 
-              <p className="db-compare-hero-desc">
-                {activeQuery
-                  ? `Comparing best prices, shipping options, and bank discounts across certified Indian retailers.`
-                  : currentProduct.description}
-              </p>
-
-              <div className="db-compare-savings-banner">
+              {/* Best Deal Metric */}
+              <div className="db-compare-savings-banner" style={{ marginTop: '1rem' }}>
                 <div>
                   <div className="db-cs-label">
-                    Best deal on <strong>{bestPlatform.platform}</strong>
+                    Best Deal on <strong>{bestDeal.store}</strong>
                   </div>
                   <div className="db-cs-val" style={{ color: '#16A34A' }}>
-                    {formatPrice(bestPlatform.price)}{' '}
-                    <span style={{ fontSize: '0.8rem', fontWeight: 600 }}>· Lowest Price</span>
+                    {formatPrice(bestDeal.price)}{' '}
+                    <span style={{ fontSize: '0.8rem', fontWeight: 600 }}>· Lowest price</span>
                   </div>
                 </div>
 
@@ -395,56 +321,209 @@ const ComparePricesScreen = () => {
             </div>
           </div>
 
-          {/* Visual Price Comparison Horizontal Bars */}
-          <div className="db-card db-card-primary" style={{ padding: '1.5rem', marginBottom: '1.5rem' }}>
-            <h3 className="db-card-title-sm" style={{ marginBottom: '1.25rem' }}>
-              Price Spread & Retailer Index
-            </h3>
+          {/* ─── Results Cards Grid (Requirement 4) ─────────────────────────── */}
+          <div style={{ marginBottom: '2rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+              <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--db-text-main)' }}>
+                Store Offers ({offers.length})
+              </h3>
+              <span style={{ fontSize: '0.8rem', color: 'var(--db-text-secondary)' }}>
+                Sorted by lowest selling price
+              </span>
+            </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              {platforms.map((plat) => (
-                <div key={plat.platform} style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
-                    <span style={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                      <span>{plat.emoji}</span>
-                      <span>{plat.platform}</span>
-                      {plat.isDevelopmentProvider !== false && (
-                        <span style={{ fontSize: '0.68rem', fontWeight: 500, color: 'var(--db-text-muted)' }}>
-                          (Dev)
-                        </span>
-                      )}
-                      {plat.isBestPrice && (
-                        <span className="db-deal-badge-best" style={{ position: 'static' }}>
-                          BEST DEAL
-                        </span>
-                      )}
-                      {!plat.isAvailable && (
-                        <span style={{ fontSize: '0.68rem', padding: '1px 6px', borderRadius: '4px', background: '#FEE2E2', color: '#991B1B', fontWeight: 600 }}>
-                          Out of Stock
-                        </span>
-                      )}
-                    </span>
-                    <span style={{ fontWeight: 700, color: plat.isBestPrice ? '#16A34A' : 'var(--db-text-main)' }}>
-                      {formatPrice(plat.price)}
-                    </span>
-                  </div>
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(290px, 1fr))',
+                gap: '1.25rem'
+              }}
+            >
+              {offers.map((offer, idx) => {
+                const isLowest = offer.price === minPrice || offer.isBestPrice;
+                const imageUrl = offer.imageUrl || offer.image;
+                const productUrl = offer.productUrl || offer.url;
+                const isRefurbished = (offer.condition || '').toLowerCase() === 'refurbished';
 
-                  <div className="db-compare-bar-track" style={{ height: '8px' }}>
-                    <div
-                      className={`db-compare-bar-fill ${plat.isBestPrice ? 'best' : ''}`}
-                      style={{ width: `${plat.barPercent || 65}%` }}
-                    />
+                return (
+                  <div
+                    key={`${offer.store}-${idx}`}
+                    className="db-deal-card"
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'space-between',
+                      border: isLowest ? '2px solid #22C55E' : '1px solid var(--db-border)',
+                      position: 'relative',
+                      background: '#FFFFFF',
+                      borderRadius: '12px',
+                      padding: '1.2rem'
+                    }}
+                  >
+                    <div>
+                      {/* Top Badges Row */}
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem', minHeight: '24px' }}>
+                        {isLowest ? (
+                          <span
+                            className="db-deal-badge-best"
+                            style={{
+                              position: 'static',
+                              background: '#DCFCE7',
+                              color: '#15803D',
+                              border: '1px solid #BBF7D0',
+                              fontSize: '0.7rem',
+                              fontWeight: 700,
+                              padding: '0.2rem 0.55rem',
+                              borderRadius: '4px'
+                            }}
+                          >
+                            Lowest price
+                          </span>
+                        ) : <span />}
+
+                        {/* Condition Badge */}
+                        <span
+                          style={{
+                            fontSize: '0.68rem',
+                            fontWeight: 700,
+                            padding: '0.2rem 0.5rem',
+                            borderRadius: '4px',
+                            background: isRefurbished ? '#FEF3C7' : '#EFF6FF',
+                            color: isRefurbished ? '#92400E' : '#1D4ED8',
+                            border: `1px solid ${isRefurbished ? '#FDE68A' : '#BFDBFE'}`,
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.04em'
+                          }}
+                        >
+                          {isRefurbished ? 'Refurbished' : 'New'}
+                        </span>
+                      </div>
+
+                      {/* Thumbnail / Product Image */}
+                      <div
+                        className="db-deal-thumb"
+                        style={{
+                          height: '140px',
+                          background: '#F8FAFC',
+                          borderRadius: '8px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          overflow: 'hidden',
+                          marginBottom: '0.85rem'
+                        }}
+                      >
+                        {imageUrl ? (
+                          <img
+                            src={imageUrl}
+                            alt={offer.title}
+                            style={{ maxHeight: '120px', maxWidth: '100%', objectFit: 'contain' }}
+                            onError={(e) => {
+                              e.target.style.display = 'none';
+                            }}
+                          />
+                        ) : (
+                          <span style={{ fontSize: '2.8rem' }}>🏬</span>
+                        )}
+                      </div>
+
+                      {/* Store Name */}
+                      <div className="db-deal-store" style={{ marginBottom: '0.25rem', fontSize: '0.75rem' }}>
+                        {offer.store}
+                      </div>
+
+                      {/* Product Title */}
+                      <h4
+                        className="db-deal-name"
+                        title={offer.title}
+                        style={{
+                          fontSize: '0.92rem',
+                          fontWeight: 700,
+                          lineHeight: '1.35',
+                          marginBottom: '0.6rem',
+                          display: '-webkit-box',
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: 'vertical',
+                          overflow: 'hidden',
+                          minHeight: '2.5em'
+                        }}
+                      >
+                        {offer.title}
+                      </h4>
+                    </div>
+
+                    {/* Price and CTA Button */}
+                    <div style={{ marginTop: 'auto', paddingTop: '0.75rem', borderTop: '1px solid #F1F5F9' }}>
+                      <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem', marginBottom: '0.75rem' }}>
+                        <span
+                          style={{
+                            fontSize: '1.35rem',
+                            fontWeight: 800,
+                            color: isLowest ? '#16A34A' : 'var(--db-text-main)'
+                          }}
+                        >
+                          {formatPrice(offer.price)}
+                        </span>
+                        {offer.originalPrice > offer.price && (
+                          <span style={{ fontSize: '0.78rem', color: 'var(--db-text-muted)', textDecoration: 'line-through' }}>
+                            {formatPrice(offer.originalPrice)}
+                          </span>
+                        )}
+                        {offer.discount > 0 && (
+                          <span style={{ fontSize: '0.72rem', color: '#16A34A', fontWeight: 700 }}>
+                            {offer.discount}% OFF
+                          </span>
+                        )}
+                      </div>
+
+                      <div style={{ display: 'flex', gap: '0.4rem' }}>
+                        <a
+                          href={productUrl || '#'}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="db-btn-clean db-btn-clean-primary"
+                          style={{
+                            flex: 1,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: '0.35rem',
+                            padding: '0.55rem',
+                            fontSize: '0.82rem',
+                            textDecoration: 'none'
+                          }}
+                        >
+                          <span>View on {offer.store}</span>
+                          <ExternalLink size={13} />
+                        </a>
+                        <button
+                          type="button"
+                          className="db-btn-clean db-btn-clean-icon"
+                          onClick={() =>
+                            openShareModal({
+                              productName: offer.title,
+                              platform: offer.store,
+                              url: productUrl || 'https://www.pricelens.io'
+                            })
+                          }
+                          title="Share deal"
+                          aria-label="Share deal"
+                        >
+                          <Share2 size={13} />
+                        </button>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
 
-          {/* Detailed Multi-Store Comparison Table */}
-          <div className="db-card db-card-primary" style={{ overflow: 'hidden' }}>
+          {/* ─── Detailed Store Comparisons Table ───────────────────────────── */}
+          <div className="db-card db-card-primary" style={{ overflow: 'hidden', marginBottom: '1.5rem' }}>
             <div className="db-card-header-clean">
-              <h3 className="db-card-title-sm">Direct Store Comparisons</h3>
-              <span className="db-badge-soft-blue">{platforms.length} retailers available</span>
+              <h3 className="db-card-title-sm">Direct Retailer Price Table</h3>
+              <span className="db-badge-soft-blue">{offers.length} verified listings</span>
             </div>
 
             <div className="db-table-responsive">
@@ -452,137 +531,76 @@ const ComparePricesScreen = () => {
                 <thead>
                   <tr>
                     <th>Store</th>
-                    <th>Price &amp; Discount</th>
-                    <th>Rating</th>
-                    <th>Availability</th>
-                    <th>Bank Offer / Perks</th>
-                    <th style={{ textAlign: 'right' }}>Action</th>
+                    <th>Product Title</th>
+                    <th>Condition</th>
+                    <th>Price</th>
+                    <th style={{ textAlign: 'right' }}>Direct Link</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {platforms.map((plat) => {
-                    const diffFromBest = plat.price - (bestPlatform.price || 0);
+                  {offers.map((offer, idx) => {
+                    const isLowest = offer.price === minPrice || offer.isBestPrice;
+                    const productUrl = offer.productUrl || offer.url;
                     return (
-                      <tr key={plat.platform} className={plat.isBestPrice ? 'db-table-row-best' : ''}>
+                      <tr key={`table-${offer.store}-${idx}`} className={isLowest ? 'db-table-row-best' : ''}>
                         <td>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-                            <span style={{ fontSize: '1.3rem' }}>{plat.emoji}</span>
-                            <div>
-                              <div style={{ fontWeight: 700, fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '5px' }}>
-                                <span>{plat.platform}</span>
-                                {plat.isDevelopmentProvider !== false && (
-                                  <span style={{ fontSize: '0.68rem', fontWeight: 500, color: 'var(--db-text-muted)' }}>
-                                    (Dev Provider)
-                                  </span>
-                                )}
-                              </div>
-                              {plat.isBestPrice && (
-                                <span className="db-deal-badge-best" style={{ position: 'static', marginTop: '2px' }}>
-                                  Best Deal
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                        </td>
-                        <td>
-                          <div
-                            style={{
-                              fontSize: '1.05rem',
-                              fontWeight: 800,
-                              color: plat.isBestPrice ? '#16A34A' : 'var(--db-text-main)',
-                            }}
-                          >
-                            {formatPrice(plat.price)}
-                          </div>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.72rem', marginTop: '2px' }}>
-                            {plat.originalPrice > plat.price && (
-                              <span style={{ textDecoration: 'line-through', color: 'var(--db-text-muted)' }}>
-                                {formatPrice(plat.originalPrice)}
-                              </span>
-                            )}
-                            {plat.discount > 0 && (
-                              <span style={{ color: '#16A34A', fontWeight: 600 }}>
-                                {plat.discount}% off
-                              </span>
-                            )}
-                            {diffFromBest > 0 && (
-                              <span style={{ color: 'var(--db-text-muted)' }}>
-                                (+{formatPrice(diffFromBest)})
+                          <div style={{ fontWeight: 700, fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            <span>{offer.store}</span>
+                            {isLowest && (
+                              <span className="db-deal-badge-best" style={{ position: 'static' }}>
+                                Lowest
                               </span>
                             )}
                           </div>
                         </td>
-                        <td>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.85rem' }}>
-                            <Star size={13} fill="#F59E0B" color="#F59E0B" />
-                            <strong>{plat.rating}</strong>
-                            <span style={{ color: 'var(--db-text-muted)', fontSize: '0.75rem' }}>
-                              ({(plat.reviewCount || 0).toLocaleString()})
-                            </span>
-                          </div>
-                        </td>
-                        <td>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.82rem' }}>
-                            <span
-                              style={{
-                                width: '7px',
-                                height: '7px',
-                                borderRadius: '50%',
-                                background: plat.isAvailable && plat.stock?.toLowerCase().includes('in stock') ? '#16A34A' : '#EF4444',
-                              }}
-                            />
-                            <span style={{ fontWeight: plat.isAvailable ? 500 : 700, color: plat.isAvailable ? 'inherit' : '#DC2626' }}>
-                              {plat.isAvailable ? plat.stock : 'Out of Stock'}
-                            </span>
-                          </div>
-                          <div style={{ fontSize: '0.72rem', color: 'var(--db-text-muted)' }}>
-                            {plat.delivery}
-                          </div>
-                        </td>
-                        <td>
-                          <span style={{ fontSize: '0.78rem', color: 'var(--db-text-secondary)' }}>
-                            {plat.bankOffer}
+                        <td style={{ maxWidth: '300px' }}>
+                          <span style={{ fontSize: '0.82rem', color: 'var(--db-text-main)' }}>
+                            {offer.title}
                           </span>
                         </td>
+                        <td>
+                          <span
+                            style={{
+                              fontSize: '0.72rem',
+                              fontWeight: 600,
+                              padding: '0.15rem 0.45rem',
+                              borderRadius: '4px',
+                              background: (offer.condition || '').toLowerCase() === 'refurbished' ? '#FEF3C7' : '#EFF6FF',
+                              color: (offer.condition || '').toLowerCase() === 'refurbished' ? '#92400E' : '#1D4ED8'
+                            }}
+                          >
+                            {offer.condition === 'refurbished' ? 'Refurbished' : 'New'}
+                          </span>
+                        </td>
+                        <td>
+                          <strong style={{ fontSize: '1rem', color: isLowest ? '#16A34A' : 'var(--db-text-main)' }}>
+                            {formatPrice(offer.price)}
+                          </strong>
+                        </td>
                         <td style={{ textAlign: 'right' }}>
-                          <div style={{ display: 'inline-flex', gap: '0.4rem' }}>
-                            <button
-                              className="db-btn-clean db-btn-clean-primary"
-                              disabled={plat.isAvailable === false}
-                              style={plat.isAvailable === false ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
-                              onClick={() => handleOpenStore(plat.url)}
-                            >
-                              {plat.isAvailable === false ? (
-                                'Out of Stock'
-                              ) : (
-                                <>View Deal <ExternalLink size={12} /></>
-                              )}
-                            </button>
-                            <button
-                              className="db-btn-clean db-btn-clean-icon"
-                              onClick={() =>
-                                openShareModal({
-                                  productName: currentProduct.name,
-                                  platform: plat.platform,
-                                  url: plat.url,
-                                })
-                              }
-                              title="Share link"
-                            >
-                              <Share2 size={13} />
-                            </button>
-                          </div>
+                          <a
+                            href={productUrl || '#'}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="db-btn-clean db-btn-clean-primary"
+                            style={{
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '0.35rem',
+                              fontSize: '0.78rem',
+                              padding: '0.35rem 0.75rem',
+                              textDecoration: 'none'
+                            }}
+                          >
+                            <span>Open Store</span>
+                            <ExternalLink size={12} />
+                          </a>
                         </td>
                       </tr>
                     );
                   })}
                 </tbody>
               </table>
-            </div>
-
-            <div style={{ padding: '0.75rem 1.25rem', background: '#F8FAFC', borderTop: '1px solid var(--db-border-clean)', fontSize: '0.75rem', color: 'var(--db-text-muted)', display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <ShieldCheck size={14} color="#2563EB" />
-              <span>Prices and store availability reflect tracked store provider snapshots across sales cycles.</span>
             </div>
           </div>
         </>

@@ -1,8 +1,9 @@
 import { Router } from 'express';
+import { generateToken } from '../utils/jwt.util.js';
 
 const router = Router();
 
-// Temporary route structure ready for authentication implementation in Step 3
+// /v1/auth/status
 router.get('/status', (req, res) => {
   res.status(200).json({
     success: true,
@@ -21,15 +22,23 @@ router.post('/google', async (req, res) => {
       });
     }
 
+    const userPayload = profile || {
+      id: 'usr_google_' + Date.now(),
+      email: 'user@gmail.com',
+      name: 'Google User'
+    };
+
+    const token = generateToken({
+      id: userPayload.id,
+      email: userPayload.email,
+      fullName: userPayload.name || userPayload.fullName
+    });
+
     return res.status(200).json({
       success: true,
       message: 'Google authentication successful',
-      token: 'jwt_google_auth_token_' + Date.now(),
-      user: profile || {
-        id: 'usr_google_' + Date.now(),
-        email: 'user@gmail.com',
-        name: 'Google User'
-      }
+      token,
+      user: userPayload
     });
   } catch (error) {
     return res.status(500).json({
@@ -40,3 +49,4 @@ router.post('/google', async (req, res) => {
 });
 
 export default router;
+

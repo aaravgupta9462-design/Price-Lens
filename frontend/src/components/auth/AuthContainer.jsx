@@ -889,8 +889,17 @@ export const AuthContainer = () => {
       </main>
 
       {/* ─── Footer ───────────────────────────────────────────────────────── */}
-      <footer className="saas-footer-text">
-        PriceLens © 2026 — Modern SaaS Price Intelligence Platform. All rights reserved.
+      <footer className="saas-footer-text" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', alignItems: 'center', padding: '1rem', textAlign: 'center' }}>
+        <div>PriceLens &copy; 2026 &mdash; Smart Shopping &amp; Price Intelligence Platform.</div>
+        <div style={{ fontSize: '0.75rem', color: '#64748B' }}>
+          <strong>&ldquo;As an Amazon Associate I earn from qualifying purchases.&rdquo;</strong>
+        </div>
+        <div style={{ display: 'flex', gap: '1rem', fontSize: '0.78rem', marginTop: '0.2rem' }}>
+          <a href="/" style={{ color: '#3B82F6', textDecoration: 'underline' }}>Home / Compare</a>
+          <a href="/about" style={{ color: '#3B82F6', textDecoration: 'underline' }}>About</a>
+          <a href="/privacy" style={{ color: '#3B82F6', textDecoration: 'underline' }}>Privacy Policy</a>
+          <a href="/terms" style={{ color: '#3B82F6', textDecoration: 'underline' }}>Terms &amp; Disclaimer</a>
+        </div>
       </footer>
     </div>
   );

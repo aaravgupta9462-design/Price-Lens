@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useState } from 'react';
-import { INITIAL_SAVED_PRODUCTS, INITIAL_PRICE_ALERTS, NOTIFICATIONS } from '../data/mockData';
+import React, { createContext, useContext, useState, useCallback } from 'react';
+import { INITIAL_SAVED_PRODUCTS, NOTIFICATIONS } from '../data/mockData';
+import { apiService } from '../services/api';
 
 const DashboardContext = createContext(null);
 
@@ -17,8 +18,29 @@ export const DashboardProvider = ({ children }) => {
   // Saved / Wishlist items
   const [savedProducts, setSavedProducts] = useState(INITIAL_SAVED_PRODUCTS);
 
-  // Price alerts
-  const [priceAlerts, setPriceAlerts] = useState(INITIAL_PRICE_ALERTS);
+  // Real backend price alerts state (no mock INITIAL_PRICE_ALERTS fallback)
+  const [priceAlerts, setPriceAlerts] = useState([]);
+  const [isLoadingAlerts, setIsLoadingAlerts] = useState(false);
+  const [alertsError, setAlertsError] = useState(null);
+
+  // Real backend Review Intelligence state (no mock REVIEW_INTELLIGENCE fallback)
+  const [reviewIntelligence, setReviewIntelligence] = useState(null);
+  const [isLoadingReviewIntelligence, setIsLoadingReviewIntelligence] = useState(false);
+  const [reviewIntelligenceError, setReviewIntelligenceError] = useState(null);
+
+  // Global Create Alert Modal
+  const [createAlertModal, setCreateAlertModal] = useState({
+    open: false,
+    product: null,
+  });
+
+  const openCreateAlertModal = (product) => {
+    setCreateAlertModal({ open: true, product });
+  };
+
+  const closeCreateAlertModal = () => {
+    setCreateAlertModal({ open: false, product: null });
+  };
 
   // Global Share Modal
   const [shareModal, setShareModal] = useState({
@@ -27,6 +49,14 @@ export const DashboardProvider = ({ children }) => {
     productName: '',
     url: '',
   });
+
+  const openShareModal = ({ platform, productName, url }) => {
+    setShareModal({ open: true, platform, productName, url });
+  };
+
+  const closeShareModal = () => {
+    setShareModal({ open: false, platform: '', productName: '', url: '' });
+  };
 
   // Global Toast
   const [toast, setToast] = useState({
@@ -42,16 +72,9 @@ export const DashboardProvider = ({ children }) => {
     }, 2800);
   };
 
-  const openShareModal = ({ platform, productName, url }) => {
-    setShareModal({ open: true, platform, productName, url });
-  };
-
-  const closeShareModal = () => {
-    setShareModal({ open: false, platform: '', productName: '', url: '' });
-  };
-
+  // Navigation handlers
   const viewProductDetail = (productId) => {
-    setSelectedProductId(productId);
+    if (productId) setSelectedProductId(productId);
     setActiveNav('product-detail');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -62,18 +85,13 @@ export const DashboardProvider = ({ children }) => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const viewReviewIntelligence = (productId) => {
-    if (productId) setSelectedProductId(productId);
-    setActiveNav('reviews');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
   const viewPriceHistory = (productId) => {
     if (productId) setSelectedProductId(productId);
     setActiveNav('history');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  // Wishlist handlers
   const toggleSaveProduct = (product) => {
     const exists = savedProducts.find((p) => p.productId === product.id || p.id === product.id);
     if (exists) {
@@ -102,10 +120,88 @@ export const DashboardProvider = ({ children }) => {
     showToast('Product removed from Wishlist', 'info');
   };
 
-  const removePriceAlert = (id) => {
-    setPriceAlerts((prev) => prev.filter((a) => a.id !== id));
-    showToast('Price alert removed', 'info');
+  // Alerts API handlers
+  const fetchAlerts = useCallback(async () => {
+    setIsLoadingAlerts(true);
+    setAlertsError(null);
+    try {
+      const data = await apiService.getAlerts();
+      setPriceAlerts(data || []);
+    } catch (err) {
+      console.warn('[DashboardContext] Failed to load alerts:', err.message);
+      setAlertsError(err.message || 'Failed to load price target alerts.');
+      setPriceAlerts([]);
+    } finally {
+      setIsLoadingAlerts(false);
+    }
+  }, []);
+
+  const createPriceAlert = async (alertData) => {
+    try {
+      const created = await apiService.createAlert(alertData);
+      setPriceAlerts((prev) => [created, ...prev]);
+      showToast('Price alert created successfully!', 'success');
+      return created;
+    } catch (err) {
+      showToast(err.message || 'Failed to create price alert', 'error');
+      throw err;
+    }
   };
+
+  const updatePriceAlert = async (id, updateData) => {
+    try {
+      const updated = await apiService.updateAlert(id, updateData);
+      setPriceAlerts((prev) => prev.map((a) => (a.id === id ? updated : a)));
+      showToast('Price alert updated successfully!', 'success');
+      return updated;
+    } catch (err) {
+      showToast(err.message || 'Failed to update price alert', 'error');
+      throw err;
+    }
+  };
+
+  const removePriceAlert = async (id) => {
+    try {
+      await apiService.deleteAlert(id);
+      setPriceAlerts((prev) => prev.filter((a) => a.id !== id));
+      showToast('Price alert removed', 'info');
+    } catch (err) {
+      showToast(err.message || 'Failed to delete price alert', 'error');
+      throw err;
+    }
+  };
+
+  // Review Intelligence API handlers
+  const fetchReviewIntelligence = useCallback(async (targetProductId) => {
+    const pId = targetProductId || selectedProductId;
+    if (!pId) return;
+
+    setIsLoadingReviewIntelligence(true);
+    setReviewIntelligenceError(null);
+    setReviewIntelligence(null); // Clear stale review data when fetching/switching products
+
+    try {
+      const data = await apiService.getReviewIntelligence(pId);
+      setReviewIntelligence(data);
+      setReviewIntelligenceError(null);
+    } catch (err) {
+      console.warn('[DashboardContext] Failed to load review intelligence:', err.message);
+      setReviewIntelligenceError(err.message || 'Failed to load Review Intelligence.');
+      setReviewIntelligence(null);
+    } finally {
+      setIsLoadingReviewIntelligence(false);
+    }
+  }, [selectedProductId]);
+
+  const viewReviewIntelligence = useCallback((productId) => {
+    const idToUse = productId || selectedProductId;
+    if (idToUse) {
+      setSelectedProductId(idToUse);
+      fetchReviewIntelligence(idToUse);
+    }
+    setActiveNav('reviews');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [selectedProductId, fetchReviewIntelligence]);
 
   const markAllNotificationsRead = () => {
     setNotifications((prev) => prev.map((n) => ({ ...n, unread: false })));
@@ -131,13 +227,25 @@ export const DashboardProvider = ({ children }) => {
         toggleSaveProduct,
         removeSavedProduct,
         priceAlerts,
+        isLoadingAlerts,
+        alertsError,
+        fetchAlerts,
+        createPriceAlert,
+        updatePriceAlert,
         removePriceAlert,
+        reviewIntelligence,
+        isLoadingReviewIntelligence,
+        reviewIntelligenceError,
+        fetchReviewIntelligence,
+        viewReviewIntelligence,
         shareModal,
         openShareModal,
         closeShareModal,
+        createAlertModal,
+        openCreateAlertModal,
+        closeCreateAlertModal,
         viewProductDetail,
         viewPriceComparison,
-        viewReviewIntelligence,
         viewPriceHistory,
         toast,
         showToast,

@@ -17,7 +17,7 @@ import { useDashboard } from '../../context/DashboardContext';
 import { useAuth } from '../../context/AuthContext';
 import NotificationDropdown from './NotificationDropdown';
 
-const TopNavbar = ({ onGoToLanding }) => {
+const TopNavbar = () => {
   const {
     activeNav,
     setActiveNav,
@@ -60,6 +60,25 @@ const TopNavbar = ({ onGoToLanding }) => {
             <span>Real-time price comparisons & review authenticity intelligence across 100+ stores</span>
           </div>
           <div className="db-top-ribbon-right">
+            <a
+              href="/about"
+              onClick={(e) => {
+                e.preventDefault();
+                window.history.pushState({}, '', '/about');
+                window.dispatchEvent(new PopStateEvent('popstate'));
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              style={{
+                color: 'var(--db-text-muted)',
+                fontSize: '0.74rem',
+                textDecoration: 'underline',
+                marginRight: '0.85rem',
+                cursor: 'pointer'
+              }}
+              title="About PriceLens & How It Works"
+            >
+              How It Works
+            </a>
             <span className="db-ribbon-meta">IN · INR (₹)</span>
           </div>
         </div>
@@ -134,94 +153,96 @@ const TopNavbar = ({ onGoToLanding }) => {
               <NotificationDropdown />
             </div>
 
-            {/* User Profile / Menu */}
-            <div style={{ position: 'relative' }}>
-              <div
-                className="db-user-pill-btn"
-                onClick={() => setUserMenuOpen(!userMenuOpen)}
-                title="User Account"
-              >
-                <div className="db-user-avatar-circle">{initial}</div>
-                <span className="db-user-name-text">{displayName}</span>
-                <ChevronDown size={14} className="db-user-chevron" />
-              </div>
+            {/* User Profile / Sign In */}
+            {user ? (
+              <div style={{ position: 'relative' }}>
+                <div
+                  className="db-user-pill-btn"
+                  onClick={() => setUserMenuOpen(!userMenuOpen)}
+                  title="User Account"
+                >
+                  <div className="db-user-avatar-circle">{initial}</div>
+                  <span className="db-user-name-text">{displayName}</span>
+                  <ChevronDown size={14} className="db-user-chevron" />
+                </div>
 
-              {userMenuOpen && (
-                <>
-                  <div
-                    className="db-menu-backdrop"
-                    onClick={() => setUserMenuOpen(false)}
-                  />
-                  <div className="db-user-dropdown-menu">
-                    <div className="db-user-dropdown-header">
-                      <strong>{displayName}</strong>
-                      <span>{user?.email || 'aarav@pricelens.io'}</span>
-                    </div>
+                {userMenuOpen && (
+                  <>
+                    <div
+                      className="db-menu-backdrop"
+                      onClick={() => setUserMenuOpen(false)}
+                    />
+                    <div className="db-user-dropdown-menu">
+                      <div className="db-user-dropdown-header">
+                        <strong>{displayName}</strong>
+                        <span>{user?.email || 'user@pricelens.io'}</span>
+                      </div>
 
-                    <div className="db-user-dropdown-body">
-                      <button
-                        className="db-dropdown-item"
-                        onClick={() => {
-                          setUserMenuOpen(false);
-                          setActiveNav('settings');
-                        }}
-                      >
-                        <Settings size={15} />
-                        <span>Account Settings</span>
-                      </button>
-
-                      <button
-                        className="db-dropdown-item"
-                        onClick={() => {
-                          setUserMenuOpen(false);
-                          setActiveNav('wishlist');
-                        }}
-                      >
-                        <Heart size={15} />
-                        <span>Saved Products ({savedProducts.length})</span>
-                      </button>
-
-                      <button
-                        className="db-dropdown-item"
-                        onClick={() => {
-                          setUserMenuOpen(false);
-                          setActiveNav('alerts');
-                        }}
-                      >
-                        <Bell size={15} />
-                        <span>Price Alerts ({priceAlerts.length})</span>
-                      </button>
-
-                      {onGoToLanding && (
+                      <div className="db-user-dropdown-body">
                         <button
                           className="db-dropdown-item"
                           onClick={() => {
                             setUserMenuOpen(false);
-                            onGoToLanding();
+                            setActiveNav('settings');
                           }}
                         >
-                          <Zap size={15} />
-                          <span>View Landing Page</span>
+                          <Settings size={15} />
+                          <span>Account Settings</span>
                         </button>
-                      )}
 
-                      <div className="db-dropdown-divider" />
+                        <button
+                          className="db-dropdown-item"
+                          onClick={() => {
+                            setUserMenuOpen(false);
+                            setActiveNav('wishlist');
+                          }}
+                        >
+                          <Heart size={15} />
+                          <span>Saved Products ({savedProducts.length})</span>
+                        </button>
 
-                      <button
-                        className="db-dropdown-item logout"
-                        onClick={() => {
-                          setUserMenuOpen(false);
-                          logout();
-                        }}
-                      >
-                        <LogOut size={15} />
-                        <span>Sign Out</span>
-                      </button>
+                        <button
+                          className="db-dropdown-item"
+                          onClick={() => {
+                            setUserMenuOpen(false);
+                            setActiveNav('alerts');
+                          }}
+                        >
+                          <Bell size={15} />
+                          <span>Price Alerts ({priceAlerts.length})</span>
+                        </button>
+
+                        <div className="db-dropdown-divider" />
+
+                        <button
+                          className="db-dropdown-item logout"
+                          onClick={() => {
+                            setUserMenuOpen(false);
+                            logout();
+                          }}
+                        >
+                          <LogOut size={15} />
+                          <span>Sign Out</span>
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                </>
-              )}
-            </div>
+                  </>
+                )}
+              </div>
+            ) : (
+              <button
+                className="db-btn-clean db-btn-clean-primary"
+                style={{ fontSize: '0.82rem', padding: '0.45rem 0.95rem', borderRadius: '8px' }}
+                onClick={() => {
+                  window.history.pushState({}, '', '/login');
+                  window.dispatchEvent(new PopStateEvent('popstate'));
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                title="Sign In to PriceLens"
+              >
+                Sign In
+              </button>
+            )}
           </div>
         </div>
       </div>
