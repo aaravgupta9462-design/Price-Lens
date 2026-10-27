@@ -189,7 +189,7 @@ const ComparePricesScreen = () => {
       {/* ─── Loading State ─────────────────────────────────────────────────── */}
       {loading ? (
         <div className="db-card db-card-primary" style={{ padding: '3.5rem 2rem', textAlign: 'center', marginBottom: '1.5rem' }}>
-          <Loader2 size={36} className="animate-spin" style={{ margin: '0 auto 1rem', color: '#2563EB' }} />
+          <Loader2 size={36} className="animate-spin" style={{ margin: '0 auto 1rem', color: 'var(--db-primary)' }} />
           <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--db-text-main)' }}>
             Stores se live prices fetch kar rahe hain...
           </h3>
@@ -601,6 +601,10 @@ const ComparePricesScreen = () => {
                   })}
                 </tbody>
               </table>
+            </div>
+            <div style={{ padding: '0.75rem 1.25rem', background: '#F8FAFC', borderTop: '1px solid var(--db-border-clean)', fontSize: '0.75rem', color: 'var(--db-text-muted)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <ShieldCheck size={14} color="var(--db-primary)" />
+              <span>Prices and store availability reflect tracked store provider snapshots across sales cycles.</span>
             </div>
           </div>
         </>

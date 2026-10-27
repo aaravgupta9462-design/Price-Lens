@@ -10,7 +10,7 @@ const SavedProducts = () => {
     <div className="db-card db-card-primary">
       <div className="db-card-header-clean">
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <Bookmark size={18} style={{ color: '#2563EB' }} />
+          <Bookmark size={18} style={{ color: 'var(--db-primary)' }} />
           <h3 className="db-card-title-sm">Saved for Later</h3>
         </div>
         <button

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import { AuthContainer } from './components/auth/AuthContainer';
 import DashboardLayout from './components/dashboard/DashboardLayout';
 import AboutPage from './pages/AboutPage';
@@ -7,6 +7,7 @@ import PrivacyPage from './pages/PrivacyPage';
 import TermsPage from './pages/TermsPage';
 
 const AppContent = () => {
+  const { isAuthenticated } = useAuth();
   const [currentPath, setCurrentPath] = useState(() => window.location.pathname || '/');
 
   useEffect(() => {

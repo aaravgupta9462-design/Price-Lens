@@ -18,7 +18,7 @@ const RecentSearches = () => {
     <div className="db-card db-card-primary" id="recent-searches-section">
       <div className="db-card-header-clean">
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <Clock size={18} style={{ color: '#2563EB' }} />
+          <Clock size={18} style={{ color: 'var(--db-primary)' }} />
           <h3 className="db-card-title-sm">Recent Searches</h3>
         </div>
         <span className="db-badge-soft-blue">3 recent</span>

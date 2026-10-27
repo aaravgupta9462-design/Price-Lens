@@ -91,15 +91,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Update Profile handler
-  const updateProfile = (updatedFields) => {
-    setUser((prev) => {
-      const updated = { ...(prev || {}), ...updatedFields };
-      localStorage.setItem('pricelens_user', JSON.stringify(updated));
-      return updated;
-    });
-  };
-
   // Logout handler
   const logout = () => {
     setUser(null);
@@ -132,7 +123,6 @@ export const AuthProvider = ({ children }) => {
         login,
         signup,
         loginWithGoogle,
-        updateProfile,
         logout,
         resetPassword,
         toasts,
