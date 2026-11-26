@@ -1246,17 +1246,6 @@ export const NOTIFICATIONS = [
 export const VERIFIED_COUPONS = [
   {
     id: 'c1',
-    store: 'Flipkart',
-    logo: '🛍️',
-    code: 'FKAXIS500',
-    discount: '₹500 Instant Discount',
-    minOrder: '₹5,000',
-    category: 'Electronics & Mobiles',
-    expiry: 'Expires in 2 days',
-    verified: true,
-  },
-  {
-    id: 'c2',
     store: 'Amazon',
     logo: '🛒',
     code: 'ICICIFEST1500',
@@ -1267,7 +1256,7 @@ export const VERIFIED_COUPONS = [
     verified: true,
   },
   {
-    id: 'c3',
+    id: 'c2',
     store: 'Amazon',
     logo: '🛒',
     code: 'AMZPRIME1000',
@@ -1275,6 +1264,17 @@ export const VERIFIED_COUPONS = [
     minOrder: '₹15,000',
     category: 'Apple & Laptops',
     expiry: 'Verified Today',
+    verified: true,
+  },
+  {
+    id: 'c3',
+    store: 'Flipkart',
+    logo: '🛍️',
+    code: 'FKAXIS500',
+    discount: '₹500 Instant Discount',
+    minOrder: '₹5,000',
+    category: 'Electronics & Mobiles',
+    expiry: 'Expires in 2 days',
     verified: true,
   },
   {

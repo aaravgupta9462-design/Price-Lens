@@ -8,6 +8,7 @@ import { getAffiliateUrl } from '../../utils/affiliate';
 export const CouponsSection = () => {
   const { showToast } = useDashboard();
   const [copiedId, setCopiedId] = useState(null);
+  const [selectedStore, setSelectedStore] = useState('ALL');
 
   const handleCopy = (coupon) => {
     if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -29,10 +30,17 @@ export const CouponsSection = () => {
       Croma: 'https://www.croma.com',
       'Reliance Digital': 'https://www.reliancedigital.in',
     };
-    const targetUrl = rawUrls[store] || 'https://www.flipkart.com';
+    const targetUrl = rawUrls[store] || 'https://www.amazon.in';
     const affiliateUrl = getAffiliateUrl(targetUrl, store);
     window.open(affiliateUrl, '_blank', 'noopener,noreferrer');
   };
+
+  const displayedCoupons = selectedStore === 'ALL'
+    ? VERIFIED_COUPONS
+    : VERIFIED_COUPONS.filter((c) => c.store.toLowerCase() === selectedStore.toLowerCase());
+
+  const amazonCount = VERIFIED_COUPONS.filter((c) => c.store.toLowerCase() === 'amazon').length;
+  const flipkartCount = VERIFIED_COUPONS.filter((c) => c.store.toLowerCase() === 'flipkart').length;
 
   return (
     <section id="coupons-section" className="pl-coupons-section" aria-label="Verified Coupons & Bank Codes">
@@ -56,9 +64,47 @@ export const CouponsSection = () => {
           </div>
         </div>
 
+        {/* Store Filter Tabs (Amazon First, Flipkart Second) */}
+        <div className="pl-coupons-filter-bar" role="tablist" aria-label="Filter coupons by store">
+          <button
+            type="button"
+            className={`pl-coupon-filter-tab ${selectedStore === 'ALL' ? 'active' : ''}`}
+            onClick={() => setSelectedStore('ALL')}
+            role="tab"
+            aria-selected={selectedStore === 'ALL'}
+          >
+            <span>All Stores</span>
+            <span className="pl-filter-count">{VERIFIED_COUPONS.length}</span>
+          </button>
+
+          <button
+            type="button"
+            className={`pl-coupon-filter-tab ${selectedStore === 'Amazon' ? 'active' : ''}`}
+            onClick={() => setSelectedStore('Amazon')}
+            role="tab"
+            aria-selected={selectedStore === 'Amazon'}
+          >
+            <span className="pl-store-filter-dot amazon" />
+            <span>Amazon</span>
+            <span className="pl-filter-count">{amazonCount}</span>
+          </button>
+
+          <button
+            type="button"
+            className={`pl-coupon-filter-tab ${selectedStore === 'Flipkart' ? 'active' : ''}`}
+            onClick={() => setSelectedStore('Flipkart')}
+            role="tab"
+            aria-selected={selectedStore === 'Flipkart'}
+          >
+            <span className="pl-store-filter-dot flipkart" />
+            <span>Flipkart</span>
+            <span className="pl-filter-count">{flipkartCount}</span>
+          </button>
+        </div>
+
         {/* Coupon Cards Grid */}
         <div className="pl-coupons-cards-grid">
-          {VERIFIED_COUPONS.map((coupon) => {
+          {displayedCoupons.map((coupon) => {
             const isCopied = copiedId === coupon.id;
 
             return (
