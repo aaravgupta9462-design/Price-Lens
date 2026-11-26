@@ -244,11 +244,15 @@ export const Hero = () => {
             amazonUrl:
               resolved.store === 'Amazon'
                 ? resolved.url
-                : amzOffer?.url || `https://www.amazon.in/s?k=${encodeURIComponent(resolved.productName)}`,
+                : (amzOffer?.url && amzOffer.url.includes('amazon.')
+                    ? amzOffer.url
+                    : `https://www.amazon.in/s?k=${encodeURIComponent(resolved.productName)}`),
             flipkartUrl:
               resolved.store === 'Flipkart'
                 ? resolved.url
-                : fkOffer?.url || `https://www.flipkart.com/search?q=${encodeURIComponent(resolved.productName)}`,
+                : (fkOffer?.url && fkOffer.url.includes('flipkart.')
+                    ? fkOffer.url
+                    : `https://www.flipkart.com/search?q=${encodeURIComponent(resolved.productName)}`),
           });
 
           setSelectedProductId(customId);

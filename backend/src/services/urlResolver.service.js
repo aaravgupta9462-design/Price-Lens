@@ -147,18 +147,38 @@ async function fetchSerpApiStoreOffers(query) {
     const data = await res.json();
     const results = data?.shopping_results || [];
 
+    const ensureDirectStoreUrl = (candidateUrl, storeName, fallbackTitle) => {
+      if (candidateUrl && typeof candidateUrl === 'string') {
+        const lower = candidateUrl.toLowerCase();
+        if (storeName === 'Amazon' && (lower.includes('amazon.in') || lower.includes('amzn.in'))) {
+          return candidateUrl;
+        }
+        if (storeName === 'Flipkart' && lower.includes('flipkart.com')) {
+          return candidateUrl;
+        }
+      }
+      const q = encodeURIComponent(fallbackTitle || query);
+      return storeName === 'Amazon'
+        ? `https://www.amazon.in/s?k=${q}`
+        : `https://www.flipkart.com/search?q=${q}`;
+    };
+
     const parseItem = (item, storeName) => ({
       store: storeName,
       title: item.title,
       price: item.extracted_price || Number(String(item.price || '').replace(/[^\d.]/g, '')) || null,
-      url: item.link || item.product_link || null,
+      url: ensureDirectStoreUrl(item.link || item.product_link, storeName, item.title || query),
       imageUrl: item.thumbnail || null,
       rating: item.rating || 4.4,
       source: 'serpapi',
     });
 
     const amzItem = results.find((r) => (r.source || '').toLowerCase().includes('amazon'));
-    const fkItem = results.find((r) => (r.source || '').toLowerCase().includes('flipkart'));
+    const fkItem =
+      results.find((r) => {
+        const src = (r.source || '').toLowerCase();
+        return src === 'flipkart' || (src.includes('flipkart') && !src.includes('shopsy'));
+      }) || results.find((r) => (r.source || '').toLowerCase().includes('flipkart'));
 
     return {
       amazon: amzItem ? parseItem(amzItem, 'Amazon') : null,
