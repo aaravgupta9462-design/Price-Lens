@@ -3359,24 +3359,39 @@
 }
 
 .db-nav-tab-btn.active {
-  background: linear-gradient(135deg, #6842FF 0%, #3478F6 100%);
-  border-color: rgba(255, 255, 255, 0.35);
+  background: transparent;
+  border-color: transparent;
   color: #FFFFFF !important;
   font-weight: 700;
-  box-shadow:
-    0 4px 18px rgba(104, 66, 255, 0.42),
-    0 2px 6px rgba(52, 120, 246, 0.28),
-    inset 0 1px 0 rgba(255, 255, 255, 0.38);
+  box-shadow: none;
   transform: translateY(0);
 }
 
 .db-nav-tab-btn.active:hover {
-  background: linear-gradient(135deg, #5c35ff 0%, #286df5 100%);
+  background: transparent;
   color: #FFFFFF !important;
+  box-shadow: none;
+}
+
+.db-nav-active-pill-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, #6842FF 0%, #3478F6 100%);
+  border: 1px solid rgba(255, 255, 255, 0.35);
   box-shadow:
-    0 6px 22px rgba(104, 66, 255, 0.48),
-    0 2px 8px rgba(52, 120, 246, 0.32),
-    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    0 4px 18px rgba(104, 66, 255, 0.42),
+    0 2px 6px rgba(52, 120, 246, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.38);
+}
+
+.db-nav-tab-content {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
 }
 
 .db-nav-tab-icon {
@@ -9437,4 +9452,112 @@
   border-radius: 50%;
   background: #119B67;
   box-shadow: 0 0 0 2px rgba(17, 155, 103, 0.25);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   GLOBAL SCROLL OFFSETS & PREMIUM SITE-WIDE MICRO-ANIMATIONS
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+#extension-section,
+#popular-deals,
+#coupons-section,
+#category,
+#price-comparison-section,
+#price-history-section,
+#buy-advisor,
+#alerts,
+#how-it-works,
+#faq-section {
+  scroll-margin-top: 96px;
+}
+
+/* Shimmer sweep on primary hero & alert CTA buttons */
+.pl-search-submit-btn,
+.pl-alert-cta-btn,
+.pl-extension-cta-btn {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease !important;
+}
+
+.pl-search-submit-btn::after,
+.pl-alert-cta-btn::after,
+.pl-extension-cta-btn::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.28) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: skewX(-20deg);
+  animation: plButtonShimmer 4.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes plButtonShimmer {
+  0%, 65% {
+    left: -120%;
+  }
+  100% {
+    left: 160%;
+  }
+}
+
+/* Interactive card hover lift & border glow across all sections */
+.pl-popular-deal-card,
+.pl-category-tile-card,
+.pl-step-card,
+.pl-coupon-ticket-card,
+.pl-live-store-card,
+.pl-future-dock-item,
+.pl-faq-item {
+  transition: transform 0.26s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.26s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.22s ease !important;
+}
+
+.pl-popular-deal-card:hover,
+.pl-category-tile-card:hover,
+.pl-step-card:hover {
+  transform: translateY(-5px) !important;
+  box-shadow: 0 16px 36px -8px rgba(79, 70, 229, 0.14), 0 4px 12px rgba(17, 19, 34, 0.05) !important;
+}
+
+/* Pulsing live status dots across footer & cards */
+.pl-footer-status-dot,
+.pl-green-pulse-dot,
+.pl-eyebrow-dot {
+  animation: plLiveDotBeat 2.2s ease-in-out infinite;
+}
+
+@keyframes plLiveDotBeat {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.32);
+    opacity: 0.72;
+  }
+}
+
+/* Animated gradient flow on Hero accent text */
+.pl-headline-gradient-text {
+  background-size: 200% auto;
+  animation: plGradientFlow 6s ease infinite;
+}
+
+@keyframes plGradientFlow {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
 }

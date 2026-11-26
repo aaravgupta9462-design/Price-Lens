@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { motion } from 'framer-motion';
 import {
   Flame,
   TrendingDown,
@@ -28,6 +29,7 @@ const TopNavbar = ({ onOpenAuth }) => {
   const { user, logout } = useAuth();
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('deals');
+  const isProgrammaticScrollRef = useRef(false);
 
   const displayName = user?.name || user?.email?.split('@')[0] || 'Purvansh Khandelwal';
   const initial = displayName.charAt(0).toUpperCase();
@@ -89,6 +91,7 @@ const TopNavbar = ({ onOpenAuth }) => {
 
     let ticking = false;
     const handleScroll = () => {
+      if (isProgrammaticScrollRef.current) return;
       if (!ticking) {
         window.requestAnimationFrame(() => {
           if (window.scrollY < 260) {
@@ -98,20 +101,21 @@ const TopNavbar = ({ onOpenAuth }) => {
           }
 
           const orderedSections = [
+            { scrollId: 'extension-section', tabId: 'extension' },
             { scrollId: 'popular-deals', tabId: 'deals' },
             { scrollId: 'coupons-section', tabId: 'coupons' },
             { scrollId: 'category', tabId: 'categories' },
             { scrollId: 'price-comparison-section', tabId: 'compare' },
             { scrollId: 'price-history-section', tabId: 'history' },
             { scrollId: 'buy-advisor', tabId: 'advisor' },
-            { scrollId: 'extension-section', tabId: 'extension' },
           ];
 
           let currentActive = 'deals';
           for (const sec of orderedSections) {
             const el = document.getElementById(sec.scrollId);
             if (el) {
-              const top = el.offsetTop - 140;
+              const rect = el.getBoundingClientRect();
+              const top = rect.top + window.scrollY - 140;
               if (window.scrollY >= top) {
                 currentActive = sec.tabId;
               }
@@ -132,6 +136,10 @@ const TopNavbar = ({ onOpenAuth }) => {
     const tabObj = typeof tab === 'string' ? navTabs.find((t) => t.id === tab) : tab;
     const tabId = tabObj ? tabObj.id : tab;
     setActiveTab(tabId);
+    isProgrammaticScrollRef.current = true;
+    setTimeout(() => {
+      isProgrammaticScrollRef.current = false;
+    }, 800);
 
     if (activeNav !== 'dashboard') {
       setActiveNav('dashboard');
@@ -143,17 +151,11 @@ const TopNavbar = ({ onOpenAuth }) => {
       setTimeout(() => {
         const el = document.getElementById(scrollTarget);
         if (el) {
-          const headerOffset = 84;
-          const elementPosition = el.getBoundingClientRect().top;
-          const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-          window.scrollTo({
-            top: offsetPosition,
-            behavior: 'smooth',
-          });
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
         } else {
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-      }, 50);
+      }, 60);
     } else {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -190,13 +192,22 @@ const TopNavbar = ({ onOpenAuth }) => {
                   title={`Navigate to ${tab.label}`}
                   type="button"
                 >
-                  <IconComp size={16} className="db-nav-tab-icon" />
-                  <span className="db-nav-tab-label">{tab.label}</span>
-                  {tab.badge && (
-                    <span className={`db-tab-micro-badge db-tab-badge-${tab.badgeType || 'default'}`}>
-                      {tab.badge}
-                    </span>
+                  {isTabActive && (
+                    <motion.span
+                      layoutId="plNavbarActivePill"
+                      className="db-nav-active-pill-bg"
+                      transition={{ type: 'spring', stiffness: 420, damping: 32 }}
+                    />
                   )}
+                  <span className="db-nav-tab-content">
+                    <IconComp size={16} className="db-nav-tab-icon" />
+                    <span className="db-nav-tab-label">{tab.label}</span>
+                    {tab.badge && (
+                      <span className={`db-tab-micro-badge db-tab-badge-${tab.badgeType || 'default'}`}>
+                        {tab.badge}
+                      </span>
+                    )}
+                  </span>
                 </button>
               );
             })}

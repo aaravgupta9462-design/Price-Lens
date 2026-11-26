@@ -13,6 +13,7 @@ import BuyAdvisorSection from '../BuyAdvisorSection';
 import PriceAlertCTA from '../PriceAlertCTA';
 import HowItWorksSection from '../HowItWorksSection';
 import FAQSection from '../FAQSection';
+import ScrollReveal from '../../common/ScrollReveal';
 
 const SHOWCASE_PRODUCTS = [
   { id: 'iphone-16-128', label: 'iPhone 16 (128GB)' },
@@ -48,92 +49,116 @@ export const DashboardHome = () => {
       <Hero />
 
       {/* 2. Chrome Extension Assistant Banner (Flipshope & Buyhatke Signature) */}
-      <div id="extension-section">
-        <ExtensionPromo />
-      </div>
+      <ScrollReveal delay={0.04}>
+        <div id="extension-section">
+          <ExtensionPromo />
+        </div>
+      </ScrollReveal>
 
       {/* 3. Hot Price Drops / Flash Loot Deals Detected in Real Time */}
-      <LivePriceDropsTicker />
+      <ScrollReveal delay={0.04}>
+        <LivePriceDropsTicker />
+      </ScrollReveal>
 
       {/* 4. Supported Multi-Store Surveillance Strip */}
-      <RetailerStrip />
+      <ScrollReveal delay={0.04}>
+        <RetailerStrip />
+      </ScrollReveal>
 
       {/* 5. Popular Price Drops Grid with Sparklines & Wishlist */}
-      <div id="popular-deals">
-        <PopularPriceDrops />
-      </div>
+      <ScrollReveal delay={0.04}>
+        <div id="popular-deals">
+          <PopularPriceDrops />
+        </div>
+      </ScrollReveal>
 
       {/* 6. Verified Store Coupons & Bank Codes Hub (Buyhatke Auto-Coupon Feature) */}
-      <div id="coupons-section">
-        <CouponsSection />
-      </div>
+      <ScrollReveal delay={0.04}>
+        <div id="coupons-section">
+          <CouponsSection />
+        </div>
+      </ScrollReveal>
 
       {/* 7. Product Category Discovery */}
-      <div id="category">
-        <CategoryDiscovery />
-      </div>
+      <ScrollReveal delay={0.04}>
+        <div id="category">
+          <CategoryDiscovery />
+        </div>
+      </ScrollReveal>
 
       {/* 8. Dedicated Multi-Store Comparison Section */}
-      <section
-        id="price-comparison-section"
-        className="pl-comparison-section-full"
-        aria-label="Multi-Store Price Comparison"
-      >
-        <div className="pl-section-header-row">
-          <div className="pl-section-title-col">
-            <span className="pl-section-eyebrow">LIVE PRICING INTELLIGENCE</span>
-            <h2 className="pl-section-title">Multi-store price comparison</h2>
-            <p className="pl-section-subtitle">
-              Verify real-time checkout pricing and calculate effective card discounts across Amazon &amp; Flipkart
-            </p>
+      <ScrollReveal delay={0.04}>
+        <section
+          id="price-comparison-section"
+          className="pl-comparison-section-full"
+          aria-label="Multi-Store Price Comparison"
+        >
+          <div className="pl-section-header-row">
+            <div className="pl-section-title-col">
+              <span className="pl-section-eyebrow">LIVE PRICING INTELLIGENCE</span>
+              <h2 className="pl-section-title">Multi-store price comparison</h2>
+              <p className="pl-section-subtitle">
+                Verify real-time checkout pricing and calculate effective card discounts across Amazon &amp; Flipkart
+              </p>
+            </div>
+            {renderProductSwitcher()}
           </div>
-          {renderProductSwitcher()}
-        </div>
 
-        <div className="pl-fullwidth-card-container">
-          <CompareStoresCard />
-        </div>
-      </section>
+          <div className="pl-fullwidth-card-container">
+            <CompareStoresCard />
+          </div>
+        </section>
+      </ScrollReveal>
 
       {/* 9. Dedicated Interactive Price History Graph Section */}
-      <section
-        id="price-history-section"
-        className="pl-history-section-full"
-        aria-label="Interactive Historical Price Telemetry"
-      >
-        <div className="pl-section-header-row">
-          <div className="pl-section-title-col">
-            <span className="pl-section-eyebrow">KEEPA-STYLE TELEMETRY</span>
-            <h2 className="pl-section-title">Interactive price history graph</h2>
-            <p className="pl-section-subtitle">
-              Audit 1-year historical price curves, spot fake festive discount inflation, and set instant price-drop alerts
-            </p>
+      <ScrollReveal delay={0.04}>
+        <section
+          id="price-history-section"
+          className="pl-history-section-full"
+          aria-label="Interactive Historical Price Telemetry"
+        >
+          <div className="pl-section-header-row">
+            <div className="pl-section-title-col">
+              <span className="pl-section-eyebrow">KEEPA-STYLE TELEMETRY</span>
+              <h2 className="pl-section-title">Interactive price history graph</h2>
+              <p className="pl-section-subtitle">
+                Audit 1-year historical price curves, spot fake festive discount inflation, and set instant price-drop alerts
+              </p>
+            </div>
+            {renderProductSwitcher()}
           </div>
-          {renderProductSwitcher()}
-        </div>
 
-        <div className="pl-fullwidth-card-container">
-          <PriceHistoryInsightsCard />
-        </div>
-      </section>
+          <div className="pl-fullwidth-card-container">
+            <PriceHistoryInsightsCard />
+          </div>
+        </section>
+      </ScrollReveal>
 
       {/* 10. Buy-Now Versus Wait Recommendation (Buyhatke Deal Index Engine) */}
-      <div id="buy-advisor">
-        <BuyAdvisorSection />
-      </div>
+      <ScrollReveal delay={0.04}>
+        <div id="buy-advisor">
+          <BuyAdvisorSection />
+        </div>
+      </ScrollReveal>
 
       {/* 11. Price-Alert Call To Action (WhatsApp & Email Drop Dispatcher) */}
-      <div id="alerts">
-        <PriceAlertCTA />
-      </div>
+      <ScrollReveal delay={0.04}>
+        <div id="alerts">
+          <PriceAlertCTA />
+        </div>
+      </ScrollReveal>
 
       {/* 12. Trust Indicators and How-It-Works Methodology */}
-      <div id="how-it-works">
-        <HowItWorksSection />
-      </div>
+      <ScrollReveal delay={0.04}>
+        <div id="how-it-works">
+          <HowItWorksSection />
+        </div>
+      </ScrollReveal>
 
       {/* 13. Frequently Asked Questions */}
-      <FAQSection />
+      <ScrollReveal delay={0.04}>
+        <FAQSection />
+      </ScrollReveal>
     </div>
   );
 };

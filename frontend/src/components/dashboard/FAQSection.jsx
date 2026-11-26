@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ChevronDown, HelpCircle, ShieldCheck } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const FAQS = [
   {
@@ -63,11 +64,20 @@ export const FAQSection = () => {
                     className={`pl-faq-chevron ${isOpen ? 'rotated' : ''}`}
                   />
                 </button>
-                {isOpen && (
-                  <div className="pl-faq-answer">
-                    <p>{item.a}</p>
-                  </div>
-                )}
+                <AnimatePresence initial={false}>
+                  {isOpen && (
+                    <motion.div
+                      className="pl-faq-answer"
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+                      style={{ overflow: 'hidden' }}
+                    >
+                      <p>{item.a}</p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             );
           })}
