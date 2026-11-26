@@ -197,6 +197,57 @@ async function fetchDirectProductUrl(storeName, query) {
 }
 
 /**
+ * Scrape Flipkart search results (sorted low-to-high) via ScrapingBee to get the exact /p/itm... product URL
+ */
+async function fetchDirectFlipkartFromSearch(query, referencePrice = null) {
+  const apiKey = process.env.SCRAPINGBEE_API_KEY?.trim();
+  if (!apiKey || !query) return null;
+
+  try {
+    const cleanQuery = query.replace(/[^a-zA-Z0-9\s]/g, ' ').replace(/\s+/g, ' ').trim();
+    const shortQuery = cleanQuery.split(/\s+/).slice(0, 8).join(' ');
+    const searchUrl = `https://www.flipkart.com/search?q=${encodeURIComponent(shortQuery)}&sort=price_asc`;
+
+    const endpoint = new URL('https://app.scrapingbee.com/api/v1/');
+    endpoint.searchParams.set('api_key', apiKey);
+    endpoint.searchParams.set('url', searchUrl);
+    endpoint.searchParams.set('render_js', 'false');
+
+    const res = await fetch(endpoint.toString(), { signal: AbortSignal.timeout(10000) });
+    if (!res.ok) return null;
+
+    const html = await res.text();
+    // Match all Flipkart product links (/product-slug/p/itm...)
+    const linkMatches = [...html.matchAll(/href=["'](\/[^"']+\/p\/itm[a-zA-Z0-9]+[^"']*)["']/gi)];
+    if (linkMatches.length === 0) return null;
+
+    // Pick first product link whose nearby price isn't a cheap accessory outlier
+    for (const m of linkMatches.slice(0, 10)) {
+      const relPath = m[1];
+      const idx = m.index || 0;
+      const snippet = html.slice(Math.max(0, idx - 200), idx + 1200);
+      const pMatch = snippet.match(/₹([\d,]{3,8})/);
+      const p = pMatch ? Number(pMatch[1].replace(/,/g, '')) : null;
+
+      if (referencePrice && referencePrice > 500 && p && p < referencePrice * 0.45) {
+        continue;
+      }
+      return {
+        url: `https://www.flipkart.com${relPath.split('&')[0]}`,
+        price: p,
+      };
+    }
+
+    return {
+      url: `https://www.flipkart.com${linkMatches[0][1].split('&')[0]}`,
+      price: null,
+    };
+  } catch {
+    return null;
+  }
+}
+
+/**
  * Direct SerpApi Google Shopping lookup filtered for Amazon & Flipkart,
  * excluding outlier accessories when a referencePrice is available.
  */
@@ -244,17 +295,18 @@ async function fetchSerpApiStoreOffers(query, referencePrice = null) {
         return src === 'flipkart' || (src.includes('flipkart') && !src.includes('shopsy'));
       }) || sortedResults.find((r) => (r.source || '').toLowerCase().includes('flipkart'));
 
-    const [directAmzUrl, directFkUrl] = await Promise.all([
+    const [directAmzUrl, directFkUrl, scrapedFk] = await Promise.all([
       amzItem && !(amzItem.link || '').toLowerCase().includes('amazon.')
         ? fetchDirectProductUrl('Amazon', amzItem.title || shortQuery)
         : Promise.resolve(null),
       fkItem && !(fkItem.link || '').toLowerCase().includes('flipkart.')
         ? fetchDirectProductUrl('Flipkart', fkItem.title || shortQuery)
         : Promise.resolve(null),
+      fetchDirectFlipkartFromSearch(shortQuery, referencePrice),
     ]);
 
-    const ensureDirectStoreUrl = (candidateUrl, directUrl, storeName, fallbackTitle) => {
-      for (const u of [candidateUrl, directUrl]) {
+    const ensureDirectStoreUrl = (candidateUrl, directUrl, scrapedUrl, storeName, fallbackTitle) => {
+      for (const u of [candidateUrl, scrapedUrl, directUrl]) {
         if (u && typeof u === 'string') {
           const lower = u.toLowerCase();
           if (storeName === 'Amazon' && (lower.includes('amazon.in') || lower.includes('amzn.in'))) {
@@ -271,19 +323,21 @@ async function fetchSerpApiStoreOffers(query, referencePrice = null) {
         : `https://www.flipkart.com/search?q=${q}&sort=price_asc`;
     };
 
-    const parseItem = (item, directUrl, storeName) => ({
+    const parseItem = (item, directUrl, scrapedUrl, scrapedPrice, storeName) => ({
       store: storeName,
-      title: item.title,
-      price: extractPrice(item),
-      url: ensureDirectStoreUrl(item.link || item.product_link, directUrl, storeName, item.title || shortQuery),
-      imageUrl: item.thumbnail || null,
-      rating: item.rating || 4.4,
-      source: 'serpapi',
+      title: item?.title || shortQuery,
+      price: extractPrice(item) || scrapedPrice || null,
+      url: ensureDirectStoreUrl(item?.link || item?.product_link, directUrl, scrapedUrl, storeName, item?.title || shortQuery),
+      imageUrl: item?.thumbnail || null,
+      rating: item?.rating || 4.4,
+      source: scrapedUrl ? 'scrapingbee+serpapi' : 'serpapi',
     });
 
     return {
-      amazon: amzItem ? parseItem(amzItem, directAmzUrl, 'Amazon') : null,
-      flipkart: fkItem ? parseItem(fkItem, directFkUrl, 'Flipkart') : null,
+      amazon: amzItem ? parseItem(amzItem, directAmzUrl, null, null, 'Amazon') : null,
+      flipkart: (fkItem || scrapedFk)
+        ? parseItem(fkItem, directFkUrl, scrapedFk?.url, scrapedFk?.price, 'Flipkart')
+        : null,
     };
   } catch {
     return { amazon: null, flipkart: null };
