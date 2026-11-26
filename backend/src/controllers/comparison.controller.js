@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { comparisonService } from '../services/comparison.service.js';
+import { urlResolverService } from '../services/urlResolver.service.js';
 
 // Input Validation Schemas
 const searchQuerySchema = z.object({
@@ -16,6 +17,13 @@ const productIdParamSchema = z.object({
     .trim()
     .min(2, 'Product ID must be at least 2 characters.')
     .max(80, 'Product ID cannot exceed 80 characters.')
+});
+
+const resolveUrlBodySchema = z.object({
+  url: z
+    .string({ required_error: 'Product URL is required.' })
+    .trim()
+    .url('Please provide a valid Amazon or Flipkart product URL.')
 });
 
 export const comparisonController = {
@@ -75,6 +83,44 @@ export const comparisonController = {
         data: result
       });
     } catch (err) {
+      next(err);
+    }
+  },
+
+  /**
+   * POST /v1/compare/resolve-url
+   * Parse an Amazon or Flipkart product URL and return live comparison offers
+   */
+  async resolveUrl(req, res, next) {
+    try {
+      const validated = resolveUrlBodySchema.safeParse(req.body);
+      if (!validated.success) {
+        return res.status(400).json({
+          success: false,
+          statusCode: 400,
+          error: 'VALIDATION_ERROR',
+          message: validated.error.errors[0]?.message || 'Invalid product URL.'
+        });
+      }
+
+      const bypassCache = req.query.fresh === 'true' || req.body.fresh === true;
+      const result = await urlResolverService.resolveUrl(validated.data.url, { bypassCache });
+
+      return res.status(200).json({
+        success: true,
+        statusCode: 200,
+        message: 'Product URL resolved successfully',
+        data: result
+      });
+    } catch (err) {
+      if (err.message && err.message.includes('Only Amazon')) {
+        return res.status(400).json({
+          success: false,
+          statusCode: 400,
+          error: 'UNSUPPORTED_STORE_URL',
+          message: err.message
+        });
+      }
       next(err);
     }
   },

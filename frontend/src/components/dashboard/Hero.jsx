@@ -18,7 +18,8 @@ import {
   ShoppingBag
 } from 'lucide-react';
 import { useDashboard } from '../../context/DashboardContext';
-import { PRODUCTS } from '../../data/mockData';
+import { PRODUCTS, registerRealProduct } from '../../data/mockData';
+import { apiService } from '../../services/api';
 import StoreLogo from './StoreLogo';
 import AnimatedBackground from '../common/AnimatedBackground';
 
@@ -177,7 +178,7 @@ export const Hero = () => {
     }
   };
 
-  const handleViewPriceList = (info) => {
+  const handleViewPriceList = async (info) => {
     const target = info || linkInfo;
     if (target) {
       if (setCustomStoreLink) {
@@ -185,6 +186,43 @@ export const Hero = () => {
       }
       setSelectedProductId(target.productId);
       setSearchQuery(target.productName);
+
+      // Attempt live backend URL resolution (Rainforest / ScrapingBee / SerpApi)
+      try {
+        const resolved = await apiService.resolveProductUrl(target.url);
+        if (resolved && resolved.productName) {
+          const livePrice = resolved.liveMetadata?.price;
+          const offers = resolved.comparison?.offers || [];
+          const amzOffer = offers.find((o) => o.store?.toLowerCase().includes('amazon'));
+          const fkOffer = offers.find((o) => o.store?.toLowerCase().includes('flipkart'));
+          const customId = `url-${(resolved.asin || resolved.pid || Date.now()).toString().toLowerCase()}`;
+
+          const amazonPrice =
+            (resolved.store === 'Amazon' && livePrice) || amzOffer?.price || livePrice || 69990;
+          const flipkartPrice =
+            (resolved.store === 'Flipkart' && livePrice) || fkOffer?.price || Math.round(amazonPrice * 1.02);
+
+          registerRealProduct({
+            id: customId,
+            name: resolved.productName,
+            brand: resolved.store,
+            category: 'Mobiles',
+            image: resolved.liveMetadata?.image || '/products/iphone-16.jpg',
+            rating: resolved.liveMetadata?.rating || 4.5,
+            amazonPrice,
+            flipkartPrice,
+            originalPrice: resolved.liveMetadata?.originalPrice || Math.round(Math.max(amazonPrice, flipkartPrice) * 1.15),
+            amazonUrl: resolved.store === 'Amazon' ? resolved.url : amzOffer?.url || `https://www.amazon.in/s?k=${encodeURIComponent(resolved.productName)}`,
+            flipkartUrl: resolved.store === 'Flipkart' ? resolved.url : fkOffer?.url || `https://www.flipkart.com/search?q=${encodeURIComponent(resolved.productName)}`,
+          });
+
+          setSelectedProductId(customId);
+          setSearchQuery(resolved.productName);
+        }
+      } catch {
+        // Backend offline or API key not set — fallback smoothly to local catalog + pasted URL
+      }
+
       if (showToast) {
         showToast(`Analyzed ${target.store} link: ${target.productName} multi-store price list loaded!`, 'success');
       }

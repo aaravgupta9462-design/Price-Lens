@@ -51,6 +51,25 @@ export const apiService = {
   },
 
   /**
+   * Resolve any pasted Amazon or Flipkart product URL via backend URL Resolver
+   * @param {string} url
+   * @returns {Promise<Object>}
+   */
+  async resolveProductUrl(url) {
+    const response = await fetch(`${API_BASE_URL}/v1/compare/resolve-url`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url }),
+    });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || `URL Resolver returned status ${response.status}`);
+    }
+    const data = await response.json();
+    return data.data;
+  },
+
+  /**
    * List all enabled store adapters
    * @returns {Promise<Array>}
    */

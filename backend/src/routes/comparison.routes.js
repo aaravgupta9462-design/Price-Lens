@@ -21,6 +21,9 @@ const compareLimiter = rateLimit({
 // GET /v1/compare/stores - List all enabled store adapters
 router.get('/stores', comparisonController.getStores);
 
+// POST /v1/compare/resolve-url - Resolve pasted Amazon/Flipkart URL to live offers
+router.post('/resolve-url', compareLimiter, comparisonController.resolveUrl);
+
 // GET /v1/compare?q=... - Search products & compare across stores
 router.get('/', compareLimiter, comparisonController.compareQuery);
 
