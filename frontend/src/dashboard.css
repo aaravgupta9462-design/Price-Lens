@@ -6249,7 +6249,16 @@
   display: inline-block;
 }
 
-/* ─── Section 6 & 7: Multi-Store Comparison & Keepa Chart ──────────────────── */
+/* ─── Section 8 & 9: Dedicated Multi-Store Comparison & Keepa Chart ──────────────────── */
+.pl-comparison-section-full,
+.pl-history-section-full {
+  margin-bottom: 3.5rem;
+}
+
+.pl-fullwidth-card-container {
+  width: 100%;
+}
+
 .pl-comparison-history-dual-section {
   margin-bottom: 4rem;
 }
@@ -6421,7 +6430,7 @@
   border-radius: 6px;
   font-size: 0.68rem;
   font-weight: 600;
-  max-width: 180px;
+  max-width: 320px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -6560,7 +6569,7 @@
 
 .pl-chart-svg {
   width: 100%;
-  height: 180px;
+  height: 220px;
   overflow: visible;
 }
 

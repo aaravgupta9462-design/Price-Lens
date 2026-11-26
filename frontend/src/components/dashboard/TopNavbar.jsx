@@ -40,16 +40,16 @@ const TopNavbar = ({ onOpenAuth }) => {
       scrollId: 'popular-deals',
     },
     {
-      id: 'history',
-      label: 'Price Graph',
-      icon: TrendingDown,
-      scrollId: 'price-comparison-section',
-    },
-    {
       id: 'compare',
       label: 'Compare',
       icon: Layers,
       scrollId: 'price-comparison-section',
+    },
+    {
+      id: 'history',
+      label: 'Price Graph',
+      icon: TrendingDown,
+      scrollId: 'price-history-section',
     },
     {
       id: 'coupons',
@@ -101,7 +101,8 @@ const TopNavbar = ({ onOpenAuth }) => {
             { scrollId: 'popular-deals', tabId: 'deals' },
             { scrollId: 'coupons-section', tabId: 'coupons' },
             { scrollId: 'category', tabId: 'categories' },
-            { scrollId: 'price-comparison-section', tabId: 'history' },
+            { scrollId: 'price-comparison-section', tabId: 'compare' },
+            { scrollId: 'price-history-section', tabId: 'history' },
             { scrollId: 'buy-advisor', tabId: 'advisor' },
             { scrollId: 'extension-section', tabId: 'extension' },
           ];

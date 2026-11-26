@@ -36,12 +36,12 @@ export const PriceHistoryInsightsCard = () => {
     historyData.timelines['1M'] ||
     [];
 
-  // Chart dimensions & scaling
-  const chartWidth = 540;
-  const chartHeight = 180;
-  const paddingLeft = 14;
-  const paddingRight = 24;
-  const paddingTop = 24;
+  // Chart dimensions & scaling (Optimized for dedicated full-width section)
+  const chartWidth = 980;
+  const chartHeight = 220;
+  const paddingLeft = 20;
+  const paddingRight = 32;
+  const paddingTop = 26;
   const paddingBottom = 28;
 
   // Min and max for Y scale calculation

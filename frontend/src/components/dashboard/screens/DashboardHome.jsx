@@ -44,27 +44,44 @@ export const DashboardHome = () => {
         <CategoryDiscovery />
       </div>
 
-      {/* 8. Multi-Store Comparison Preview & Interactive Price-History Graph */}
+      {/* 8. Dedicated Multi-Store Comparison Section */}
       <section
         id="price-comparison-section"
-        className="pl-comparison-history-dual-section"
-        aria-label="Multi-Store Price Comparison and Historical Telemetry"
+        className="pl-comparison-section-full"
+        aria-label="Multi-Store Price Comparison"
       >
         <div className="pl-section-header-row">
           <div className="pl-section-title-col">
-            <span className="pl-section-eyebrow">INTELLIGENCE SUITE</span>
-            <h2 className="pl-section-title">Multi-store comparison &amp; price history</h2>
+            <span className="pl-section-eyebrow">LIVE PRICING INTELLIGENCE</span>
+            <h2 className="pl-section-title">Multi-store price comparison</h2>
             <p className="pl-section-subtitle">
-              Verify live checkout pricing across Amazon &amp; Flipkart and audit full historical price movement graphs (more stores in future updates)
+              Verify real-time checkout pricing and calculate effective card discounts across Amazon &amp; Flipkart
             </p>
           </div>
         </div>
 
-        <div className="pl-home-bottom-grid">
-          {/* Multi-Store Comparison Table */}
+        <div className="pl-fullwidth-card-container">
           <CompareStoresCard />
+        </div>
+      </section>
 
-          {/* Interactive Keepa / Buyhatke Price History Graph */}
+      {/* 9. Dedicated Interactive Price History Graph Section */}
+      <section
+        id="price-history-section"
+        className="pl-history-section-full"
+        aria-label="Interactive Historical Price Telemetry"
+      >
+        <div className="pl-section-header-row">
+          <div className="pl-section-title-col">
+            <span className="pl-section-eyebrow">KEEPA-STYLE TELEMETRY</span>
+            <h2 className="pl-section-title">Interactive price history graph</h2>
+            <p className="pl-section-subtitle">
+              Audit 1-year historical price curves, spot fake festive discount inflation, and set instant price-drop alerts
+            </p>
+          </div>
+        </div>
+
+        <div className="pl-fullwidth-card-container">
           <PriceHistoryInsightsCard />
         </div>
       </section>
