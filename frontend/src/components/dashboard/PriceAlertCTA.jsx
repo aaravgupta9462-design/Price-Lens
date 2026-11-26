@@ -31,7 +31,7 @@ export const PriceAlertCTA = () => {
   const [customPrice, setCustomPrice] = useState(Math.round(basePrice * 0.90 / 100) * 100);
   const [emailEnabled, setEmailEnabled] = useState(true);
   const [whatsappEnabled, setWhatsappEnabled] = useState(true);
-  const [contactVal, setContactVal] = useState('purvansh@example.com');
+  const [contactVal, setContactVal] = useState('');
   const [isSaved, setIsSaved] = useState(false);
 
   const handlePresetSelect = (preset) => {
@@ -212,7 +212,7 @@ export const PriceAlertCTA = () => {
                       className="pl-contact-input-field"
                       value={contactVal}
                       onChange={(e) => setContactVal(e.target.value)}
-                      placeholder="Enter your email or WhatsApp number"
+                      placeholder="youremail@gmail.com"
                       required
                     />
                   </div>
