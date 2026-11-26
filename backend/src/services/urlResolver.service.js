@@ -113,9 +113,12 @@ async function fetchFromScrapingBee(targetUrl, store) {
     const endpoint = new URL('https://app.scrapingbee.com/api/v1/');
     endpoint.searchParams.set('api_key', apiKey);
     endpoint.searchParams.set('url', targetUrl);
-    endpoint.searchParams.set('render_js', 'false');
+    endpoint.searchParams.set('render_js', store === 'Flipkart' ? 'true' : 'false');
+    if (store === 'Flipkart') {
+      endpoint.searchParams.set('wait', '2000');
+    }
 
-    const res = await fetch(endpoint.toString(), { signal: AbortSignal.timeout(6500) });
+    const res = await fetch(endpoint.toString(), { signal: AbortSignal.timeout(9500) });
     if (!res.ok) return null;
 
     const html = await res.text();
@@ -193,28 +196,29 @@ async function fetchDirectProductUrl(storeName, query) {
 
     const directHit = organic.find((r) => {
       const link = (r.link || '').toLowerCase();
+      const title = (r.title || '').toLowerCase();
+      if (link.includes('pp-protect-promise-fee')) return false;
+      if (!query.toLowerCase().includes('max') && title.includes('max')) return false;
       if (storeName === 'Flipkart') {
         return link.includes('flipkart.com/') && link.includes('/p/');
       }
       return link.includes('amazon.in/') && (link.includes('/dp/') || link.includes('/gp/product/'));
     });
 
-    const chosen = directHit || organic[0];
-    if (!chosen) return null;
+    if (!directHit) return null;
 
-    // Also extract price from Google rich snippet if present
     let snippetPrice =
-      chosen.rich_snippet?.top?.detected_extensions?.price ||
-      chosen.rich_snippet?.bottom?.detected_extensions?.price ||
+      directHit.rich_snippet?.top?.detected_extensions?.price ||
+      directHit.rich_snippet?.bottom?.detected_extensions?.price ||
       null;
-    if (!snippetPrice && chosen.snippet) {
-      const m = chosen.snippet.match(/₹\s?([\d,]{3,9})/);
+    if (!snippetPrice && directHit.snippet && !/exchange|per month|emi/i.test(directHit.snippet)) {
+      const m = directHit.snippet.match(/₹\s?([\d,]{3,9})/);
       if (m) snippetPrice = Number(m[1].replace(/,/g, ''));
     }
 
     return {
-      url: chosen.link,
-      title: chosen.title || null,
+      url: directHit.link,
+      title: directHit.title || null,
       price: snippetPrice && snippetPrice > 0 ? Math.round(snippetPrice) : null,
     };
   } catch {
@@ -296,13 +300,30 @@ async function fetchSerpApiStoreOffers(query, referencePrice = null, pastedStore
     const safeRefPrice = isHighTicket && referencePrice && referencePrice < 10000 ? null : referencePrice;
     const minRequiredMatches = matchTokens.length >= 2 ? 2 : 1;
 
+    // Variant & storage conflict detection
+    const wantsMax = /\bmax\b/.test(queryLower);
+    const wantsPlus = /\bplus\b/.test(queryLower);
+    const wantsUltra = /\bultra\b/.test(queryLower);
+    const wantsMini = /\bmini\b/.test(queryLower);
+    const wantedStorage = queryLower.match(/\b(64|128|256|512|1tb|2tb)\b/)?.[1] || null;
+
     const validResults = results.filter((item) => {
       const p = extractPrice(item);
       if (!p || p <= 0) return false;
       const titleLower = (item.title || '').toLowerCase();
-      if (!isAccessoryQuery && /\b(case|back cover|cover for|tempered|screen guard|protector|skin|pouch)\b/.test(titleLower)) {
+      if (!isAccessoryQuery && /\b(case|back cover|cover for|tempered|screen guard|protector|skin|pouch|applecare|protect\+)\b/.test(titleLower)) {
         return false;
       }
+      if (!wantsMax && /\bmax\b/.test(titleLower)) return false;
+      if (!wantsPlus && /\bplus\b/.test(titleLower)) return false;
+      if (!wantsUltra && /\bultra\b/.test(titleLower)) return false;
+      if (!wantsMini && /\bmini\b/.test(titleLower)) return false;
+
+      if (wantedStorage) {
+        const itemStorage = titleLower.match(/\b(64|128|256|512|1\s?tb|2\s?tb)\b/)?.[1]?.replace(/\s+/g, '');
+        if (itemStorage && itemStorage !== wantedStorage) return false;
+      }
+
       if (isHighTicket && p < 10000) return false;
       if (safeRefPrice && safeRefPrice > 500) {
         if (p < safeRefPrice * 0.45 || p > safeRefPrice * 2.2) return false;
