@@ -42,16 +42,10 @@ const TopNavbar = ({ onOpenAuth }) => {
       scrollId: 'popular-deals',
     },
     {
-      id: 'compare',
-      label: 'Compare',
-      icon: Layers,
-      scrollId: 'price-comparison-section',
-    },
-    {
-      id: 'history',
-      label: 'Price Graph',
-      icon: TrendingDown,
-      scrollId: 'price-history-section',
+      id: 'categories',
+      label: 'Categories',
+      icon: LayoutGrid,
+      scrollId: 'category',
     },
     {
       id: 'coupons',
@@ -62,10 +56,16 @@ const TopNavbar = ({ onOpenAuth }) => {
       badgeType: 'codes',
     },
     {
-      id: 'categories',
-      label: 'Categories',
-      icon: LayoutGrid,
-      scrollId: 'category',
+      id: 'compare',
+      label: 'Compare',
+      icon: Layers,
+      scrollId: 'price-comparison-section',
+    },
+    {
+      id: 'history',
+      label: 'Price Graph',
+      icon: TrendingDown,
+      scrollId: 'price-history-section',
     },
     {
       id: 'advisor',
@@ -101,13 +101,13 @@ const TopNavbar = ({ onOpenAuth }) => {
           }
 
           const orderedSections = [
-            { scrollId: 'category', tabId: 'categories' },
             { scrollId: 'popular-deals', tabId: 'deals' },
+            { scrollId: 'category', tabId: 'categories' },
             { scrollId: 'coupons-section', tabId: 'coupons' },
-            { scrollId: 'extension-section', tabId: 'extension' },
             { scrollId: 'price-comparison-section', tabId: 'compare' },
             { scrollId: 'price-history-section', tabId: 'history' },
             { scrollId: 'buy-advisor', tabId: 'advisor' },
+            { scrollId: 'extension-section', tabId: 'extension' },
           ];
 
           let currentActive = 'deals';

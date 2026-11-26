@@ -48,45 +48,38 @@ export const DashboardHome = () => {
       {/* 1. Cinematic Hero and Dual Search/Link Paste Engine */}
       <Hero />
 
-      {/* 2. Product Category Discovery (Prominent at Top) */}
-      <ScrollReveal delay={0.03}>
-        <div id="category">
-          <CategoryDiscovery />
-        </div>
-      </ScrollReveal>
-
-      {/* 3. Hot Price Drops / Flash Loot Deals Detected in Real Time */}
+      {/* 2. Hot Price Drops / Flash Loot Deals Detected in Real Time */}
       <ScrollReveal delay={0.04}>
         <LivePriceDropsTicker />
       </ScrollReveal>
 
-      {/* 4. Supported Multi-Store Surveillance Strip */}
+      {/* 3. Supported Multi-Store Surveillance Strip */}
       <ScrollReveal delay={0.04}>
         <RetailerStrip />
       </ScrollReveal>
 
-      {/* 5. Popular Price Drops Grid with Sparklines & Wishlist */}
+      {/* 4. Popular Price Drops Grid (Navbar: Deals) */}
       <ScrollReveal delay={0.04}>
         <div id="popular-deals">
           <PopularPriceDrops />
         </div>
       </ScrollReveal>
 
-      {/* 6. Verified Store Coupons & Bank Codes Hub (Buyhatke Auto-Coupon Feature) */}
+      {/* 5. Product Category Discovery (Navbar: Categories) */}
+      <ScrollReveal delay={0.04}>
+        <div id="category">
+          <CategoryDiscovery />
+        </div>
+      </ScrollReveal>
+
+      {/* 6. Verified Store Coupons & Bank Codes Hub (Navbar: Coupons) */}
       <ScrollReveal delay={0.04}>
         <div id="coupons-section">
           <CouponsSection />
         </div>
       </ScrollReveal>
 
-      {/* 7. Chrome Extension Assistant Banner (Flipshope & Buyhatke Signature) */}
-      <ScrollReveal delay={0.04}>
-        <div id="extension-section">
-          <ExtensionPromo />
-        </div>
-      </ScrollReveal>
-
-      {/* 8. Dedicated Multi-Store Comparison Section */}
+      {/* 7. Dedicated Multi-Store Comparison Section (Navbar: Compare) */}
       <ScrollReveal delay={0.04}>
         <section
           id="price-comparison-section"
@@ -110,7 +103,7 @@ export const DashboardHome = () => {
         </section>
       </ScrollReveal>
 
-      {/* 9. Dedicated Interactive Price History Graph Section */}
+      {/* 8. Dedicated Interactive Price History Graph Section (Navbar: Price Graph) */}
       <ScrollReveal delay={0.04}>
         <section
           id="price-history-section"
@@ -134,10 +127,17 @@ export const DashboardHome = () => {
         </section>
       </ScrollReveal>
 
-      {/* 10. Buy-Now Versus Wait Recommendation (Buyhatke Deal Index Engine) */}
+      {/* 9. Buy-Now Versus Wait Recommendation (Navbar: Buy Advisor) */}
       <ScrollReveal delay={0.04}>
         <div id="buy-advisor">
           <BuyAdvisorSection />
+        </div>
+      </ScrollReveal>
+
+      {/* 10. Chrome Extension Assistant Banner (Navbar: Extension) */}
+      <ScrollReveal delay={0.04}>
+        <div id="extension-section">
+          <ExtensionPromo />
         </div>
       </ScrollReveal>
 
