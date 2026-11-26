@@ -101,10 +101,10 @@ const TopNavbar = ({ onOpenAuth }) => {
           }
 
           const orderedSections = [
-            { scrollId: 'extension-section', tabId: 'extension' },
+            { scrollId: 'category', tabId: 'categories' },
             { scrollId: 'popular-deals', tabId: 'deals' },
             { scrollId: 'coupons-section', tabId: 'coupons' },
-            { scrollId: 'category', tabId: 'categories' },
+            { scrollId: 'extension-section', tabId: 'extension' },
             { scrollId: 'price-comparison-section', tabId: 'compare' },
             { scrollId: 'price-history-section', tabId: 'history' },
             { scrollId: 'buy-advisor', tabId: 'advisor' },
@@ -135,13 +135,14 @@ const TopNavbar = ({ onOpenAuth }) => {
   const handleTabClick = (tab) => {
     const tabObj = typeof tab === 'string' ? navTabs.find((t) => t.id === tab) : tab;
     const tabId = tabObj ? tabObj.id : tab;
+    const wasOtherScreen = activeNav !== 'dashboard';
     setActiveTab(tabId);
     isProgrammaticScrollRef.current = true;
     setTimeout(() => {
       isProgrammaticScrollRef.current = false;
-    }, 800);
+    }, 850);
 
-    if (activeNav !== 'dashboard') {
+    if (wasOtherScreen) {
       setActiveNav('dashboard');
     }
 
@@ -151,11 +152,12 @@ const TopNavbar = ({ onOpenAuth }) => {
       setTimeout(() => {
         const el = document.getElementById(scrollTarget);
         if (el) {
-          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          const targetTop = Math.max(0, el.getBoundingClientRect().top + window.scrollY - 92);
+          window.scrollTo({ top: targetTop, behavior: 'smooth' });
         } else {
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-      }, 60);
+      }, wasOtherScreen ? 120 : 20);
     } else {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }

@@ -48,10 +48,10 @@ export const DashboardHome = () => {
       {/* 1. Cinematic Hero and Dual Search/Link Paste Engine */}
       <Hero />
 
-      {/* 2. Chrome Extension Assistant Banner (Flipshope & Buyhatke Signature) */}
-      <ScrollReveal delay={0.04}>
-        <div id="extension-section">
-          <ExtensionPromo />
+      {/* 2. Product Category Discovery (Prominent at Top) */}
+      <ScrollReveal delay={0.03}>
+        <div id="category">
+          <CategoryDiscovery />
         </div>
       </ScrollReveal>
 
@@ -79,10 +79,10 @@ export const DashboardHome = () => {
         </div>
       </ScrollReveal>
 
-      {/* 7. Product Category Discovery */}
+      {/* 7. Chrome Extension Assistant Banner (Flipshope & Buyhatke Signature) */}
       <ScrollReveal delay={0.04}>
-        <div id="category">
-          <CategoryDiscovery />
+        <div id="extension-section">
+          <ExtensionPromo />
         </div>
       </ScrollReveal>
 

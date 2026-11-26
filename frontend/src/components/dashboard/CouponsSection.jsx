@@ -43,7 +43,7 @@ export const CouponsSection = () => {
   const flipkartCount = VERIFIED_COUPONS.filter((c) => c.store.toLowerCase() === 'flipkart').length;
 
   return (
-    <section id="coupons-section" className="pl-coupons-section" aria-label="Verified Coupons & Bank Codes">
+    <section className="pl-coupons-section" aria-label="Verified Coupons & Bank Codes">
       <div className="pl-coupons-container">
         {/* Section Header */}
         <div className="pl-section-header-row">

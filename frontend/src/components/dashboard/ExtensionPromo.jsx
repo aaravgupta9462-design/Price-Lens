@@ -33,7 +33,7 @@ export const ExtensionPromo = () => {
   };
 
   return (
-    <section id="extension-section" className="pl-extension-promo-section" aria-label="Chrome Extension Assistant">
+    <section className="pl-extension-promo-section" aria-label="Chrome Extension Assistant">
       <div className="pl-extension-banner-box">
         {/* Ambient background decoration */}
         <div className="pl-extension-glow" />
