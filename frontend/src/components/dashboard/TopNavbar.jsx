@@ -6,7 +6,6 @@ import {
   Ticket,
   LayoutGrid,
   Sparkles,
-  BellRing,
   Puzzle,
   Bell,
   Heart,
@@ -17,7 +16,6 @@ import {
 } from 'lucide-react';
 import { useDashboard } from '../../context/DashboardContext';
 import { useAuth } from '../../context/AuthContext';
-import NotificationDropdown from './NotificationDropdown';
 
 const TopNavbar = ({ onOpenAuth }) => {
   const {
@@ -25,9 +23,6 @@ const TopNavbar = ({ onOpenAuth }) => {
     setActiveNav,
     savedProducts,
     priceAlerts,
-    notifications,
-    notifDropdownOpen,
-    setNotifDropdownOpen,
   } = useDashboard();
 
   const { user, logout } = useAuth();
@@ -36,7 +31,6 @@ const TopNavbar = ({ onOpenAuth }) => {
 
   const displayName = user?.name || user?.email?.split('@')[0] || 'Purvansh Khandelwal';
   const initial = displayName.charAt(0).toUpperCase();
-  const unreadCount = 4; // Matching screenshot notification count
 
   const navTabs = [
     {
@@ -80,12 +74,6 @@ const TopNavbar = ({ onOpenAuth }) => {
       badgeType: 'ai',
     },
     {
-      id: 'alerts',
-      label: 'Price Alerts',
-      icon: BellRing,
-      scrollId: 'alerts',
-    },
-    {
       id: 'extension',
       label: 'Extension',
       icon: Puzzle,
@@ -109,31 +97,26 @@ const TopNavbar = ({ onOpenAuth }) => {
             return;
           }
 
-          const sections = [
-            { scrollId: 'alerts', tabId: 'alerts' },
-            { scrollId: 'buy-advisor', tabId: 'advisor' },
-            { scrollId: 'price-comparison-section', tabId: 'history' },
-            { scrollId: 'category', tabId: 'categories' },
-            { scrollId: 'coupons-section', tabId: 'coupons' },
+          const orderedSections = [
             { scrollId: 'popular-deals', tabId: 'deals' },
+            { scrollId: 'coupons-section', tabId: 'coupons' },
+            { scrollId: 'category', tabId: 'categories' },
+            { scrollId: 'price-comparison-section', tabId: 'history' },
+            { scrollId: 'buy-advisor', tabId: 'advisor' },
             { scrollId: 'extension-section', tabId: 'extension' },
           ];
 
-          for (const sec of sections) {
+          let currentActive = 'deals';
+          for (const sec of orderedSections) {
             const el = document.getElementById(sec.scrollId);
             if (el) {
-              const top = el.offsetTop - 120;
-              const height = el.offsetHeight;
-              if (window.scrollY >= top && window.scrollY < top + height) {
-                if (sec.scrollId === 'price-comparison-section') {
-                  setActiveTab((prev) => (prev === 'compare' ? 'compare' : 'history'));
-                } else {
-                  setActiveTab(sec.tabId);
-                }
-                break;
+              const top = el.offsetTop - 140;
+              if (window.scrollY >= top) {
+                currentActive = sec.tabId;
               }
             }
           }
+          setActiveTab(currentActive);
           ticking = false;
         });
         ticking = true;
@@ -145,21 +128,27 @@ const TopNavbar = ({ onOpenAuth }) => {
   }, [activeNav]);
 
   const handleTabClick = (tab) => {
-    if (typeof tab === 'object') {
-      setActiveTab(tab.id);
-    }
+    const tabObj = typeof tab === 'string' ? navTabs.find((t) => t.id === tab) : tab;
+    const tabId = tabObj ? tabObj.id : tab;
+    setActiveTab(tabId);
 
     if (activeNav !== 'dashboard') {
       setActiveNav('dashboard');
     }
 
-    const scrollTarget = typeof tab === 'object' && tab.scrollId ? tab.scrollId : null;
+    const scrollTarget = tabObj && tabObj.scrollId ? tabObj.scrollId : null;
 
     if (scrollTarget) {
       setTimeout(() => {
         const el = document.getElementById(scrollTarget);
         if (el) {
-          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          const headerOffset = 84;
+          const elementPosition = el.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth',
+          });
         } else {
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }
@@ -174,21 +163,21 @@ const TopNavbar = ({ onOpenAuth }) => {
       {/* Main Navigation Bar */}
       <div className="db-navbar-main">
         <div className="db-navbar-container">
-          {/* Logo */}
+          {/* Brand Logo */}
           <div
             className="db-brand-logo"
             onClick={() => handleTabClick({ id: 'deals', scrollId: null })}
             title="PriceLens Home"
           >
             <div className="db-brand-icon-box">
-              <Zap size={18} fill="#FFFFFF" color="#FFFFFF" />
+              <Zap size={20} fill="#FFFFFF" color="#FFFFFF" />
             </div>
             <div className="db-brand-text-col">
               <span className="db-brand-title">PriceLens</span>
             </div>
           </div>
 
-          {/* Center Category & Feature Tabs */}
+          {/* Enriched & Enlarged Center Category/Feature Capsule Bar */}
           <nav className="db-center-nav-tabs" aria-label="Section navigation">
             {navTabs.map((tab) => {
               const IconComp = tab.icon;
@@ -201,7 +190,7 @@ const TopNavbar = ({ onOpenAuth }) => {
                   title={`Navigate to ${tab.label}`}
                   type="button"
                 >
-                  <IconComp size={14} className="db-nav-tab-icon" />
+                  <IconComp size={16} className="db-nav-tab-icon" />
                   <span className="db-nav-tab-label">{tab.label}</span>
                   {tab.badge && (
                     <span className={`db-tab-micro-badge db-tab-badge-${tab.badgeType || 'default'}`}>
@@ -213,38 +202,9 @@ const TopNavbar = ({ onOpenAuth }) => {
             })}
           </nav>
 
-          {/* Right Action Controls */}
+          {/* Right Action Controls: Wishlist & Alerts removed as requested; clean user profile */}
           <div className="db-navbar-actions">
-            {/* Wishlist text button */}
-            <button
-              className={`db-nav-text-action ${activeNav === 'wishlist' ? 'active' : ''}`}
-              onClick={() => handleTabClick('wishlist')}
-              title="Saved Wishlist"
-              aria-label="Wishlist"
-            >
-              <Heart size={16} />
-              <span>Wishlist</span>
-              {savedProducts.length > 0 && (
-                <span className="db-action-count-pill">{savedProducts.length}</span>
-              )}
-            </button>
-
-            {/* Alerts with Popover */}
-            <div style={{ position: 'relative' }}>
-              <button
-                className={`db-nav-text-action ${notifDropdownOpen ? 'active' : ''}`}
-                onClick={() => setNotifDropdownOpen(!notifDropdownOpen)}
-                title="Price Alerts"
-                aria-label="Alerts"
-              >
-                <Bell size={16} />
-                <span>Alerts</span>
-                <span className="db-action-count-badge red">4</span>
-              </button>
-              <NotificationDropdown />
-            </div>
-
-            {/* User Profile / Menu */}
+            {/* User Profile / Menu Pill */}
             <div style={{ position: 'relative' }}>
               <div
                 className="db-user-pill-btn"
@@ -253,7 +213,7 @@ const TopNavbar = ({ onOpenAuth }) => {
               >
                 <div className="db-user-avatar-circle">{initial}</div>
                 <span className="db-user-name-text">
-                  {displayName.length > 15 ? displayName.substring(0, 14) + '...' : displayName}
+                  {displayName.length > 16 ? displayName.substring(0, 15) + '...' : displayName}
                 </span>
                 <ChevronDown size={14} className="db-user-chevron" />
               </div>
@@ -267,7 +227,7 @@ const TopNavbar = ({ onOpenAuth }) => {
                   <div className="db-user-dropdown-menu">
                     <div className="db-user-dropdown-header">
                       <strong>{displayName}</strong>
-                      <span>{user?.email || 'aarav@pricelens.io'}</span>
+                      <span>{user?.email || 'purvansh@pricelens.io'}</span>
                     </div>
 
                     <div className="db-user-dropdown-body">
@@ -290,7 +250,7 @@ const TopNavbar = ({ onOpenAuth }) => {
                         }}
                       >
                         <Heart size={15} />
-                        <span>Saved Products ({savedProducts.length})</span>
+                        <span>Saved Wishlist ({savedProducts.length})</span>
                       </button>
 
                       <button
