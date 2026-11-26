@@ -165,6 +165,160 @@ export const apiService = {
       success: true,
       message: `Password reset instructions have been sent to ${email}`
     };
+  },
+
+  // ─── Price Target Alerts API Endpoints (v1/alerts) ───────────────────────────
+  
+  /**
+   * Fetch all price target alerts for the authenticated user
+   * GET /v1/alerts
+   * @param {Object} [params] - optional { active: boolean }
+   * @returns {Promise<Array>} List of user alerts
+   */
+  async getAlerts(params = {}) {
+    try {
+      const url = new URL(`${API_BASE_URL}/v1/alerts`);
+      if (params.active !== undefined) {
+        url.searchParams.append('active', String(params.active));
+      }
+      const response = await fetch(url.toString(), {
+        method: 'GET',
+        headers: getAuthHeaders()
+      });
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `Failed to fetch alerts (${response.status})`);
+      }
+      const data = await response.json();
+      return data.data || [];
+    } catch (err) {
+      console.warn('[apiService] getAlerts failed:', err.message);
+      throw err;
+    }
+  },
+
+  /**
+   * Create a new target price alert for the authenticated user
+   * POST /v1/alerts
+   * @param {Object} alertData - { productId, store, targetPrice }
+   * @returns {Promise<Object>} Created alert object
+   */
+  async createAlert(alertData) {
+    const response = await fetch(`${API_BASE_URL}/v1/alerts`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify({
+        productId: alertData.productId,
+        store: alertData.store || null,
+        targetPrice: Number(alertData.targetPrice)
+      })
+    });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || `Failed to create alert (${response.status})`);
+    }
+    const data = await response.json();
+    return data.data;
+  },
+
+  /**
+   * Update an existing price target alert
+   * PUT /v1/alerts/:id
+   * @param {string} id - Alert ID
+   * @param {Object} updateData - { targetPrice, store }
+   * @returns {Promise<Object>} Updated alert object
+   */
+  async updateAlert(id, updateData) {
+    const response = await fetch(`${API_BASE_URL}/v1/alerts/${id}`, {
+      method: 'PUT',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(updateData)
+    });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || `Failed to update alert (${response.status})`);
+    }
+    const data = await response.json();
+    return data.data;
+  },
+
+  /**
+   * Delete a price alert
+   * DELETE /v1/alerts/:id
+   * @param {string} id - Alert ID
+   * @returns {Promise<Object>} Success result
+   */
+  async deleteAlert(id) {
+    const response = await fetch(`${API_BASE_URL}/v1/alerts/${id}`, {
+      method: 'DELETE',
+      headers: getAuthHeaders()
+    });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || `Failed to delete alert (${response.status})`);
+    }
+    const data = await response.json();
+    return data;
+  },
+
+  /**
+   * Trigger manual evaluation of active price target alerts for the authenticated user
+   * POST /v1/alerts/check
+   * @returns {Promise<Object>} Evaluation summary
+   */
+  async checkAlerts() {
+    const response = await fetch(`${API_BASE_URL}/v1/alerts/check`, {
+      method: 'POST',
+      headers: getAuthHeaders()
+    });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || `Failed to check alerts (${response.status})`);
+    }
+    const data = await response.json();
+    return data.data;
+  },
+
+  /**
+   * Retrieve structured Review Intelligence for a product
+   * GET /v1/reviews/:productId
+   * @param {string} productId - Canonical product ID
+   * @returns {Promise<Object>} Review intelligence and product summary data
+   */
+  async getReviewIntelligence(productId) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/v1/reviews/${encodeURIComponent(productId)}`);
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `Review Intelligence API returned status ${response.status}`);
+      }
+      const data = await response.json();
+      return data.data;
+    } catch (err) {
+      console.warn('[apiService] getReviewIntelligence failed:', err.message);
+      throw err;
+    }
   }
 };
+
+/**
+ * Helper to retrieve Authorization headers using the stored JWT token
+ */
+function getAuthHeaders() {
+  let token = null;
+  try {
+    const savedUser = localStorage.getItem('pricelens_user');
+    if (savedUser) {
+      const parsed = JSON.parse(savedUser);
+      token = parsed.token || parsed.jwtToken;
+    }
+  } catch (err) {
+    console.warn('[apiService] Could not parse stored user token:', err.message);
+  }
+
+  return {
+    'Content-Type': 'application/json',
+    ...(token ? { Authorization: `Bearer ${token}` } : {})
+  };
+}
 

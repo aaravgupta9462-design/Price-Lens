@@ -2,6 +2,8 @@ import { Router } from 'express';
 import authRoutes from './auth.routes.js';
 import comparisonRoutes from './comparison.routes.js';
 import priceHistoryRoutes from './priceHistory.routes.js';
+import alertRoutes from './alert.routes.js';
+import reviewRoutes from './review.routes.js';
 
 const router = Router();
 
@@ -22,5 +24,12 @@ router.use('/compare', comparisonRoutes);
 // /v1/price-history routes (FEATURE 2: Price History)
 router.use('/price-history', priceHistoryRoutes);
 
+// /v1/alerts routes (FEATURE 3: Price Alerts)
+router.use('/alerts', alertRoutes);
+
+// /v1/reviews routes (FEATURE 4: Review Intelligence)
+router.use('/reviews', reviewRoutes);
+
 export default router;
+
 

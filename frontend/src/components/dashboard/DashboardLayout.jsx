@@ -3,6 +3,7 @@ import { DashboardProvider, useDashboard } from '../../context/DashboardContext'
 import TopNavbar from './TopNavbar';
 import DashboardFooter from './DashboardFooter';
 import ShareModal from './ShareModal';
+import CreateAlertModal from './CreateAlertModal';
 import Toast from './Toast';
 
 // Screens
@@ -62,6 +63,7 @@ const DashboardContent = ({ onOpenAuth }) => {
 
       {/* Global Overlays & Modals */}
       <ShareModal />
+      <CreateAlertModal />
       <Toast />
     </div>
   );

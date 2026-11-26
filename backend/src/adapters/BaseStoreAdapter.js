@@ -102,25 +102,41 @@ export class BaseStoreAdapter {
       ? Math.round(((originalPrice - price) / originalPrice) * 100)
       : (Number(raw.discount) || 0);
 
+    const isAvailable = raw.inStock != null
+      ? Boolean(raw.inStock)
+      : !String(raw.availability || '').toLowerCase().includes('out of stock');
+
+    const storeUrl = raw.url || raw.productUrl || '#';
+    const storeImage = raw.image || raw.imageUrl || '';
+
     return {
-      store: this.name,
-      storeSlug: this.slug,
-      storeEmoji: this.emoji,
+      // Standard Normalized Offer contract: { store, title, price, currency, url, image, inStock, fetchedAt }
+      store: raw.store || this.name,
       title: String(raw.title || '').trim(),
       price,
+      currency: raw.currency || 'INR',
+      url: storeUrl,
+      image: storeImage,
+      inStock: isAvailable,
+      fetchedAt: raw.fetchedAt || new Date().toISOString(),
+
+      // Extended metadata for UI rendering & comparison engine
+      storeSlug: raw.storeSlug || this.slug,
+      storeEmoji: raw.storeEmoji || this.emoji,
       originalPrice,
       discount,
-      currency: raw.currency || 'INR',
-      productUrl: raw.productUrl || '#',
-      imageUrl: raw.imageUrl || '',
-      availability: raw.availability || 'In Stock',
+      productUrl: storeUrl,
+      imageUrl: storeImage,
+      availability: isAvailable ? (raw.availability || 'In Stock') : 'Out of Stock',
       delivery: raw.delivery || 'Standard Delivery',
       rating: Number(raw.rating) || 4.5,
       reviewCount: Number(raw.reviewCount) || 0,
       bankOffer: raw.bankOffer || null,
       couponCode: raw.couponCode || null,
-      fetchedAt: raw.fetchedAt || new Date().toISOString(),
-      isDevelopmentProvider: Boolean(this.isDevelopmentProvider)
+      condition: raw.condition || (raw.title && /\b(renewed|refurbished|pre-owned|used|open box|second hand|like new)\b/i.test(raw.title) ? 'refurbished' : 'new'),
+      isDevelopmentProvider: Boolean(this.isDevelopmentProvider),
+      isDirectApi: Boolean(raw.isDirectApi || raw.isDirect),
+      isDirect: Boolean(raw.isDirect || raw.isDirectApi)
     };
   }
 }

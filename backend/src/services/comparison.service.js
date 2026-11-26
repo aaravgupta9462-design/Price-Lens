@@ -1,5 +1,9 @@
 import { adapterRegistry } from '../adapters/index.js';
 import { priceHistoryService } from './priceHistory.service.js';
+import { cacheService } from '../utils/cache.util.js';
+import { logger } from '../utils/logger.util.js';
+import { filterComparisonOffersWithReport, FILTER_VERSION } from '../utils/resultFilter.js';
+import { mergeAndDeduplicateOffers, normalizeStoreKey } from '../utils/offerDeduplicator.js';
 
 /**
  * Registry of known canonical products matching frontend catalog identities.
@@ -45,6 +49,11 @@ export const KNOWN_CANONICAL_PRODUCTS = [
 ];
 
 export class ComparisonService {
+  constructor() {
+    this.defaultTimeoutMs = parseInt(process.env.ADAPTER_TIMEOUT_MS || '8000', 10);
+    this.cacheTtlSeconds = parseInt(process.env.CACHE_TTL_SECONDS || '600', 10);
+  }
+
   /**
    * Helper to determine whether an offer is currently in stock and available for purchase
    * @param {Object} offer
@@ -52,6 +61,9 @@ export class ComparisonService {
    */
   isOfferAvailable(offer) {
     if (!offer || typeof offer.price !== 'number' || isNaN(offer.price) || offer.price <= 0) {
+      return false;
+    }
+    if (offer.inStock === false) {
       return false;
     }
     const avail = String(offer.availability || '').toLowerCase();
@@ -95,9 +107,25 @@ export class ComparisonService {
   }
 
   /**
+   * Wrap promise execution with a strict timeout
+   */
+  withTimeout(promise, ms, label) {
+    let timer;
+    const timeoutPromise = new Promise((_, reject) => {
+      timer = setTimeout(() => {
+        reject(new Error(`${label} execution timed out after ${ms}ms`));
+      }, ms);
+    });
+
+    return Promise.race([promise, timeoutPromise]).finally(() => {
+      clearTimeout(timer);
+    });
+  }
+
+  /**
    * Search and compare across all enabled store adapters
    * @param {string} query - Search keyword
-   * @param {Object} options - Filtering / sorting options
+   * @param {Object} options - Filtering / caching options
    */
   async compareQuery(query, options = {}) {
     const cleanQuery = String(query || '').trim();
@@ -105,65 +133,106 @@ export class ComparisonService {
       throw new Error('Search query must be at least 2 characters long.');
     }
 
+    // 1. Check in-memory TTL cache for RAW adapter offers (with query + filter version)
+    const rawCacheKey = `compare:raw:${cleanQuery.toLowerCase()}:v${FILTER_VERSION}`;
+    let allOffers = [];
+    let storeStatuses = [];
+    let failedStores = [];
+    let isCached = false;
+    let cachedAt = undefined;
+
+    if (!options.bypassCache) {
+      const cachedRaw = await cacheService.get(rawCacheKey);
+      if (cachedRaw && Array.isArray(cachedRaw.allOffers)) {
+        allOffers = cachedRaw.allOffers;
+        storeStatuses = cachedRaw.storeStatuses || [];
+        failedStores = cachedRaw.failedStores || [];
+        isCached = true;
+        cachedAt = cachedRaw.cachedAt || new Date().toISOString();
+      }
+    }
+
     // Resolve canonical product identity if query matches a known catalog item
     const canonicalProduct = this.resolveCanonicalProduct(cleanQuery);
     const adapters = adapterRegistry.getAll();
     const startTime = Date.now();
 
-    // 1. Query all adapters concurrently with fault tolerance & status tracking
-    const storeStatuses = [];
-    const allOffers = [];
+    // 2. Query all enabled adapters only if raw data is not cached
+    if (!isCached) {
+      const settledResults = await Promise.allSettled(
+        adapters.map(async (adapter) => {
+          try {
+            const offers = await this.withTimeout(
+              adapter.search(cleanQuery),
+              this.defaultTimeoutMs,
+              adapter.name
+            );
+            return {
+              store: adapter.name,
+              slug: adapter.slug,
+              status: 'active',
+              offers: Array.isArray(offers) ? offers : []
+            };
+          } catch (err) {
+            const isTimeout = err.message && err.message.includes('timed out');
+            console.warn(`[StoreAdapter] ${adapter.name} search warning:`, err.message);
+            return {
+              store: adapter.name,
+              slug: adapter.slug,
+              status: isTimeout ? 'timed_out' : 'failed',
+              error: err.message || 'Store adapter error',
+              offers: []
+            };
+          }
+        })
+      );
 
-    const settledResults = await Promise.allSettled(
-      adapters.map(async (adapter) => {
-        try {
-          const offers = await adapter.search(cleanQuery);
-          return {
-            store: adapter.name,
-            slug: adapter.slug,
-            status: 'active',
-            offers: Array.isArray(offers) ? offers : []
-          };
-        } catch (err) {
-          console.warn(`[StoreAdapter] ${adapter.name} search error:`, err.message);
-          return {
+      settledResults.forEach((res, index) => {
+        const adapter = adapters[index];
+        if (res.status === 'fulfilled') {
+          const { store, slug, status, error, offers } = res.value;
+          storeStatuses.push({
+            store: store || adapter.name,
+            slug: slug || adapter.slug,
+            status,
+            ...(error ? { error } : {}),
+            offersCount: offers.length
+          });
+          allOffers.push(...offers);
+        } else {
+          storeStatuses.push({
             store: adapter.name,
             slug: adapter.slug,
             status: 'failed',
-            error: err.message || 'Store adapter error',
-            offers: []
-          };
+            error: res.reason?.message || 'Adapter query failed',
+            offersCount: 0
+          });
         }
-      })
-    );
+      });
 
-    settledResults.forEach((res, index) => {
-      const adapter = adapters[index];
-      if (res.status === 'fulfilled') {
-        const { store, slug, status, error, offers } = res.value;
-        storeStatuses.push({
-          store: store || adapter.name,
-          slug: slug || adapter.slug,
-          status,
-          ...(error ? { error } : {}),
-          offersCount: offers.length
-        });
-        allOffers.push(...offers);
-      } else {
-        storeStatuses.push({
-          store: adapter.name,
-          slug: adapter.slug,
-          status: 'failed',
-          error: res.reason?.message || 'Adapter query failed',
-          offersCount: 0
-        });
+      failedStores = storeStatuses.filter((s) => s.status !== 'active');
+
+      // Deduplicate direct retailer API offers vs aggregator (SerpApi) offers, prioritizing direct API
+      allOffers = mergeAndDeduplicateOffers(allOffers);
+
+      // Save RAW adapter offers to in-memory TTL cache (rules can change while raw data stays cached)
+      if (allOffers.length > 0) {
+        cachedAt = new Date().toISOString();
+        await cacheService.set(
+          rawCacheKey,
+          {
+            allOffers,
+            storeStatuses,
+            failedStores,
+            cachedAt
+          },
+          this.cacheTtlSeconds
+        );
       }
-    });
-
-    const failedStores = storeStatuses.filter((s) => s.status === 'failed');
+    }
 
     if (allOffers.length === 0) {
-      return {
+      const emptyResult = {
         query: cleanQuery,
         productId: canonicalProduct ? canonicalProduct.id : null,
         productName: canonicalProduct ? canonicalProduct.name : cleanQuery,
@@ -180,23 +249,71 @@ export class ComparisonService {
         storesChecked: adapters.map((a) => a.name),
         storeStatuses,
         failedStores: failedStores.map((f) => ({ store: f.store, error: f.error })),
+        filterStats: null,
+        ...(isCached ? { isCached: true, cachedAt } : {}),
         latencyMs: Date.now() - startTime,
         timestamp: new Date().toISOString()
       };
+      return emptyResult;
     }
 
-    // 2. Deduplicate offers: guarantee at most ONE offer per store for the target product
+    // 3. Filter raw offers: remove accessories, banned stores, variant mismatches, irrelevant titles, price outliers
+    const { passedOffers, filteredOut, stats: filterStats, lowConfidence, confidenceMessage } =
+      filterComparisonOffersWithReport(allOffers, cleanQuery);
+    logger.info(`[ResultFilter] Query "${cleanQuery}": passed ${passedOffers.length}/${allOffers.length} offers`, filterStats);
+
+    const candidates = passedOffers;
+
+    if (candidates.length === 0) {
+      const emptyResult = {
+        query: cleanQuery,
+        productId: canonicalProduct ? canonicalProduct.id : null,
+        productName: canonicalProduct ? canonicalProduct.name : cleanQuery,
+        imageUrl: canonicalProduct?.imageUrl || '',
+        isCanonicalProduct: Boolean(canonicalProduct),
+        totalStoresChecked: adapters.length,
+        storesAvailable: 0,
+        resultsCount: 0,
+        lowConfidence: true,
+        confidenceMessage: 'Kam reliable results mile',
+        bestDeal: null,
+        lowestPrice: 0,
+        highestPrice: 0,
+        maxSavings: 0,
+        offers: [],
+        storesChecked: adapters.map((a) => a.name),
+        storeStatuses,
+        failedStores: failedStores.map((f) => ({ store: f.store, error: f.error })),
+        filterStats,
+        ...(isCached ? { isCached: true, cachedAt } : {}),
+        latencyMs: Date.now() - startTime,
+        timestamp: new Date().toISOString()
+      };
+      return emptyResult;
+    }
+
+    // 4. Deduplicate offers: keep lowest price offer per store (prioritizing direct API and availability)
     const storeMap = new Map();
-    for (const offer of allOffers) {
-      const storeKey = offer.store.toLowerCase();
+    for (const offer of candidates) {
+      const storeKey = normalizeStoreKey(offer.storeSlug, offer.store);
       if (!storeMap.has(storeKey)) {
         storeMap.set(storeKey, offer);
       } else {
         const existing = storeMap.get(storeKey);
         const currentAvail = this.isOfferAvailable(offer);
         const existingAvail = this.isOfferAvailable(existing);
+        const currentIsDirect = Boolean(offer.isDirectApi || offer.isDirect);
+        const existingIsDirect = Boolean(existing.isDirectApi || existing.isDirect);
+
         if (currentAvail && !existingAvail) {
           storeMap.set(storeKey, offer);
+        } else if (!currentAvail && existingAvail) {
+          // Keep existing available offer
+        } else if (currentIsDirect && !existingIsDirect) {
+          // Direct API takes priority over aggregator for the same store
+          storeMap.set(storeKey, offer);
+        } else if (!currentIsDirect && existingIsDirect) {
+          // Keep existing direct offer
         } else if (currentAvail === existingAvail && offer.price < existing.price) {
           storeMap.set(storeKey, offer);
         }
@@ -204,10 +321,10 @@ export class ComparisonService {
     }
     const uniqueOffers = Array.from(storeMap.values());
 
-    // 3. Sort offers ascending by current selling price
+    // 4. Sort offers ascending by current selling price
     const sortedOffers = [...uniqueOffers].sort((a, b) => a.price - b.price);
 
-    // 4. Determine Best Deal: Lowest valid price among AVAILABLE offers
+    // 5. Determine Best Deal: Lowest valid price among AVAILABLE offers
     const availableOffers = sortedOffers.filter((o) => this.isOfferAvailable(o));
     const bestOffer = availableOffers.length > 0 ? availableOffers[0] : (sortedOffers[0] || null);
 
@@ -219,19 +336,19 @@ export class ComparisonService {
           price: bestOffer.price,
           originalPrice: bestOffer.originalPrice,
           discount: bestOffer.discount,
-          productUrl: bestOffer.productUrl,
-          imageUrl: bestOffer.imageUrl,
+          productUrl: bestOffer.productUrl || bestOffer.url,
+          imageUrl: bestOffer.imageUrl || bestOffer.image,
           availability: bestOffer.availability,
           title: bestOffer.title
         }
       : null;
 
-    // 5. Compute store metrics
+    // 6. Compute store metrics
     const lowestPrice = bestOffer ? bestOffer.price : (sortedOffers[0]?.price || 0);
     const highestPrice = sortedOffers.length > 0 ? Math.max(...sortedOffers.map((o) => o.price)) : lowestPrice;
     const maxSavings = Math.max(0, highestPrice - lowestPrice);
 
-    // 6. Enrich with visual calculation metrics and canonical product association
+    // 7. Enrich with visual calculation metrics and canonical product association
     const enrichedOffers = sortedOffers.map((offer) => {
       const isAvailable = this.isOfferAvailable(offer);
       const isBestPrice = Boolean(
@@ -254,27 +371,33 @@ export class ComparisonService {
 
     const topImageUrl =
       (canonicalProduct && canonicalProduct.imageUrl) ||
-      enrichedOffers.find((o) => o.imageUrl)?.imageUrl ||
+      enrichedOffers.find((o) => o.imageUrl || o.image)?.imageUrl ||
       '';
 
-    // 7. If this search resolves to a verified canonical product, record snapshots
-    if (canonicalProduct && enrichedOffers.length > 0) {
+    // 8. If this search resolves to a verified canonical product or has offers, record snapshots
+    const resolvedProdId = canonicalProduct ? canonicalProduct.id : cleanQuery.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    const resolvedProdName = canonicalProduct ? canonicalProduct.name : (enrichedOffers[0]?.title || cleanQuery);
+
+    if (enrichedOffers.length > 0) {
       priceHistoryService
-        .saveOffersBatch(canonicalProduct.id, enrichedOffers, canonicalProduct.name)
+        .saveOffersBatch(resolvedProdId, enrichedOffers, resolvedProdName)
         .catch((e) => {
-          console.warn('[ComparisonService] Snapshot save error on search:', e.message);
+          console.warn('[ComparisonService] Snapshot save warning on search:', e.message);
         });
     }
 
-    return {
+    const finalResult = {
       query: cleanQuery,
-      productId: canonicalProduct ? canonicalProduct.id : null,
-      productName: canonicalProduct ? canonicalProduct.name : (enrichedOffers[0]?.title || cleanQuery),
+      productId: canonicalProduct ? canonicalProduct.id : resolvedProdId,
+      productName: resolvedProdName,
       imageUrl: topImageUrl,
       isCanonicalProduct: Boolean(canonicalProduct),
       totalStoresChecked: adapters.length,
       storesAvailable: enrichedOffers.length,
       resultsCount: enrichedOffers.length,
+      lowConfidence: Boolean(lowConfidence ?? filterStats?.lowConfidence),
+      confidenceMessage: confidenceMessage || filterStats?.confidenceMessage || null,
+      refurbishedCount: filterStats?.refurbishedCount || 0,
       bestDeal,
       lowestPrice,
       highestPrice,
@@ -283,9 +406,20 @@ export class ComparisonService {
       storesChecked: adapters.map((a) => a.name),
       storeStatuses,
       failedStores: failedStores.map((f) => ({ store: f.store, error: f.error })),
+      filterStats,
+      rejectedOffers: (filteredOut || []).map((f) => ({
+        store: f.offer?.store || 'Unknown',
+        title: f.offer?.title || '',
+        price: f.offer?.price || 0,
+        reason: f.reason,
+        detail: f.detail
+      })),
+      ...(isCached ? { isCached: true, cachedAt } : {}),
       latencyMs: Date.now() - startTime,
       timestamp: new Date().toISOString()
     };
+
+    return finalResult;
   }
 
   /**
@@ -302,7 +436,7 @@ export class ComparisonService {
 
     return {
       ...result,
-      productId: canonicalProduct ? canonicalProduct.id : null,
+      productId: canonicalProduct ? canonicalProduct.id : cleanId,
       productName: canonicalProduct ? canonicalProduct.name : query,
       isCanonicalProduct: Boolean(canonicalProduct)
     };

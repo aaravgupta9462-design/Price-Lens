@@ -35,7 +35,8 @@ export const comparisonController = {
         });
       }
 
-      const result = await comparisonService.compareQuery(validated.data.q);
+      const bypassCache = req.query.fresh === 'true' || req.query.bypassCache === 'true';
+      const result = await comparisonService.compareQuery(validated.data.q, { bypassCache });
 
       return res.status(200).json({
         success: true,
@@ -64,7 +65,8 @@ export const comparisonController = {
         });
       }
 
-      const result = await comparisonService.compareByProductId(validated.data.productId);
+      const bypassCache = req.query.fresh === 'true' || req.query.bypassCache === 'true';
+      const result = await comparisonService.compareByProductId(validated.data.productId, { bypassCache });
 
       return res.status(200).json({
         success: true,
