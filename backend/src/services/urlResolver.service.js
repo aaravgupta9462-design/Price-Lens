@@ -199,15 +199,40 @@ async function fetchDirectProductUrl(storeName, query) {
       return link.includes('amazon.in/') && (link.includes('/dp/') || link.includes('/gp/product/'));
     });
 
-    return directHit?.link || null;
+    const chosen = directHit || organic[0];
+    if (!chosen) return null;
+
+    // Also extract price from Google rich snippet if present
+    let snippetPrice =
+      chosen.rich_snippet?.top?.detected_extensions?.price ||
+      chosen.rich_snippet?.bottom?.detected_extensions?.price ||
+      null;
+    if (!snippetPrice && chosen.snippet) {
+      const m = chosen.snippet.match(/₹\s?([\d,]{3,9})/);
+      if (m) snippetPrice = Number(m[1].replace(/,/g, ''));
+    }
+
+    return {
+      url: chosen.link,
+      title: chosen.title || null,
+      price: snippetPrice && snippetPrice > 0 ? Math.round(snippetPrice) : null,
+    };
   } catch {
     return null;
   }
 }
 
+const GENERIC_TOKENS = new Set([
+  'the', 'and', 'for', 'with', 'from', 'online', 'best', 'price', 'flipkart', 'amazon',
+  'storage', 'ram', 'rom', 'gb', 'tb', 'mb', '5g', '4g', 'lte', 'dual', 'sim',
+  'black', 'white', 'blue', 'deep', 'natural', 'titanium', 'silver', 'gold', 'green',
+  'red', 'pink', 'purple', 'grey', 'gray', 'midnight', 'starlight', 'inch', 'inches',
+  '128', '256', '512', '1024', 'new', 'latest', 'model', 'edition', 'india', 'indian',
+]);
+
 /**
  * Parallel SerpApi Google Shopping lookup filtered for Amazon & Flipkart,
- * matching title keywords + filtering out accessory outliers.
+ * matching core brand/model tokens + filtering out accessory outliers.
  */
 async function fetchSerpApiStoreOffers(query, referencePrice = null, pastedStore = null) {
   const apiKey = process.env.SERPAPI_KEY?.trim();
@@ -216,10 +241,12 @@ async function fetchSerpApiStoreOffers(query, referencePrice = null, pastedStore
   try {
     const cleanQuery = query.replace(/[^a-zA-Z0-9\s]/g, ' ').replace(/\s+/g, ' ').trim();
     const shortQuery = cleanQuery.split(/\s+/).slice(0, 9).join(' ');
-    const queryWords = shortQuery
+    const allTokens = shortQuery
       .toLowerCase()
       .split(/\s+/)
-      .filter((w) => w.length > 2);
+      .filter((w) => w.length >= 2);
+    const coreTokens = allTokens.filter((w) => !GENERIC_TOKENS.has(w));
+    const matchTokens = coreTokens.length > 0 ? coreTokens : allTokens;
 
     const endpoint = new URL('https://serpapi.com/search.json');
     endpoint.searchParams.set('engine', 'google_shopping');
@@ -230,17 +257,25 @@ async function fetchSerpApiStoreOffers(query, referencePrice = null, pastedStore
 
     // Run Google Shopping + direct opposite-store Organic URL lookup in parallel!
     const oppositeStore = pastedStore === 'Amazon' ? 'Flipkart' : pastedStore === 'Flipkart' ? 'Amazon' : null;
-    const [shoppingRes, directOppUrl] = await Promise.all([
+    const [shoppingRes, oppOrganic] = await Promise.all([
       fetch(endpoint.toString(), { signal: AbortSignal.timeout(5500) }),
       oppositeStore ? fetchDirectProductUrl(oppositeStore, shortQuery) : Promise.resolve(null),
     ]);
 
+    const oppFallbackOffer = oppOrganic?.url
+      ? {
+          store: oppositeStore,
+          title: oppOrganic.title || shortQuery,
+          price: oppOrganic.price || null,
+          url: oppOrganic.url,
+          source: 'serpapi-organic',
+        }
+      : null;
+
     if (!shoppingRes.ok) {
       return {
-        amazon: null,
-        flipkart: directOppUrl && oppositeStore === 'Flipkart'
-          ? { store: 'Flipkart', title: shortQuery, price: null, url: directOppUrl, source: 'serpapi-organic' }
-          : null,
+        amazon: oppositeStore === 'Amazon' ? oppFallbackOffer : null,
+        flipkart: oppositeStore === 'Flipkart' ? oppFallbackOffer : null,
       };
     }
 
@@ -250,15 +285,16 @@ async function fetchSerpApiStoreOffers(query, referencePrice = null, pastedStore
     const extractPrice = (item) =>
       item?.extracted_price || Number(String(item?.price || '').replace(/[^\d.]/g, '')) || null;
 
-    const scoreRelevance = (item) => {
+    const scoreCoreMatch = (item) => {
       const titleLower = (item.title || '').toLowerCase();
-      return queryWords.reduce((acc, w) => (titleLower.includes(w) ? acc + 1 : acc), 0);
+      return matchTokens.reduce((acc, w) => (titleLower.includes(w) ? acc + 1 : acc), 0);
     };
 
     const queryLower = shortQuery.toLowerCase();
     const isAccessoryQuery = /\b(case|cover|tempered|guard|protector|cable|charger|skin|pouch)\b/.test(queryLower);
     const isHighTicket = /\b(iphone|macbook|ipad|laptop|galaxy s|oled|ps5|playstation)\b/.test(queryLower);
-    const safeRefPrice = isHighTicket && referencePrice && referencePrice < 8000 ? null : referencePrice;
+    const safeRefPrice = isHighTicket && referencePrice && referencePrice < 10000 ? null : referencePrice;
+    const minRequiredMatches = matchTokens.length >= 2 ? 2 : 1;
 
     const validResults = results.filter((item) => {
       const p = extractPrice(item);
@@ -271,14 +307,13 @@ async function fetchSerpApiStoreOffers(query, referencePrice = null, pastedStore
       if (safeRefPrice && safeRefPrice > 500) {
         if (p < safeRefPrice * 0.45 || p > safeRefPrice * 2.2) return false;
       }
-      if (queryWords.length >= 2 && scoreRelevance(item) < 1) return false;
+      // Strict core model/brand token check so Oppo/Nokia never match iPhone 17 Pro
+      if (scoreCoreMatch(item) < minRequiredMatches) return false;
       return true;
     });
 
-    const pool = validResults.length > 0 ? validResults : results;
-    // Sort by relevance first, then lowest price
-    const sorted = [...pool].sort((a, b) => {
-      const relDiff = scoreRelevance(b) - scoreRelevance(a);
+    const sorted = [...validResults].sort((a, b) => {
+      const relDiff = scoreCoreMatch(b) - scoreCoreMatch(a);
       if (relDiff !== 0) return relDiff;
       return (extractPrice(a) || Infinity) - (extractPrice(b) || Infinity);
     });
@@ -316,12 +351,14 @@ async function fetchSerpApiStoreOffers(query, referencePrice = null, pastedStore
 
     return {
       amazon: amzItem
-        ? parseItem(amzItem, oppositeStore === 'Amazon' ? directOppUrl : null, 'Amazon')
-        : null,
+        ? parseItem(amzItem, oppositeStore === 'Amazon' ? oppOrganic?.url : null, 'Amazon')
+        : oppositeStore === 'Amazon'
+          ? oppFallbackOffer
+          : null,
       flipkart: fkItem
-        ? parseItem(fkItem, oppositeStore === 'Flipkart' ? directOppUrl : null, 'Flipkart')
-        : directOppUrl && oppositeStore === 'Flipkart'
-          ? { store: 'Flipkart', title: shortQuery, price: null, url: directOppUrl, source: 'serpapi-organic' }
+        ? parseItem(fkItem, oppositeStore === 'Flipkart' ? oppOrganic?.url : null, 'Flipkart')
+        : oppositeStore === 'Flipkart'
+          ? oppFallbackOffer
           : null,
     };
   } catch {
@@ -361,6 +398,10 @@ export const urlResolverService = {
     }
 
     const searchTitle = liveMeta?.title || parsedInfo.inferredTitle;
+    const isHighTicketProduct = /\b(iphone|macbook|ipad|laptop|galaxy s|oled|ps5|playstation)\b/i.test(searchTitle);
+    if (isHighTicketProduct && liveMeta?.price && liveMeta.price < 10000) {
+      liveMeta.price = null;
+    }
 
     // Step 2: Single parallel SerpApi call for Amazon & Flipkart offers + direct opposite store URL
     const serpOffers = await fetchSerpApiStoreOffers(searchTitle, liveMeta?.price || null, parsedInfo.store);
@@ -406,7 +447,6 @@ export const urlResolverService = {
       liveMetadata: liveMeta,
       amazonOffer,
       flipkartOffer,
-      resolvedAt: new Date().toISOString(),
       cached: false,
     };
 
