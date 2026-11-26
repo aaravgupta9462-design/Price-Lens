@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
-import { INITIAL_SAVED_PRODUCTS, NOTIFICATIONS } from '../data/mockData';
+import { INITIAL_SAVED_PRODUCTS, INITIAL_PRICE_ALERTS, NOTIFICATIONS } from '../data/mockData';
 import { apiService } from '../services/api';
 
 const DashboardContext = createContext(null);
