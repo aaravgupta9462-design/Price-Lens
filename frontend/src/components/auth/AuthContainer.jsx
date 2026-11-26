@@ -582,7 +582,10 @@ export const AuthContainer = ({ onClose }) => {
                     </form>
 
                     {/* Switch to Register */}
-                    <p className="text-center text-xs text-slate-600 mt-4">
+                    <p
+                      className="text-center text-xs text-slate-600"
+                      style={{ marginTop: '1.25rem', marginBottom: '0.25rem' }}
+                    >
                       Don't have an account?{' '}
                       <button
                         type="button"
@@ -594,7 +597,10 @@ export const AuthContainer = ({ onClose }) => {
                     </p>
 
                     {/* Social Icons Row */}
-                    <div className="flex items-center justify-center gap-3 pt-4 border-t border-slate-100 mt-5">
+                    <div
+                      className="flex items-center justify-center border-t border-slate-100"
+                      style={{ marginTop: '1.25rem', paddingTop: '1.25rem', gap: '0.9rem' }}
+                    >
                       <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="p-2.5 rounded-full bg-slate-100 hover:bg-slate-200 border border-slate-200 transition-all hover:scale-110 shadow-sm" aria-label="Facebook">
                         <FacebookIcon />
                       </a>
@@ -747,7 +753,10 @@ export const AuthContainer = ({ onClose }) => {
                     </form>
 
                     {/* Switch to Login */}
-                    <p className="text-center text-xs text-slate-600 mt-4">
+                    <p
+                      className="text-center text-xs text-slate-600"
+                      style={{ marginTop: '1.25rem', marginBottom: '0.25rem' }}
+                    >
                       Already have an account?{' '}
                       <button
                         type="button"
@@ -759,7 +768,10 @@ export const AuthContainer = ({ onClose }) => {
                     </p>
 
                     {/* Social Icons Row */}
-                    <div className="flex items-center justify-center gap-3 pt-4 border-t border-slate-100 mt-5">
+                    <div
+                      className="flex items-center justify-center border-t border-slate-100"
+                      style={{ marginTop: '1.25rem', paddingTop: '1.25rem', gap: '0.9rem' }}
+                    >
                       <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="p-2.5 rounded-full bg-slate-100 hover:bg-slate-200 border border-slate-200 transition-all hover:scale-110 shadow-sm" aria-label="Facebook">
                         <FacebookIcon />
                       </a>
