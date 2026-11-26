@@ -1,68 +1,170 @@
 import React from 'react';
-import { ShieldCheck, CheckCircle2, Sparkles, Clock } from 'lucide-react';
+import {
+  ShieldCheck,
+  Zap,
+  Activity,
+  Clock,
+  Sparkles,
+  ArrowRight,
+  Radio,
+  CheckCircle2,
+} from 'lucide-react';
 import StoreLogo from './StoreLogo';
 
-const LIVE_RETAILERS = [
-  { id: 'amazon', name: 'Amazon India', speed: 'Same-Day Prime', deals: '12.4k Active Deals' },
-  { id: 'flipkart', name: 'Flipkart Plus', speed: 'Next-Day SuperCoins', deals: '14.8k Active Deals' },
+const LIVE_STORES = [
+  {
+    id: 'amazon',
+    name: 'Amazon India',
+    domain: 'amazon.in',
+    accent: '#FF9900',
+    dealsCount: '12,450+',
+    speed: 'Same-Day Prime Delivery',
+    accuracy: '99.4% Accuracy',
+    syncedAgo: 'Synced 1m ago',
+    tagline: 'Lightning deals, Prime bank discounts & Keepa-depth telemetry',
+  },
+  {
+    id: 'flipkart',
+    name: 'Flipkart Plus',
+    domain: 'flipkart.com',
+    accent: '#2874F0',
+    dealsCount: '14,820+',
+    speed: 'Next-Day SuperCoin Express',
+    accuracy: '99.1% Accuracy',
+    syncedAgo: 'Synced 2m ago',
+    tagline: 'SuperCoin rewards, festive price hikes & flash discounts audited',
+  },
 ];
 
-const FUTURE_RETAILERS = [
-  { id: 'croma', name: 'Croma Tata', speed: 'Store Pickup' },
-  { id: 'reliance', name: 'Reliance Digital', speed: 'Pan-India Stores' },
-  { id: 'tatacliq', name: 'Tata CLiQ Luxury', speed: 'Brand Certified' },
-  { id: 'vijaysales', name: 'Vijay Sales', speed: 'In-Store Warranty' },
+const FUTURE_STORES = [
+  {
+    id: 'croma',
+    name: 'Croma',
+    specialty: '2h Express Store Pickup',
+    status: 'API In Dev',
+  },
+  {
+    id: 'reliance',
+    name: 'Reliance Digital',
+    specialty: 'Pan-India 500+ Stores',
+    status: 'API In Dev',
+  },
+  {
+    id: 'tatacliq',
+    name: 'Tata CLiQ',
+    specialty: 'Brand-Certified Luxury',
+    status: 'Roadmap',
+  },
+  {
+    id: 'vijaysales',
+    name: 'Vijay Sales',
+    specialty: 'In-Store Warranty Tech',
+    status: 'Roadmap',
+  },
 ];
 
 export const RetailerStrip = () => {
   return (
-    <section className="pl-retailer-strip-section" aria-label="Supported Retailer Network">
-      <div className="pl-retailer-strip-container">
-        <div className="pl-strip-header-row">
-          <div className="pl-strip-eyebrow">
-            <ShieldCheck size={14} className="pl-eyebrow-shield-icon" />
-            <span>CONTINUOUS MULTI-STORE SURVEILLANCE &bull; ZERO SPONSORED BIAS</span>
+    <section className="pl-telemetry-radar-section" aria-label="Live Store Surveillance Telemetry">
+      <div className="pl-telemetry-card">
+        {/* Top Command Bar */}
+        <div className="pl-radar-header">
+          <div className="pl-radar-left">
+            <div className="pl-radar-icon-box">
+              <Activity size={16} className="pl-radar-pulse-icon" />
+            </div>
+            <div className="pl-radar-title-col">
+              <div className="pl-radar-badge-row">
+                <span className="pl-radar-badge">MULTI-STORE SURVEILLANCE RADAR</span>
+                <span className="pl-radar-unbiased-tag">100% UNBIASED &bull; ZERO SPONSORED BIAS</span>
+              </div>
+              <p className="pl-radar-sub">
+                Auditing 42,000+ live gadget listings 24/7 with sub-minute price drop detection
+              </p>
+            </div>
           </div>
-          <div className="pl-strip-live-indicator">
-            <span className="pl-live-pulse-dot" />
-            <span className="pl-live-pulse-text">Auditing Amazon &amp; Flipkart Live</span>
+
+          <div className="pl-radar-status-pill">
+            <span className="pl-radar-dot-pulse">
+              <span className="pl-dot-core" />
+              <span className="pl-dot-wave" />
+            </span>
+            <span className="pl-radar-status-text">Live Dual-Engine Active</span>
           </div>
         </div>
 
-        <div className="pl-retailer-pills-row">
-          {/* Active Live Stores */}
-          {LIVE_RETAILERS.map((ret) => (
-            <div key={ret.id} className="pl-retailer-chip-box pl-retailer-live-active">
-              <StoreLogo store={ret.id} size="md" />
-              <div className="pl-retailer-meta-col">
-                <div className="pl-retailer-status-badge live">
-                  <span className="pl-status-dot-green" />
-                  <span>LIVE</span>
+        {/* ─── Zone 1: Active Live Surveillance Dual Cards (Amazon & Flipkart) ─── */}
+        <div className="pl-live-dual-grid">
+          {LIVE_STORES.map((store) => (
+            <div key={store.id} className={`pl-live-store-card pl-card-${store.id}`}>
+              <div className="pl-live-card-top">
+                <div className="pl-live-store-branding">
+                  <StoreLogo store={store.id} size="md" />
+                  <span className="pl-live-domain-badge">{store.domain}</span>
                 </div>
-                <span className="pl-retailer-speed-tag">{ret.speed}</span>
+
+                <div className="pl-live-status-chip">
+                  <span className="pl-green-pulse-dot" />
+                  <span>ACTIVE FEED</span>
+                </div>
+              </div>
+
+              <p className="pl-live-card-tagline">{store.tagline}</p>
+
+              <div className="pl-live-metrics-row">
+                <div className="pl-metric-cell">
+                  <span className="pl-metric-val">{store.dealsCount}</span>
+                  <span className="pl-metric-lbl">Audited Deals</span>
+                </div>
+                <div className="pl-metric-divider" />
+                <div className="pl-metric-cell">
+                  <span className="pl-metric-val green">{store.accuracy}</span>
+                  <span className="pl-metric-lbl">Sync Reliability</span>
+                </div>
+                <div className="pl-metric-divider" />
+                <div className="pl-metric-cell">
+                  <span className="pl-metric-val">{store.speed}</span>
+                  <span className="pl-metric-lbl">Delivery Guarantee</span>
+                </div>
+              </div>
+
+              <div className="pl-live-card-footer">
+                <div className="pl-footer-sync-info">
+                  <Zap size={12} className="pl-sync-zap" />
+                  <span>{store.syncedAgo}</span>
+                </div>
+                <span className="pl-footer-status-pill">Verified Impartial</span>
               </div>
             </div>
           ))}
+        </div>
 
-          {/* Separator / Future Updates Divider */}
-          <div className="pl-retailer-divider-chip">
-            <Sparkles size={12} className="text-violet" />
-            <span>FUTURE UPDATES</span>
+        {/* ─── Zone 2: Upcoming Stores Roadmap Dock ─── */}
+        <div className="pl-roadmap-dock">
+          <div className="pl-roadmap-dock-header">
+            <div className="pl-dock-title-group">
+              <Sparkles size={14} className="pl-dock-sparkle" />
+              <span className="pl-dock-title">FUTURE EXPANSION NETWORK</span>
+            </div>
+            <span className="pl-dock-subtitle">
+              Direct API scrapers &amp; affiliate integrations in progress for upcoming release
+            </span>
           </div>
 
-          {/* Upcoming Future Stores */}
-          {FUTURE_RETAILERS.map((ret) => (
-            <div key={ret.id} className="pl-retailer-chip-box pl-retailer-future-box">
-              <StoreLogo store={ret.id} size="md" />
-              <div className="pl-retailer-meta-col">
-                <span className="pl-retailer-status-badge future">
-                  <Clock size={10} />
-                  <span>Coming Soon</span>
-                </span>
-                <span className="pl-retailer-speed-tag">{ret.speed}</span>
+          <div className="pl-roadmap-stores-grid">
+            {FUTURE_STORES.map((fut) => (
+              <div key={fut.id} className="pl-future-dock-item">
+                <div className="pl-future-dock-head">
+                  <StoreLogo store={fut.id} size="sm" />
+                  <span className="pl-future-eta-badge">
+                    <Clock size={10} />
+                    <span>{fut.status}</span>
+                  </span>
+                </div>
+                <span className="pl-future-dock-specialty">{fut.specialty}</span>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </section>

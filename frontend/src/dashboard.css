@@ -5542,121 +5542,434 @@
   color: #8C96A8;
 }
 
-/* ─── Section 3: Retailer Strip ────────────────────────────────────────────── */
-.pl-retailer-strip-section {
-  margin: 1.5rem 0 3.5rem;
+/* ─── Section 3: Live Telemetry Surveillance Radar & Expansion Hub ──────────── */
+.pl-telemetry-radar-section {
+  margin: 1.75rem 0 3.5rem;
 }
 
-.pl-retailer-strip-container {
-  background: #FFFFFF;
-  border: 1px solid #E3E6F0;
-  border-radius: 20px;
-  padding: 1.25rem 2rem;
-  box-shadow: 0 2px 8px rgba(17, 19, 34, 0.03);
+.pl-telemetry-card {
+  background: linear-gradient(180deg, #FFFFFF 0%, #F8FAFD 100%);
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  border-radius: 22px;
+  padding: 1.5rem 1.75rem;
+  box-shadow:
+    0 8px 32px -4px rgba(15, 23, 42, 0.05),
+    0 2px 6px -1px rgba(15, 23, 42, 0.02),
+    inset 0 1px 0 #FFFFFF;
+  position: relative;
+  overflow: hidden;
 }
 
-.pl-strip-header-row {
+.pl-telemetry-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #FF9900 0%, #6842FF 50%, #2874F0 100%);
+}
+
+/* Radar Header */
+.pl-radar-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 1.15rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 1px solid #F1F3F9;
+  margin-bottom: 1.25rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.7);
   flex-wrap: wrap;
-  gap: 0.75rem;
-}
-
-.pl-strip-eyebrow {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.72rem;
-  font-weight: 750;
-  letter-spacing: 0.06em;
-  color: #68718A;
-}
-
-.pl-eyebrow-shield-icon {
-  color: #6842FF;
-}
-
-.pl-strip-live-indicator {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.pl-live-pulse-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #119B67;
-  box-shadow: 0 0 0 0 rgba(17, 155, 103, 0.7);
-  animation: plPulse 2s infinite;
-}
-
-@keyframes plPulse {
-  0% {
-    transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(17, 155, 103, 0.7);
-  }
-
-  70% {
-    transform: scale(1);
-    box-shadow: 0 0 0 6px rgba(17, 155, 103, 0);
-  }
-
-  100% {
-    transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(17, 155, 103, 0);
-  }
-}
-
-.pl-live-pulse-text {
-  font-size: 0.74rem;
-  font-weight: 700;
-  color: #119B67;
-}
-
-.pl-retailer-pills-row {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
   gap: 1rem;
 }
 
-.pl-retailer-chip-box {
+.pl-radar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pl-radar-icon-box {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%);
+  border: 1px solid rgba(17, 155, 103, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #119B67;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(17, 155, 103, 0.15);
+}
+
+.pl-radar-pulse-icon {
+  animation: plPulseRadar 2s ease-in-out infinite;
+}
+
+@keyframes plPulseRadar {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.15); opacity: 0.85; }
+}
+
+.pl-radar-title-col {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  gap: 2px;
+}
+
+.pl-radar-badge-row {
+  display: flex;
+  align-items: center;
   gap: 8px;
-  background: #F8FAFC;
-  border: 1px solid #E3E6F0;
-  border-radius: 12px;
-  padding: 0.8rem 0.9rem;
+  flex-wrap: wrap;
+}
+
+.pl-radar-badge {
+  font-size: 0.76rem;
+  font-weight: 850;
+  letter-spacing: 0.05em;
+  color: #0F172A;
+}
+
+.pl-radar-unbiased-tag {
+  font-size: 0.65rem;
+  font-weight: 750;
+  letter-spacing: 0.04em;
+  color: #6842FF;
+  background: #F3E8FF;
+  padding: 1.5px 7px;
+  border-radius: 9999px;
+  border: 1px solid rgba(104, 66, 255, 0.2);
+}
+
+.pl-radar-sub {
+  font-size: 0.76rem;
+  color: #64748B;
+  margin: 0;
+  font-weight: 500;
+}
+
+.pl-radar-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px;
+  background: #FFFFFF;
+  border: 1px solid rgba(17, 155, 103, 0.3);
+  border-radius: 9999px;
+  box-shadow: 0 2px 6px rgba(17, 155, 103, 0.08);
+}
+
+.pl-radar-dot-pulse {
+  position: relative;
+  width: 10px;
+  height: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pl-dot-core {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #119B67;
+  z-index: 2;
+}
+
+.pl-dot-wave {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: rgba(17, 155, 103, 0.4);
+  animation: plDotWave 1.8s infinite ease-out;
+}
+
+@keyframes plDotWave {
+  0% { transform: scale(1); opacity: 0.8; }
+  100% { transform: scale(2.4); opacity: 0; }
+}
+
+.pl-radar-status-text {
+  font-size: 0.75rem;
+  font-weight: 750;
+  color: #119B67;
+  letter-spacing: -0.01em;
+}
+
+/* Zone 1: Active Live Surveillance Dual Grid */
+.pl-live-dual-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.pl-live-store-card {
+  background: #FFFFFF;
+  border: 1.5px solid rgba(226, 232, 240, 0.95);
+  border-radius: 16px;
+  padding: 1.25rem 1.4rem;
+  box-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.04);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.pl-card-amazon {
+  border-top: 3px solid #FF9900;
+}
+
+.pl-card-amazon:hover {
+  border-color: #FF9900;
+  box-shadow: 0 8px 24px -4px rgba(255, 153, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+.pl-card-flipkart {
+  border-top: 3px solid #2874F0;
+}
+
+.pl-card-flipkart:hover {
+  border-color: #2874F0;
+  box-shadow: 0 8px 24px -4px rgba(40, 116, 240, 0.15);
+  transform: translateY(-2px);
+}
+
+.pl-live-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.65rem;
+}
+
+.pl-live-store-branding {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pl-live-domain-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.66rem;
+  font-weight: 600;
+  color: #64748B;
+  background: #F1F5F9;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.pl-live-status-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #EAF8F1;
+  color: #119B67;
+  font-size: 0.64rem;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  letter-spacing: 0.03em;
+}
+
+.pl-green-pulse-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #119B67;
+  display: inline-block;
+  box-shadow: 0 0 0 2px rgba(17, 155, 103, 0.25);
+}
+
+.pl-live-card-tagline {
+  font-size: 0.77rem;
+  color: #475569;
+  margin: 0 0 1rem 0;
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+.pl-live-metrics-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #F8FAFD;
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  border-radius: 10px;
+  padding: 0.65rem 0.85rem;
+  margin-bottom: 0.85rem;
+}
+
+.pl-metric-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pl-metric-val {
+  font-size: 0.86rem;
+  font-weight: 800;
+  color: #0F172A;
+  letter-spacing: -0.01em;
+}
+
+.pl-metric-val.green {
+  color: #119B67;
+}
+
+.pl-metric-lbl {
+  font-size: 0.62rem;
+  font-weight: 650;
+  color: #64748B;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.pl-metric-divider {
+  width: 1px;
+  height: 24px;
+  background: #E2E8F0;
+}
+
+.pl-live-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  font-size: 0.7rem;
+  color: #64748B;
+}
+
+.pl-footer-sync-info {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 600;
+  color: #475569;
+}
+
+.pl-sync-zap {
+  color: #EAB308;
+}
+
+.pl-footer-status-pill {
+  font-size: 0.65rem;
+  font-weight: 750;
+  color: #6842FF;
+}
+
+/* Zone 2: Upcoming Stores Roadmap Dock */
+.pl-roadmap-dock {
+  background: linear-gradient(135deg, #FAF5FF 0%, #F5F3FF 100%);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: 14px;
+  padding: 1rem 1.25rem;
+}
+
+.pl-roadmap-dock-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.pl-dock-title-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pl-dock-sparkle {
+  color: #7C3AED;
+}
+
+.pl-dock-title {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #6D28D9;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.pl-dock-subtitle {
+  font-size: 0.7rem;
+  color: #64748B;
+  font-weight: 500;
+}
+
+.pl-roadmap-stores-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+}
+
+.pl-future-dock-item {
+  background: #FFFFFF;
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  border-radius: 10px;
+  padding: 0.65rem 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
   transition: all 0.2s ease;
 }
 
-.pl-retailer-chip-box:hover {
-  background: #FFFFFF;
-  border-color: #6842FF;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(104, 66, 255, 0.08);
+.pl-future-dock-item:hover {
+  border-color: rgba(139, 92, 246, 0.4);
+  transform: translateY(-1.5px);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.08);
 }
 
-.pl-retailer-meta-col {
+.pl-future-dock-head {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
 }
 
-.pl-retailer-speed-tag {
+.pl-future-eta-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.6rem;
+  font-weight: 750;
+  color: #7C3AED;
+  background: #F3E8FF;
+  padding: 1px 6px;
+  border-radius: 9999px;
+}
+
+.pl-future-dock-specialty {
   font-size: 0.68rem;
-  font-weight: 700;
-  color: #111322;
+  font-weight: 600;
+  color: #64748B;
 }
 
-.pl-retailer-deals-tag {
-  font-size: 0.62rem;
-  color: #68718A;
+@media (max-width: 900px) {
+  .pl-live-dual-grid {
+    grid-template-columns: 1fr;
+  }
+  .pl-roadmap-stores-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .pl-roadmap-stores-grid {
+    grid-template-columns: 1fr;
+  }
+  .pl-live-metrics-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .pl-metric-divider {
+    display: none;
+  }
 }
 
 /* ─── Section 4: Popular Price Drops Grid ──────────────────────────────────── */
