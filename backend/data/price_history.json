@@ -511,6 +511,30 @@
       "price": 110219,
       "currency": "INR",
       "recordedAt": "2026-10-27T09:43:29.296Z"
+    },
+    {
+      "id": "ph_1795714661071_il9vk",
+      "productId": "iphone-16-128",
+      "store": "Croma",
+      "price": 70990,
+      "currency": "INR",
+      "recordedAt": "2026-11-26T17:37:41.070Z"
+    },
+    {
+      "id": "ph_1795714661072_t7xo2",
+      "productId": "iphone-16-128",
+      "store": "Reliance Digital",
+      "price": 72900,
+      "currency": "INR",
+      "recordedAt": "2026-11-26T17:37:41.072Z"
+    },
+    {
+      "id": "ph_1795716284291_ub600",
+      "productId": "iphone-16-128",
+      "store": "Cashaway",
+      "price": 98081,
+      "currency": "INR",
+      "recordedAt": "2026-11-26T18:04:44.289Z"
     }
   ],
   "macbook-air-m3": [
@@ -1511,6 +1535,96 @@
       "price": 48900,
       "currency": "INR",
       "recordedAt": "2026-09-08T10:58:01.976Z"
+    }
+  ],
+  "amazon-b0dgj7s9r8": [
+    {
+      "id": "ph_1795714811585_ssggj",
+      "productId": "amazon-b0dgj7s9r8",
+      "store": "Croma",
+      "price": 64852,
+      "currency": "INR",
+      "recordedAt": "2026-11-26T17:40:11.584Z"
+    },
+    {
+      "id": "ph_1795714811587_bn3cz",
+      "productId": "amazon-b0dgj7s9r8",
+      "store": "Reliance Digital",
+      "price": 66123,
+      "currency": "INR",
+      "recordedAt": "2026-11-26T17:40:11.586Z"
+    }
+  ],
+  "mouse-adjustable-hub-anti-slip-pad": [
+    {
+      "id": "ph_1795714885194_3luah",
+      "productId": "mouse-adjustable-hub-anti-slip-pad",
+      "store": "Croma",
+      "price": 32803,
+      "currency": "INR",
+      "recordedAt": "2026-11-26T17:41:25.191Z"
+    },
+    {
+      "id": "ph_1795714885195_edrqr",
+      "productId": "mouse-adjustable-hub-anti-slip-pad",
+      "store": "Reliance Digital",
+      "price": 33446,
+      "currency": "INR",
+      "recordedAt": "2026-11-26T17:41:25.195Z"
+    }
+  ],
+  "microsoft-surface-keyboard-storage-platinum": [
+    {
+      "id": "ph_1795714930211_y92hg",
+      "productId": "microsoft-surface-keyboard-storage-platinum",
+      "store": "Croma",
+      "price": 67136,
+      "currency": "INR",
+      "recordedAt": "2026-11-26T17:42:10.208Z"
+    },
+    {
+      "id": "ph_1795714930212_7owk1",
+      "productId": "microsoft-surface-keyboard-storage-platinum",
+      "store": "Reliance Digital",
+      "price": 68453,
+      "currency": "INR",
+      "recordedAt": "2026-11-26T17:42:10.212Z"
+    }
+  ],
+  "microsoft-surface-pro-13-keyboard-with-pen-storage-platinum-ep2-01842": [
+    {
+      "id": "ph_1795714932862_zvq6i",
+      "productId": "microsoft-surface-pro-13-keyboard-with-pen-storage-platinum-ep2-01842",
+      "store": "Croma",
+      "price": 80866,
+      "currency": "INR",
+      "recordedAt": "2026-11-26T17:42:12.862Z"
+    },
+    {
+      "id": "ph_1795714932863_wuzq6",
+      "productId": "microsoft-surface-pro-13-keyboard-with-pen-storage-platinum-ep2-01842",
+      "store": "Reliance Digital",
+      "price": 82451,
+      "currency": "INR",
+      "recordedAt": "2026-11-26T17:42:12.863Z"
+    }
+  ],
+  "rockstar-games-ps5-video-game-consolegrand-theft-auto-v": [
+    {
+      "id": "ph_1795715311591_t5gtm",
+      "productId": "rockstar-games-ps5-video-game-consolegrand-theft-auto-v",
+      "store": "Croma",
+      "price": 16014,
+      "currency": "INR",
+      "recordedAt": "2026-11-26T17:48:31.587Z"
+    },
+    {
+      "id": "ph_1795715311592_o65tj",
+      "productId": "rockstar-games-ps5-video-game-consolegrand-theft-auto-v",
+      "store": "Reliance Digital",
+      "price": 16328,
+      "currency": "INR",
+      "recordedAt": "2026-11-26T17:48:31.592Z"
     }
   ]
 }

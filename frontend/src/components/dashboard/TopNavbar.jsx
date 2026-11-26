@@ -18,7 +18,7 @@ import {
 import { useDashboard } from '../../context/DashboardContext';
 import { useAuth } from '../../context/AuthContext';
 
-const TopNavbar = ({ onOpenAuth }) => {
+const TopNavbar = ({ onOpenAuth, onOpenShowcase }) => {
   const {
     activeNav,
     setActiveNav,
@@ -221,8 +221,32 @@ const TopNavbar = ({ onOpenAuth }) => {
             })}
           </nav>
 
-          {/* Right Action Controls: Wishlist & Alerts removed as requested; clean user profile */}
+          {/* Right Action Controls: 3D Story toggle + clean user profile */}
           <div className="db-navbar-actions">
+            {onOpenShowcase && (
+              <button
+                type="button"
+                onClick={onOpenShowcase}
+                title="View 3D Scroll Story"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  padding: '7px 13px',
+                  borderRadius: '999px',
+                  border: '1px solid rgba(79, 70, 229, 0.25)',
+                  background: 'rgba(79, 70, 229, 0.06)',
+                  color: '#4F46E5',
+                  fontSize: '12.5px',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                <Sparkles size={13} />
+                <span>3D Story</span>
+              </button>
+            )}
             {/* User Profile / Menu Pill */}
             <div style={{ position: 'relative' }}>
               <div

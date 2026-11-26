@@ -54,7 +54,7 @@ const ScreenRenderer = () => {
   }
 };
 
-const DashboardContent = ({ onOpenAuth }) => {
+const DashboardContent = ({ onOpenAuth, onOpenShowcase }) => {
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
     stiffness: 220,
@@ -81,7 +81,7 @@ const DashboardContent = ({ onOpenAuth }) => {
       />
 
       {/* Top Header Navbar with Category Tabs */}
-      <TopNavbar onOpenAuth={onOpenAuth} />
+      <TopNavbar onOpenAuth={onOpenAuth} onOpenShowcase={onOpenShowcase} />
 
       {/* Main Content Area */}
       <main className="db-main-full-content">
@@ -101,10 +101,10 @@ const DashboardContent = ({ onOpenAuth }) => {
   );
 };
 
-export const DashboardLayout = ({ onOpenAuth }) => {
+export const DashboardLayout = ({ onOpenAuth, onOpenShowcase }) => {
   return (
     <DashboardProvider>
-      <DashboardContent onOpenAuth={onOpenAuth} />
+      <DashboardContent onOpenAuth={onOpenAuth} onOpenShowcase={onOpenShowcase} />
     </DashboardProvider>
   );
 };

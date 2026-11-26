@@ -1,0 +1,583 @@
+/* PriceLens Editorial 3D Scroll-Telling Showcase */
+.pl-story-root {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #faf4f0 0%, #f6ece6 45%, #f3e8e2 100%);
+  color: #1c1614;
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom Precision Cursor */
+.pl-story-cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  border: 1.5px solid rgba(234, 88, 12, 0.45);
+  background: rgba(234, 88, 12, 0.05);
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%, -50%);
+  transition: width 0.22s ease, height 0.22s ease, border-color 0.22s ease, background 0.22s ease;
+}
+
+.pl-story-cursor-ring.is-hover {
+  width: 52px;
+  height: 52px;
+  border-color: rgba(79, 70, 229, 0.7);
+  background: rgba(79, 70, 229, 0.08);
+}
+
+.pl-story-cursor-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: #ea580c;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+}
+
+@media (hover: none), (pointer: coarse) {
+  .pl-story-cursor-ring,
+  .pl-story-cursor-dot {
+    display: none;
+  }
+}
+
+/* Top Editorial Header */
+.pl-story-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22px 48px;
+  pointer-events: none;
+}
+
+.pl-story-header-left,
+.pl-story-header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  pointer-events: auto;
+}
+
+.pl-story-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.pl-story-brand img {
+  height: 30px;
+  width: auto;
+  object-fit: contain;
+}
+
+.pl-story-brand-divider {
+  color: rgba(28, 22, 20, 0.28);
+  font-size: 13px;
+}
+
+.pl-story-brand-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(28, 22, 20, 0.65);
+  font-weight: 600;
+}
+
+.pl-story-ghost-btn {
+  background: transparent;
+  border: none;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1c1614;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-color: rgba(28, 22, 20, 0.35);
+  cursor: pointer;
+  padding: 8px 10px;
+  transition: opacity 0.2s ease;
+}
+
+.pl-story-ghost-btn:hover {
+  opacity: 0.7;
+}
+
+.pl-story-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 22px;
+  border-radius: 999px;
+  background: #231915;
+  color: #fffaf7;
+  font-size: 13.5px;
+  font-weight: 600;
+  border: 1px solid #231915;
+  cursor: pointer;
+  box-shadow: 0 10px 25px rgba(35, 25, 21, 0.16);
+  transition: transform 0.22s ease, background 0.22s ease, box-shadow 0.22s ease;
+}
+
+.pl-story-pill-btn:hover {
+  transform: translateY(-2px);
+  background: #3a2b25;
+  box-shadow: 0 14px 32px rgba(35, 25, 21, 0.24);
+}
+
+/* Main Story Stage & Chapters */
+.pl-story-stage {
+  position: relative;
+  width: 100%;
+}
+
+/* Sticky Viewport Layer for 3D Centerpiece & Kinetic Watermarks */
+.pl-story-sticky-viewport {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Giant Background Watermark (like "GIN") */
+.pl-story-watermark {
+  position: absolute;
+  right: 9%;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: clamp(110px, 16vw, 230px);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  color: rgba(214, 178, 170, 0.42);
+  user-select: none;
+  line-height: 0.9;
+  z-index: 1;
+}
+
+/* Slanted Kinetic Words (like JUNIPER / CORIANDER / PEPPERCORN) */
+.pl-story-kinetic-layer {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.pl-story-kinetic-word {
+  position: absolute;
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: clamp(68px, 11vw, 154px);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #dc2646;
+  opacity: 0;
+  white-space: nowrap;
+  user-select: none;
+  transform: rotate(-11deg);
+}
+
+/* 3D Centerpiece Wrapper */
+.pl-story-3d-anchor {
+  position: relative;
+  z-index: 4;
+  width: 100%;
+  max-width: 1320px;
+  height: 100%;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 11%;
+  perspective: 1400px;
+}
+
+.pl-story-3d-device {
+  position: relative;
+  width: 300px;
+  height: 460px;
+  border-radius: 36px;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.96), rgba(246, 240, 236, 0.92));
+  border: 1.5px solid rgba(28, 22, 20, 0.12);
+  box-shadow:
+    0 35px 75px -18px rgba(35, 25, 21, 0.24),
+    0 12px 24px -8px rgba(35, 25, 21, 0.1),
+    inset 0 2px 6px rgba(255, 255, 255, 0.9);
+  padding: 18px;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.pl-story-3d-device-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(28, 22, 20, 0.08);
+}
+
+.pl-story-3d-pill-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #059669;
+  background: rgba(16, 185, 129, 0.12);
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+
+.pl-story-3d-pill-live::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: #10b981;
+}
+
+.pl-story-3d-device-product {
+  margin-top: 14px;
+  background: #ffffff;
+  border-radius: 22px;
+  padding: 16px;
+  border: 1px solid rgba(28, 22, 20, 0.07);
+  box-shadow: 0 8px 20px rgba(28, 22, 20, 0.04);
+}
+
+.pl-story-3d-prod-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #6b5e57;
+}
+
+.pl-story-3d-prod-title {
+  margin-top: 4px;
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: #1c1614;
+  line-height: 1.15;
+}
+
+.pl-story-3d-store-rows {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pl-story-3d-store-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 13px;
+  border-radius: 14px;
+  background: #faf7f5;
+  border: 1px solid rgba(28, 22, 20, 0.07);
+}
+
+.pl-story-3d-store-row.winner {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(16, 185, 129, 0.04));
+  border-color: rgba(16, 185, 129, 0.35);
+}
+
+.pl-story-3d-store-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1c1614;
+}
+
+.pl-story-3d-store-sub {
+  font-size: 10.5px;
+  color: #6b5e57;
+}
+
+.pl-story-3d-store-price {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 15px;
+  font-weight: 700;
+  color: #1c1614;
+}
+
+.pl-story-3d-store-row.winner .pl-story-3d-store-price {
+  color: #047857;
+}
+
+.pl-story-3d-mini-chart {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border-radius: 18px;
+  background: #231915;
+  color: #fffaf7;
+}
+
+.pl-story-3d-chart-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 10.5px;
+  color: rgba(255, 250, 247, 0.72);
+  margin-bottom: 6px;
+}
+
+.pl-story-3d-chart-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: #34d399;
+  font-weight: 700;
+}
+
+/* Second Sliding Comparison Card (Chapter 4) */
+.pl-story-3d-second-card {
+  position: absolute;
+  right: 32%;
+  width: 245px;
+  padding: 18px;
+  border-radius: 26px;
+  background: rgba(255, 255, 255, 0.94);
+  border: 1.5px solid rgba(79, 70, 229, 0.22);
+  box-shadow: 0 28px 60px -15px rgba(79, 70, 229, 0.22);
+  opacity: 0;
+  transform: translateY(120px) scale(0.9) rotate(-6deg);
+  z-index: 3;
+}
+
+/* Floating Orbital Chips (like floating strawberries/botanicals) */
+.pl-story-float-chip {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(28, 22, 20, 0.1);
+  box-shadow: 0 16px 34px rgba(28, 22, 20, 0.12);
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #1c1614;
+  z-index: 5;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.pl-story-float-chip.is-blurred {
+  filter: blur(1.8px);
+  opacity: 0;
+}
+
+.pl-story-float-chip .mono {
+  font-family: 'JetBrains Mono', monospace;
+  color: #059669;
+}
+
+.pl-story-float-chip .warn {
+  font-family: 'JetBrains Mono', monospace;
+  color: #dc2626;
+}
+
+/* Scroll Sections Overlay (Foreground Editorial Copy) */
+.pl-story-sections {
+  position: relative;
+  z-index: 10;
+  margin-top: -100vh;
+}
+
+.pl-story-chapter {
+  min-height: 100vh;
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 48px;
+  display: flex;
+  align-items: center;
+}
+
+.pl-story-copy-col {
+  max-width: 470px;
+}
+
+.pl-story-eyebrow {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #dc2646;
+  margin-bottom: 14px;
+}
+
+.pl-story-h1 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: clamp(54px, 6.2vw, 88px);
+  font-weight: 600;
+  line-height: 0.96;
+  letter-spacing: -0.03em;
+  color: #1c1614;
+  margin: 0 0 22px;
+}
+
+.pl-story-h2 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: clamp(38px, 4.3vw, 56px);
+  font-weight: 600;
+  line-height: 1.06;
+  letter-spacing: -0.025em;
+  color: #1c1614;
+  margin: 0 0 18px;
+}
+
+.pl-story-lead {
+  font-size: 16.5px;
+  line-height: 1.6;
+  color: rgba(28, 22, 20, 0.72);
+  margin: 0 0 28px;
+}
+
+.pl-story-cta-row {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.pl-story-tags-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+  margin-bottom: 28px;
+}
+
+.pl-story-tag-pill {
+  padding: 7px 15px;
+  border-radius: 999px;
+  border: 1px solid rgba(220, 38, 70, 0.28);
+  color: #be123c;
+  font-size: 12.5px;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.55);
+}
+
+/* Bottom Scroll Indicator */
+.pl-story-scroll-cue {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  z-index: 40;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+
+.pl-story-scroll-cue span {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  color: rgba(28, 22, 20, 0.52);
+}
+
+.pl-story-scroll-line {
+  width: 1px;
+  height: 32px;
+  background: linear-gradient(180deg, rgba(28, 22, 20, 0.45), transparent);
+}
+
+/* Bottom-right micro caption (like "THE BOTANICAL BILL") */
+.pl-story-bottom-caption {
+  position: fixed;
+  right: 48px;
+  bottom: 32px;
+  max-width: 260px;
+  text-align: right;
+  z-index: 30;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+.pl-story-bottom-caption.visible {
+  opacity: 1;
+}
+
+.pl-story-bottom-caption-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #dc2646;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.pl-story-bottom-caption-body {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: rgba(28, 22, 20, 0.68);
+}
+
+/* Responsive */
+@media (max-width: 960px) {
+  .pl-story-header {
+    padding: 16px 22px;
+  }
+
+  .pl-story-brand-divider,
+  .pl-story-brand-tag {
+    display: none;
+  }
+
+  .pl-story-3d-anchor {
+    justify-content: center;
+    padding-right: 0;
+    opacity: 0.22;
+  }
+
+  .pl-story-watermark {
+    right: 50%;
+    transform: translate(50%, -50%);
+    opacity: 0.25;
+  }
+
+  .pl-story-chapter {
+    padding: 0 24px;
+  }
+
+  .pl-story-bottom-caption {
+    display: none;
+  }
+}
