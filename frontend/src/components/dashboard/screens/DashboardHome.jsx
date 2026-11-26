@@ -1,53 +1,87 @@
 import React from 'react';
-import { useDashboard } from '../../../context/DashboardContext';
 import Hero from '../Hero';
-import LivePriceDropsTicker from '../LivePriceDropsTicker';
-import StatsOverview from '../StatsOverview';
-import ShoppingInsight from '../ShoppingInsight';
-import BestDeals from '../BestDeals';
-import PriceComparison from '../PriceComparison';
-import CouponsSection from '../CouponsSection';
 import ExtensionPromo from '../ExtensionPromo';
-import RecentSearches from '../RecentSearches';
-import SavedProducts from '../SavedProducts';
-import ReviewIntelligence from '../ReviewIntelligence';
+import LivePriceDropsTicker from '../LivePriceDropsTicker';
+import RetailerStrip from '../RetailerStrip';
+import PopularPriceDrops from '../PopularPriceDrops';
+import CouponsSection from '../CouponsSection';
+import CategoryDiscovery from '../CategoryDiscovery';
+import CompareStoresCard from '../CompareStoresCard';
+import PriceHistoryInsightsCard from '../PriceHistoryInsightsCard';
+import BuyAdvisorSection from '../BuyAdvisorSection';
+import PriceAlertCTA from '../PriceAlertCTA';
+import HowItWorksSection from '../HowItWorksSection';
 
-const DashboardHome = () => {
+export const DashboardHome = () => {
   return (
-    <div className="db-page-fade">
-      {/* 1. Hero / URL & Product Inspector */}
+    <div className="pl-homepage-editorial-container db-page-fade">
+      {/* 1. Cinematic Hero and Dual Search/Link Paste Engine */}
       <Hero />
 
-      {/* 2. BuyHatke Style Real-Time Price Drops Ticker */}
+      {/* 2. Chrome Extension Assistant Banner (Flipshope & Buyhatke Signature) */}
+      <div id="extension-section">
+        <ExtensionPromo />
+      </div>
+
+      {/* 3. Hot Price Drops / Flash Loot Deals Detected in Real Time */}
       <LivePriceDropsTicker />
 
-      {/* 3. Stats Overview */}
-      <StatsOverview />
+      {/* 4. Supported Multi-Store Surveillance Strip */}
+      <RetailerStrip />
 
-      {/* 4. Live Multi-Store Price Analyzer & Buy Advisor */}
-      <PriceComparison />
+      {/* 5. Popular Price Drops Grid with Sparklines & Wishlist */}
+      <div id="popular-deals">
+        <PopularPriceDrops />
+      </div>
 
-      {/* 5. Today's Best Deals Across All Stores */}
-      <BestDeals />
+      {/* 6. Verified Store Coupons & Bank Codes Hub (Buyhatke Auto-Coupon Feature) */}
+      <div id="coupons-section">
+        <CouponsSection />
+      </div>
 
-      {/* 5. Flipshope Style Verified Store Coupons & Promo Codes */}
-      <CouponsSection />
+      {/* 7. Product Category Discovery */}
+      <div id="category">
+        <CategoryDiscovery />
+      </div>
 
-      {/* 6. BuyHatke / Flipshope Chrome Addon Showcase Banner */}
-      <ExtensionPromo />
-
-      {/* 7. Personal Shopping Insight */}
-      <ShoppingInsight />
-
-      {/* 8. Secondary Grid: Recent Searches + Saved Wishlist & Review Intelligence */}
-      <div className="db-grid-2col">
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-          <RecentSearches />
-          <SavedProducts />
+      {/* 8. Multi-Store Comparison Preview & Interactive Price-History Graph */}
+      <section
+        id="price-comparison-section"
+        className="pl-comparison-history-dual-section"
+        aria-label="Multi-Store Price Comparison and Historical Telemetry"
+      >
+        <div className="pl-section-header-row">
+          <div className="pl-section-title-col">
+            <span className="pl-section-eyebrow">INTELLIGENCE SUITE</span>
+            <h2 className="pl-section-title">Multi-store comparison &amp; price history</h2>
+            <p className="pl-section-subtitle">
+              Verify live checkout pricing across Amazon, Flipkart, Croma &amp; Reliance Digital and audit full historical price movement graphs
+            </p>
+          </div>
         </div>
-        <div>
-          <ReviewIntelligence />
+
+        <div className="pl-home-bottom-grid">
+          {/* Multi-Store Comparison Table */}
+          <CompareStoresCard />
+
+          {/* Interactive Keepa / Buyhatke Price History Graph */}
+          <PriceHistoryInsightsCard />
         </div>
+      </section>
+
+      {/* 9. Buy-Now Versus Wait Recommendation (Buyhatke Deal Index Engine) */}
+      <div id="buy-advisor">
+        <BuyAdvisorSection />
+      </div>
+
+      {/* 10. Price-Alert Call To Action (WhatsApp & Email Drop Dispatcher) */}
+      <div id="alerts">
+        <PriceAlertCTA />
+      </div>
+
+      {/* 11. Trust Indicators and How-It-Works Methodology */}
+      <div id="how-it-works">
+        <HowItWorksSection />
       </div>
     </div>
   );

@@ -1,321 +1,562 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Search,
   ArrowRight,
-  ShieldCheck,
-  Zap,
-  IndianRupee,
   Sparkles,
-  Link2,
-  Clipboard,
-  ExternalLink,
+  Layers,
+  BarChart2,
+  Bell,
+  TrendingDown,
+  TrendingUp,
   CheckCircle2,
-  Globe
+  ExternalLink,
+  Link as LinkIcon,
+  ClipboardPaste,
+  Clock,
+  Zap,
+  ShieldCheck,
+  ShoppingBag
 } from 'lucide-react';
 import { useDashboard } from '../../context/DashboardContext';
-import { POPULAR_SEARCHES, PRODUCTS } from '../../data/mockData';
+import { PRODUCTS } from '../../data/mockData';
+import StoreLogo from './StoreLogo';
 
-const SAMPLE_STORE_LINKS = [
+const POPULAR_CHIPS = [
+  { name: 'iPhone 16 Pro', id: 'iphone-16-128' },
+  { name: 'Sony WH-1000XM5', id: 'sony-xm5' },
+  { name: 'MacBook Air M3', id: 'macbook-air-m3' },
+  { name: 'ASUS TUF Gaming', id: 'asus-tuf-f15' },
+  { name: 'boAt Wave Call', id: 'boat-wave-call-plus' },
+];
+
+const AUTOCOMPLETE_SUGGESTIONS = [
   {
-    label: 'Flipkart: iPhone 16',
-    url: 'https://www.flipkart.com/apple-iphone-16-teal-128-gb/p/itm123',
-    productId: 'iphone-16-128',
+    id: 'iphone-16-128',
+    name: 'iPhone 16 (128GB)',
+    category: 'Smartphones',
+    lowestPrice: '₹69,990',
+    store: 'Amazon',
+    image: '/products/iphone-16.jpg',
+  },
+  {
+    id: 'sony-xm5',
+    name: 'Sony WH-1000XM5 Wireless Headphones',
+    category: 'Audio',
+    lowestPrice: '₹24,990',
     store: 'Flipkart',
+    image: '/products/sony-xm5.jpg',
   },
   {
-    label: 'Amazon: MacBook Air M3',
-    url: 'https://www.amazon.in/Apple-MacBook-Air-13-inch-M3/dp/B0CX234',
-    productId: 'macbook-air-m3',
-    store: 'Amazon',
-  },
-  {
-    label: 'Croma: Sony WH-1000XM5',
-    url: 'https://www.croma.com/sony-wh-1000xm5-bluetooth-headphone/p/258900',
-    productId: 'sony-xm5',
+    id: 'asus-tuf-f15',
+    name: 'ASUS TUF Gaming F15 Laptop',
+    category: 'Laptops',
+    lowestPrice: '₹62,990',
     store: 'Croma',
+    image: '/products/asus-f15.jpg',
   },
   {
-    label: 'Amazon: Galaxy S25',
-    url: 'https://www.amazon.in/Samsung-Galaxy-S25-5G-256GB/dp/B0D5678',
-    productId: 'samsung-s25',
-    store: 'Amazon',
+    id: 'boat-wave-call-plus',
+    name: 'boAt Wave Call Plus Smartwatch',
+    category: 'Wearables',
+    lowestPrice: '₹1,199',
+    store: 'Reliance Digital',
+    image: '/products/boat-watch.jpg',
   },
 ];
 
-const Hero = () => {
-  const { searchQuery, setSearchQuery, setSelectedProductId, setActiveNav, showToast } = useDashboard();
-  const [searchMode, setSearchMode] = useState('keyword'); // 'keyword' | 'link'
-  const [inputValue, setInputValue] = useState(searchQuery);
+export const Hero = () => {
+  const {
+    searchQuery,
+    setSearchQuery,
+    setSelectedProductId,
+    setActiveNav,
+    viewPriceComparison,
+    showToast,
+    setCustomStoreLink,
+  } = useDashboard();
 
-  // Auto-detect store from entered URL
-  const detectedStore = (() => {
-    const val = inputValue.toLowerCase();
-    if (val.includes('flipkart.com')) return 'Flipkart';
-    if (val.includes('amazon.in') || val.includes('amazon.com')) return 'Amazon';
-    if (val.includes('croma.com')) return 'Croma';
-    if (val.includes('reliancedigital.in')) return 'Reliance Digital';
-    if (val.includes('apple.com')) return 'Apple Store';
-    if (val.includes('samsung.com')) return 'Samsung Store';
+  const [inputVal, setInputVal] = useState(searchQuery || '');
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const [activeTab, setActiveTab] = useState('all'); // 'all' or 'link'
+  const searchContainerRef = useRef(null);
+
+  // Close autocomplete on click outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (searchContainerRef.current && !searchContainerRef.current.contains(e.target)) {
+        setIsSearchFocused(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const resolveProductFromQuery = (query) => {
+    const lower = query.toLowerCase();
+    if (lower.includes('iphone') || lower.includes('16') || lower.includes('apple')) {
+      return 'iphone-16-128';
+    } else if (lower.includes('sony') || lower.includes('xm5') || lower.includes('headphone')) {
+      return 'sony-xm5';
+    } else if (lower.includes('asus') || lower.includes('tuf') || lower.includes('laptop')) {
+      return 'asus-tuf-f15';
+    } else if (lower.includes('macbook') || lower.includes('air') || lower.includes('m3')) {
+      return 'macbook-air-m3';
+    } else if (lower.includes('boat') || lower.includes('watch') || lower.includes('wearable')) {
+      return 'boat-wave-call-plus';
+    } else if (lower.includes('samsung') || lower.includes('s25')) {
+      return 'samsung-s25';
+    }
+    // Return null for uncatalogued queries to avoid confusing false matches
     return null;
-  })();
+  };
 
-  const isUrlInput = inputValue.trim().startsWith('http://') ||
-    inputValue.trim().startsWith('https://') ||
-    inputValue.trim().startsWith('www.') ||
-    detectedStore !== null;
+  const detectLinkInfo = (val) => {
+    if (!val || typeof val !== 'string') return null;
+    const str = val.trim();
+    const isUrl =
+      str.startsWith('http://') ||
+      str.startsWith('https://') ||
+      str.includes('amazon.') ||
+      str.includes('flipkart.') ||
+      str.includes('croma.') ||
+      str.includes('reliancedigital.') ||
+      str.includes('myntra.') ||
+      str.includes('tatacliq.') ||
+      (str.includes('.com') && str.includes('/')) ||
+      (str.includes('.in') && str.includes('/'));
 
-  const handlePasteFromClipboard = async () => {
+    if (!isUrl) return null;
+
+    let store = 'Store';
+    const cleanUrl = str.startsWith('http') ? str : `https://${str}`;
+
+    if (str.includes('amazon.')) store = 'Amazon';
+    else if (str.includes('flipkart.')) store = 'Flipkart';
+    else if (str.includes('croma.')) store = 'Croma';
+    else if (str.includes('reliancedigital.')) store = 'Reliance Digital';
+    else if (str.includes('myntra.')) store = 'Myntra';
+    else if (str.includes('tatacliq.')) store = 'Tata CLiQ';
+
+    const targetProductId = resolveProductFromQuery(str);
+    const matchedProduct = PRODUCTS.find((p) => p.id === targetProductId) || PRODUCTS[0];
+
+    return {
+      isUrl: true,
+      url: cleanUrl,
+      store,
+      productId: targetProductId,
+      productName: matchedProduct.name,
+      productPrice: matchedProduct.currentPrice,
+    };
+  };
+
+  const linkInfo = detectLinkInfo(inputVal);
+
+  const handleOpenStoreDirect = (url, storeName) => {
+    if (url) {
+      window.open(url, '_blank', 'noopener,noreferrer');
+      if (showToast) {
+        showToast(`Redirecting directly to purchase on ${storeName}...`, 'success');
+      }
+    }
+  };
+
+  const handleViewPriceList = (info) => {
+    const target = info || linkInfo;
+    if (target) {
+      if (setCustomStoreLink) {
+        setCustomStoreLink({ store: target.store, url: target.url });
+      }
+      setSelectedProductId(target.productId);
+      setSearchQuery(target.productName);
+      if (showToast) {
+        showToast(`Analyzed ${target.store} link: ${target.productName} multi-store price list loaded!`, 'success');
+      }
+    }
+    const compareEl = document.getElementById('price-comparison-section');
+    if (compareEl) {
+      compareEl.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const handleSearchSubmit = (e) => {
+    if (e) e.preventDefault();
+    const query = inputVal.trim() || 'iPhone 16';
+
+    const detected = detectLinkInfo(query);
+    if (detected) {
+      handleViewPriceList(detected);
+      return;
+    }
+
+    setSearchQuery(query);
+    setIsSearchFocused(false);
+
+    const targetId = resolveProductFromQuery(query);
+    if (targetId) {
+      setSelectedProductId(targetId);
+      if (showToast) {
+        showToast(`Auditing live prices & history for ${query}...`, 'success');
+      }
+      const compareEl = document.getElementById('price-comparison-section');
+      if (compareEl) {
+        compareEl.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else {
+      // Route uncatalogued searches to full search screen with filters
+      setActiveNav('search');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (showToast) {
+        showToast(`Searching PriceLens catalog for "${query}"...`, 'info');
+      }
+    }
+  };
+
+  const handlePasteClipboard = async () => {
     try {
       if (navigator.clipboard && navigator.clipboard.readText) {
         const text = await navigator.clipboard.readText();
-        if (text) {
-          setInputValue(text);
-          if (showToast) showToast('Pasted link from clipboard!', 'info');
+        if (text && text.trim()) {
+          setInputVal(text.trim());
+          setActiveTab('link');
+          if (showToast) {
+            showToast('Link pasted from clipboard! Click Track Graph to audit.', 'success');
+          }
+          return;
         }
-      } else {
-        const promptText = window.prompt('Paste your product link here:');
-        if (promptText) setInputValue(promptText);
       }
-    } catch {
-      const promptText = window.prompt('Paste your product link here:');
-      if (promptText) setInputValue(promptText);
+    } catch (err) {
+      // Permission blocked or insecure origin
     }
-  };
-
-  const handleProcessSubmission = (queryOrUrl) => {
-    const text = (queryOrUrl || inputValue).trim();
-    if (!text) return;
-
-    const lower = text.toLowerCase();
-
-    // Match product based on URL keywords or query
-    let matchedId = 'iphone-16-128';
-    let matchedName = 'iPhone 16 128GB';
-
-    if (lower.includes('macbook') || lower.includes('m3') || lower.includes('apple-macbook')) {
-      matchedId = 'macbook-air-m3';
-      matchedName = 'MacBook Air 13-inch M3';
-    } else if (lower.includes('samsung') || lower.includes('s25') || lower.includes('galaxy')) {
-      matchedId = 'samsung-s25';
-      matchedName = 'Samsung Galaxy S25 256GB';
-    } else if (lower.includes('sony') || lower.includes('xm5') || lower.includes('wh-1000xm5')) {
-      matchedId = 'sony-xm5';
-      matchedName = 'Sony WH-1000XM5 Headphones';
-    } else if (lower.includes('airpods') || lower.includes('airpod')) {
-      matchedId = 'airpods-pro-2';
-      matchedName = 'AirPods Pro (2nd Gen)';
-    } else if (lower.includes('watch') || lower.includes('series-10')) {
-      matchedId = 'apple-watch-s10';
-      matchedName = 'Apple Watch Series 10';
-    } else if (lower.includes('oneplus')) {
-      matchedId = 'oneplus-13';
-      matchedName = 'OnePlus 13 5G';
-    } else if (lower.includes('ipad')) {
-      matchedId = 'ipad-air-m2';
-      matchedName = 'iPad Air 11-inch M2';
-    } else if (lower.includes('bose')) {
-      matchedId = 'bose-qc-ultra';
-      matchedName = 'Bose QuietComfort Ultra';
-    } else {
-      // Find direct product match from catalog
-      const found = PRODUCTS.find((p) =>
-        lower.includes(p.name.toLowerCase()) || lower.includes(p.brand.toLowerCase())
-      );
-      if (found) {
-        matchedId = found.id;
-        matchedName = found.name;
-      }
-    }
-
-    setSelectedProductId(matchedId);
-    setSearchQuery(text);
-
-    if (isUrlInput || searchMode === 'link') {
-      if (showToast) {
-        showToast(`🔗 Checked online link for ${matchedName}! Comparing stores...`, 'success');
-      }
-      // Scroll to comparison section or switch to compare view
-      const compEl = document.getElementById('price-comparison-section');
-      if (compEl) {
-        compEl.scrollIntoView({ behavior: 'smooth' });
-      } else {
-        setActiveNav('compare');
-      }
-    } else {
-      setActiveNav('search');
-    }
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    handleProcessSubmission(inputValue);
-  };
-
-  const handleChip = (term) => {
-    setInputValue(term);
-    handleProcessSubmission(term);
-  };
-
-  const handleSampleLinkClick = (sample) => {
-    setSearchMode('link');
-    setInputValue(sample.url);
-    setSelectedProductId(sample.productId);
-    setSearchQuery(sample.url);
+    setActiveTab('link');
     if (showToast) {
-      showToast(`🔗 Loaded ${sample.store} online link for ${sample.label.split(':')[1]}!`, 'success');
+      showToast('Paste mode active: please paste your URL (Cmd/Ctrl + V)', 'info');
     }
-    const compEl = document.getElementById('price-comparison-section');
-    if (compEl) {
-      compEl.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handleSelectSuggestion = (sug) => {
+    setInputVal(sug.name);
+    setSearchQuery(sug.name);
+    setSelectedProductId(sug.id);
+    setIsSearchFocused(false);
+
+    const compareEl = document.getElementById('price-comparison-section');
+    if (compareEl) {
+      compareEl.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const handleChipClick = (chip) => {
+    setInputVal(chip.name);
+    setSearchQuery(chip.name);
+    setSelectedProductId(chip.id);
+
+    const compareEl = document.getElementById('price-comparison-section');
+    if (compareEl) {
+      compareEl.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
   return (
-    <div className="db-hero-premium-section">
-      <div className="db-hero-premium-card">
-        {/* Subtle decorative background glow */}
-        <div className="db-hero-glow-1" />
-        <div className="db-hero-glow-2" />
-
-        <div className="db-hero-inner-content">
-          <div className="db-hero-badge-pill">
-            <Sparkles size={13} className="db-hero-sparkle" />
-            <span>Price History &amp; Cheapest Store Finder</span>
+    <div className="pl-cinematic-hero-section">
+      {/* Asymmetrical 2-Column Hero Grid */}
+      <div className="pl-cinematic-hero-grid">
+        {/* Left Column: Editorial Content & Refined Search */}
+        <div className="pl-hero-editorial-col">
+          {/* Eyebrow Label */}
+          <div className="pl-hero-eyebrow-pill">
+            <span className="pl-eyebrow-dot" />
+            <span className="pl-eyebrow-text">SMART SHOPPING INTELLIGENCE</span>
           </div>
 
-          <h1 className="db-hero-headline">
-            Price History &amp; <span>Multi-Store Tracker</span>
+          {/* Editorial Headline */}
+          <h1 className="pl-editorial-headline">
+            Find the{' '}
+            <span className="pl-headline-display-accent">
+              best price
+              {/* Subtle hand-drawn underline SVG */}
+              <svg
+                className="pl-handdrawn-underline"
+                viewBox="0 0 250 14"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M3 10C55 3.5 145 2.5 247 9.5"
+                  stroke="url(#underlineGrad)"
+                  strokeWidth="3.5"
+                  strokeLinecap="round"
+                />
+                <defs>
+                  <linearGradient id="underlineGrad" x1="3" y1="10" x2="247" y2="9.5" gradientUnits="userSpaceOnUse">
+                    <stop stopColor="#6842FF" />
+                    <stop offset="0.5" stopColor="#3478F6" />
+                    <stop offset="1" stopColor="#119B67" />
+                  </linearGradient>
+                </defs>
+              </svg>
+            </span>{' '}
+            <br />
+            before you buy.
           </h1>
-          <p className="db-hero-description">
-            Find where your product is cheapest across <strong>Flipkart, Amazon, Croma, and Reliance Digital</strong>. Paste any product link or search directly to check price drop history, buy recommendations, and active coupons.
+
+          {/* Supporting Copy */}
+          <p className="pl-editorial-subtext">
+            PriceLens monitors real-time prices across <strong>Amazon, Flipkart, Croma</strong>, and <strong>Reliance Digital</strong>. Audit 1-year historical curves, uncover fake festive markups, and purchase at the verified lowest price.
           </p>
 
-          {/* Search Mode Switcher */}
-          <div className="db-search-mode-switcher">
-            <button
-              type="button"
-              className={`db-search-mode-btn ${searchMode === 'keyword' ? 'active' : ''}`}
-              onClick={() => setSearchMode('keyword')}
+          {/* Premium Functional Search & Paste Engine */}
+          <div className="pl-search-composite-wrapper" ref={searchContainerRef}>
+            <form
+              className={`pl-premium-search-bar ${isSearchFocused ? 'focused' : ''}`}
+              onSubmit={handleSearchSubmit}
             >
-              <Search size={14} /> Search by Product
-            </button>
-            <button
-              type="button"
-              className={`db-search-mode-btn ${searchMode === 'link' ? 'active' : ''}`}
-              onClick={() => setSearchMode('link')}
-            >
-              <Link2 size={14} /> Check by Store Link
-              <span className="db-mode-badge-live">Paste URL</span>
-            </button>
-          </div>
+              <div className="pl-search-input-prefix">
+                <Search size={20} className="pl-search-icon" />
+              </div>
 
-          {/* Premium Search / Link Field */}
-          <form className="db-hero-search-box" onSubmit={handleSubmit}>
-            {searchMode === 'link' || isUrlInput ? (
-              <Globe size={20} className="db-search-icon-hero" style={{ color: 'var(--db-primary)' }} />
-            ) : (
-              <Search size={20} className="db-search-icon-hero" />
-            )}
+              <input
+                type="text"
+                className="pl-premium-search-input"
+                placeholder={
+                  activeTab === 'link'
+                    ? 'Paste product link from Amazon or Flipkart...'
+                    : 'Search products or paste any Amazon / Flipkart store link...'
+                }
+                value={inputVal}
+                onChange={(e) => setInputVal(e.target.value)}
+                onFocus={() => setIsSearchFocused(true)}
+              />
 
-            <input
-              type="text"
-              className="db-search-input-hero"
-              placeholder={
-                searchMode === 'link'
-                  ? 'Paste Flipkart, Amazon, Croma, or Reliance product link...'
-                  : 'Search smartphones, laptops, headphones, or paste store link...'
-              }
-              value={inputValue}
-              onChange={(e) => {
-                setInputValue(e.target.value);
-                setSearchQuery(e.target.value);
-              }}
-            />
-
-            {/* Quick Paste Button when in link mode or empty */}
-            {searchMode === 'link' && (
+              {/* Compact Quick Paste Button */}
               <button
                 type="button"
-                className="db-paste-action-btn"
-                onClick={handlePasteFromClipboard}
-                title="Paste URL from Clipboard"
+                className="pl-paste-clipboard-btn"
+                onClick={handlePasteClipboard}
+                title="Paste link from clipboard"
               >
-                <Clipboard size={12} /> Paste Link
+                <ClipboardPaste size={13} />
+                <span>Paste</span>
               </button>
-            )}
 
-            {/* Detected Store Tag or Store Badges */}
-            {detectedStore ? (
-              <span className="db-detected-store-badge">
-                <CheckCircle2 size={12} /> {detectedStore} Link Detected
-              </span>
-            ) : (
-              <div className="db-search-stores-inline">
-                <span className="db-store-tag">🛍️ Flipkart</span>
-                <span className="db-store-tag">🛒 Amazon</span>
-                <span className="db-store-tag">🏪 Croma</span>
+              {/* Single High-End Primary Action Button */}
+              <button
+                type="submit"
+                className="pl-premium-search-action-btn"
+                title="Search and track prices across stores"
+              >
+                <Zap size={14} fill="#FFFFFF" />
+                <span>Track &amp; Compare</span>
+                <ArrowRight size={14} />
+              </button>
+            </form>
+
+            {/* Smart URL Detection Card for Pasted Links */}
+            {linkInfo && (
+              <div className="pl-link-detected-card">
+                <div className="pl-link-detected-left">
+                  <div className="pl-link-store-badge">
+                    <StoreLogo store={linkInfo.store} size="xs" />
+                    <span>Verified {linkInfo.store} Link</span>
+                  </div>
+                  <span className="pl-link-detected-title">
+                    {linkInfo.productName}
+                  </span>
+                </div>
+                <div className="pl-link-detected-actions">
+                  <button
+                    type="button"
+                    className="pl-link-btn-compare"
+                    onClick={() => handleViewPriceList(linkInfo)}
+                    title="View 4-Store Price Comparison List"
+                  >
+                    <Layers size={13} />
+                    <span>View Price List</span>
+                  </button>
+                  <button
+                    type="button"
+                    className="pl-link-btn-store"
+                    onClick={() => handleOpenStoreDirect(linkInfo.url, linkInfo.store)}
+                    title={`Purchase on ${linkInfo.store}`}
+                  >
+                    <span>Buy on {linkInfo.store}</span>
+                    <ExternalLink size={12} />
+                  </button>
+                </div>
               </div>
             )}
 
-            <button type="submit" className="db-search-submit-btn">
-              {searchMode === 'link' || isUrlInput ? (
-                <>
-                  Find Cheapest Price <ArrowRight size={15} />
-                </>
-              ) : (
-                <>
-                  Compare Stores <ArrowRight size={15} />
-                </>
-              )}
-            </button>
-          </form>
+            {/* Autocomplete Dropdown */}
+            {isSearchFocused && (
+              <div className="pl-search-autocomplete-dropdown">
+                <div className="pl-autocomplete-header">
+                  <div className="pl-auto-section-title">
+                    <Clock size={12} />
+                    <span>RECENT &amp; TRENDING TRACKERS</span>
+                  </div>
+                </div>
 
-          {/* Sample Online Product Links Bar (When in Link Mode or Always Available) */}
-          {searchMode === 'link' ? (
-            <div className="db-quick-links-row">
-              <span className="db-trending-label">Try Sample Links:</span>
-              {SAMPLE_STORE_LINKS.map((sample) => (
+                <div className="pl-autocomplete-list">
+                  {AUTOCOMPLETE_SUGGESTIONS.map((sug) => (
+                    <div
+                      key={sug.id}
+                      className="pl-autocomplete-item"
+                      onMouseDown={() => handleSelectSuggestion(sug)}
+                    >
+                      <img
+                        src={sug.image}
+                        alt={sug.name}
+                        className="pl-auto-thumb"
+                      />
+                      <div className="pl-auto-meta">
+                        <span className="pl-auto-name">{sug.name}</span>
+                        <span className="pl-auto-category">{sug.category}</span>
+                      </div>
+                      <div className="pl-auto-price-col">
+                        <span className="pl-auto-price">{sug.lowestPrice}</span>
+                        <span className="pl-auto-store-tag">Best on {sug.store}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="pl-autocomplete-footer">
+                  <span className="pl-auto-hint">
+                    Press <kbd>Enter</kbd> to track or click any gadget to audit full price history
+                  </span>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Compact Trending Searches Beneath Field */}
+          <div className="pl-hero-trending-row">
+            <span className="pl-trending-label">Trending:</span>
+            <div className="pl-trending-chips">
+              {POPULAR_CHIPS.map((chip) => (
                 <button
-                  key={sample.label}
+                  key={chip.id}
                   type="button"
-                  className="db-quick-link-pill"
-                  onClick={() => handleSampleLinkClick(sample)}
+                  className="pl-trending-chip-item"
+                  onClick={() => handleChipClick(chip)}
                 >
-                  <Link2 size={11} color="var(--db-primary)" />
-                  <span>{sample.label}</span>
+                  <span>{chip.name}</span>
                 </button>
               ))}
             </div>
-          ) : (
-            /* Trending Searches */
-            <div className="db-hero-trending-row">
-              <span className="db-trending-label">Trending Searches:</span>
-              {POPULAR_SEARCHES.map((chip) => (
-                <button
-                  key={chip}
-                  type="button"
-                  className="db-trending-pill"
-                  onClick={() => handleChip(chip)}
-                >
-                  {chip}
-                </button>
-              ))}
-            </div>
-          )}
+          </div>
 
-          {/* Trust Highlights */}
-          <div className="db-hero-trust-row" style={{ marginTop: '1.35rem', marginBottom: 0 }}>
-            <div className="db-trust-card">
-              <ShieldCheck size={16} className="db-trust-card-icon green" />
-              <span>100+ Verified Stores</span>
+          {/* Compact Feature Indicators (Compare, Price History, Alerts) */}
+          <div className="pl-hero-feature-pills-row">
+            <div className="pl-feature-indicator-pill">
+              <Layers size={14} className="pl-feature-icon" />
+              <span>4-Store Comparison</span>
             </div>
-            <div className="db-trust-card">
-              <Zap size={16} className="db-trust-card-icon blue" />
-              <span>Live Online URL Inspector</span>
+            <div className="pl-feature-indicator-pill">
+              <BarChart2 size={14} className="pl-feature-icon" />
+              <span>Keepa-Style History</span>
             </div>
-            <div className="db-trust-card">
-              <IndianRupee size={16} className="db-trust-card-icon purple" />
-              <span>₹3,240 Avg. User Savings</span>
+            <div className="pl-feature-indicator-pill">
+              <Bell size={14} className="pl-feature-icon" />
+              <span>Price-Drop Alerts</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Column: 3D Product Stage with Floating Connected Data Panels */}
+        <div className="pl-hero-stage-col">
+          <div className="pl-stage-perspective-wrapper">
+            {/* Ambient Lighting Gradient Orbs */}
+            <div className="pl-ambient-glow-lavender" />
+            <div className="pl-ambient-glow-blue" />
+
+            {/* Central Product Showcase Stage */}
+            <div className="pl-stage-central-showcase">
+              {/* Luminous Glow Base Under Devices */}
+              <div className="pl-stage-luminous-base" />
+
+              {/* Elevated Device Frame */}
+              <div className="pl-stage-device-frame">
+                <img
+                  src="/products/hero-stage.jpg"
+                  alt="PriceLens Featured Product Stage - iPhone 16 Pro & Studio Headphones"
+                  className="pl-stage-hero-image"
+                  loading="eager"
+                />
+                <div className="pl-stage-image-overlay" />
+              </div>
+
+              {/* Floating Data Panel 1: Amazon (BEST PRICE - Refined Emerald) */}
+              <div className="pl-floating-panel panel-amazon">
+                <div className="pl-panel-header">
+                  <StoreLogo store="amazon" size="sm" />
+                  <span className="pl-panel-best-price-badge">
+                    <CheckCircle2 size={10} />
+                    <span>BEST PRICE</span>
+                  </span>
+                </div>
+                <div className="pl-panel-price-row">
+                  <span className="pl-panel-price">₹69,990</span>
+                  <span className="pl-panel-original">₹1,19,900</span>
+                </div>
+                <div className="pl-panel-savings-chip">
+                  <TrendingDown size={11} />
+                  <span>Save ₹5,009 vs Other Stores</span>
+                </div>
+              </div>
+
+              {/* Floating Data Panel 2: Flipkart Offer */}
+              <div className="pl-floating-panel panel-flipkart">
+                <div className="pl-panel-header">
+                  <StoreLogo store="flipkart" size="sm" />
+                  <span className="pl-panel-diff-badge">+₹1,509</span>
+                </div>
+                <div className="pl-panel-price-row">
+                  <span className="pl-panel-price">₹71,499</span>
+                </div>
+                <span className="pl-panel-delivery-note">Free 2-Day Delivery</span>
+              </div>
+
+              {/* Floating Data Panel 3: Croma Store Offer */}
+              <div className="pl-floating-panel panel-croma">
+                <div className="pl-panel-header">
+                  <StoreLogo store="croma" size="sm" />
+                  <span className="pl-panel-store-tag">Tata Retail</span>
+                </div>
+                <div className="pl-panel-price-row">
+                  <span className="pl-panel-price">₹72,990</span>
+                </div>
+                <span className="pl-panel-delivery-note">Store Pickup in 2h</span>
+              </div>
+
+              {/* Floating Mini Historical Price Chart */}
+              <div className="pl-floating-chart-panel">
+                <div className="pl-mini-chart-header">
+                  <span className="pl-mini-chart-title">90-Day Trend</span>
+                  <span className="pl-mini-drop-badge">-22% Drop</span>
+                </div>
+                <svg className="pl-mini-sparkline-svg" viewBox="0 0 110 32" fill="none">
+                  <defs>
+                    <linearGradient id="sparklineArea" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#119B67" stopOpacity="0.28" />
+                      <stop offset="100%" stopColor="#119B67" stopOpacity="0" />
+                    </linearGradient>
+                  </defs>
+                  <path
+                    d="M3 26 L22 20 L44 23 L66 12 L88 17 L107 6 L107 32 L3 32 Z"
+                    fill="url(#sparklineArea)"
+                  />
+                  <path
+                    d="M3 26 L22 20 L44 23 L66 12 L88 17 L107 6"
+                    stroke="#119B67"
+                    strokeWidth="2.4"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <circle cx="107" cy="6" r="3" fill="#119B67" />
+                </svg>
+                <span className="pl-mini-chart-sub">Lowest price in 90 days</span>
+              </div>
             </div>
           </div>
         </div>

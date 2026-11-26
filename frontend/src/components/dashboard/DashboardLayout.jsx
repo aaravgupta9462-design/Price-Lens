@@ -44,11 +44,11 @@ const ScreenRenderer = () => {
   }
 };
 
-const DashboardContent = () => {
+const DashboardContent = ({ onOpenAuth }) => {
   return (
     <div className="db-shell-topbar-layout">
       {/* Top Header Navbar with Category Tabs */}
-      <TopNavbar />
+      <TopNavbar onOpenAuth={onOpenAuth} />
 
       {/* Main Content Area */}
       <main className="db-main-full-content">
@@ -67,10 +67,10 @@ const DashboardContent = () => {
   );
 };
 
-export const DashboardLayout = () => {
+export const DashboardLayout = ({ onOpenAuth }) => {
   return (
     <DashboardProvider>
-      <DashboardContent />
+      <DashboardContent onOpenAuth={onOpenAuth} />
     </DashboardProvider>
   );
 };

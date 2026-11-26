@@ -29,7 +29,7 @@ const InstagramIcon = () => (
   </svg>
 );
 
-export const AuthContainer = () => {
+export const AuthContainer = ({ onClose }) => {
   const { login, signup, loginWithGoogle, isLoading, addToast } = useAuth();
 
   // View State: 'login' | 'register' | 'forgot'
@@ -103,6 +103,7 @@ export const AuthContainer = () => {
 
     try {
       await login({ email: loginData.identifier, password: loginData.password, rememberMe: loginData.rememberMe });
+      if (onClose) onClose();
     } catch (err) {
       // Handled via AuthContext
     }
@@ -225,16 +226,32 @@ export const AuthContainer = () => {
     <div className="saas-bg-viewport min-h-screen w-full flex flex-col justify-between overflow-hidden">
       {/* ─── Top Navbar ───────────────────────────────────────────────────── */}
       <header className="saas-navbar">
-        <a href="/" className="saas-brand-badge">
+        <div
+          onClick={(e) => {
+            e.preventDefault();
+            if (onClose) onClose();
+          }}
+          className="saas-brand-badge cursor-pointer"
+          title="Back to PriceLens Home"
+        >
           <img src="/logo.jpg" alt="PriceLens Logo" className="saas-brand-img" />
           <div className="saas-brand-name">
             <span className="text-price">Price</span>
             <span className="text-lens">Lens</span>
           </div>
-        </a>
+        </div>
 
-        <div className="saas-nav-cta">
-          <span className="hidden sm:inline">New to PriceLens?</span>
+        <div className="saas-nav-cta flex items-center gap-3">
+          {onClose && (
+            <button
+              type="button"
+              onClick={onClose}
+              className="text-xs font-bold text-slate-600 hover:text-indigo-600 px-3 py-1.5 rounded-lg border border-slate-200 hover:border-indigo-300 transition-colors"
+            >
+              ← Back to Deals
+            </button>
+          )}
+          <span className="hidden sm:inline text-xs font-semibold text-slate-500">New to PriceLens?</span>
           <button
             onClick={() => switchView(viewState === 'login' ? 'register' : 'login')}
             className="saas-nav-btn"

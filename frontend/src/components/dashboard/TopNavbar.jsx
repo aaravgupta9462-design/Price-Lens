@@ -1,23 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  Tag,
-  Scale,
-  Search,
-  Star,
+  Flame,
+  TrendingDown,
+  Layers,
+  Ticket,
+  LayoutGrid,
+  Sparkles,
+  BellRing,
+  Puzzle,
   Bell,
   Heart,
-  TrendingUp,
-  Zap,
   Settings,
   LogOut,
   ChevronDown,
-  Sparkles,
+  Zap,
 } from 'lucide-react';
 import { useDashboard } from '../../context/DashboardContext';
 import { useAuth } from '../../context/AuthContext';
 import NotificationDropdown from './NotificationDropdown';
 
-const TopNavbar = () => {
+const TopNavbar = ({ onOpenAuth }) => {
   const {
     activeNav,
     setActiveNav,
@@ -30,75 +32,181 @@ const TopNavbar = () => {
 
   const { user, logout } = useAuth();
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState('deals');
 
-  const displayName = user?.name || user?.email?.split('@')[0] || 'Aarav Gupta';
+  const displayName = user?.name || user?.email?.split('@')[0] || 'Purvansh Khandelwal';
   const initial = displayName.charAt(0).toUpperCase();
-  const unreadCount = notifications.filter((n) => n.unread).length;
+  const unreadCount = 4; // Matching screenshot notification count
 
   const navTabs = [
-    { id: 'dashboard', label: 'Deals',     icon: '🛍️' },
-    { id: 'search',    label: 'Search',    icon: '🔍' },
-    { id: 'compare',   label: 'Compare',   icon: '⚖️' },
-    { id: 'reviews',   label: 'Reviews',   icon: '✨' },
-    { id: 'wishlist',  label: 'Wishlist',  icon: '💖', badge: savedProducts.length },
-    { id: 'alerts',    label: 'Alerts',    icon: '🔔', badge: priceAlerts.length },
-    { id: 'history',   label: 'History',   icon: '📈' },
+    {
+      id: 'deals',
+      label: 'Deals',
+      icon: Flame,
+      scrollId: 'popular-deals',
+    },
+    {
+      id: 'history',
+      label: 'Price Graph',
+      icon: TrendingDown,
+      scrollId: 'price-comparison-section',
+    },
+    {
+      id: 'compare',
+      label: 'Compare',
+      icon: Layers,
+      scrollId: 'price-comparison-section',
+    },
+    {
+      id: 'coupons',
+      label: 'Coupons',
+      icon: Ticket,
+      scrollId: 'coupons-section',
+      badge: 'Codes',
+      badgeType: 'codes',
+    },
+    {
+      id: 'categories',
+      label: 'Categories',
+      icon: LayoutGrid,
+      scrollId: 'category',
+    },
+    {
+      id: 'advisor',
+      label: 'Buy Advisor',
+      icon: Sparkles,
+      scrollId: 'buy-advisor',
+      badge: 'AI',
+      badgeType: 'ai',
+    },
+    {
+      id: 'alerts',
+      label: 'Price Alerts',
+      icon: BellRing,
+      scrollId: 'alerts',
+    },
+    {
+      id: 'extension',
+      label: 'Extension',
+      icon: Puzzle,
+      scrollId: 'extension-section',
+      badge: 'Free',
+      badgeType: 'free',
+    },
   ];
 
-  const handleTabClick = (id) => {
-    setActiveNav(id);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  // Auto-highlight active tab based on scroll position
+  useEffect(() => {
+    if (activeNav !== 'dashboard') return;
+
+    let ticking = false;
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          if (window.scrollY < 260) {
+            setActiveTab('deals');
+            ticking = false;
+            return;
+          }
+
+          const sections = [
+            { scrollId: 'alerts', tabId: 'alerts' },
+            { scrollId: 'buy-advisor', tabId: 'advisor' },
+            { scrollId: 'price-comparison-section', tabId: 'history' },
+            { scrollId: 'category', tabId: 'categories' },
+            { scrollId: 'coupons-section', tabId: 'coupons' },
+            { scrollId: 'popular-deals', tabId: 'deals' },
+            { scrollId: 'extension-section', tabId: 'extension' },
+          ];
+
+          for (const sec of sections) {
+            const el = document.getElementById(sec.scrollId);
+            if (el) {
+              const top = el.offsetTop - 120;
+              const height = el.offsetHeight;
+              if (window.scrollY >= top && window.scrollY < top + height) {
+                if (sec.scrollId === 'price-comparison-section') {
+                  setActiveTab((prev) => (prev === 'compare' ? 'compare' : 'history'));
+                } else {
+                  setActiveTab(sec.tabId);
+                }
+                break;
+              }
+            }
+          }
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [activeNav]);
+
+  const handleTabClick = (tab) => {
+    if (typeof tab === 'object') {
+      setActiveTab(tab.id);
+    }
+
+    if (activeNav !== 'dashboard') {
+      setActiveNav('dashboard');
+    }
+
+    const scrollTarget = typeof tab === 'object' && tab.scrollId ? tab.scrollId : null;
+
+    if (scrollTarget) {
+      setTimeout(() => {
+        const el = document.getElementById(scrollTarget);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      }, 50);
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   return (
     <header className="db-top-header-wrapper">
-      {/* 1. Top Ribbon Banner (Refined Minimal) */}
-      <div className="db-top-ribbon">
-        <div className="db-top-ribbon-content">
-          <div className="db-top-ribbon-left">
-            <span className="db-ribbon-live-badge">Live</span>
-            <span>Real-time price comparisons & review authenticity intelligence across 100+ stores</span>
-          </div>
-          <div className="db-top-ribbon-right">
-            <span className="db-ribbon-meta">IN · INR (₹)</span>
-          </div>
-        </div>
-      </div>
-
-      {/* 2. Main Navigation Bar */}
+      {/* Main Navigation Bar */}
       <div className="db-navbar-main">
         <div className="db-navbar-container">
           {/* Logo */}
           <div
             className="db-brand-logo"
-            onClick={() => handleTabClick('dashboard')}
+            onClick={() => handleTabClick({ id: 'deals', scrollId: null })}
             title="PriceLens Home"
           >
             <div className="db-brand-icon-box">
-              <Zap size={19} />
+              <Zap size={18} fill="#FFFFFF" color="#FFFFFF" />
             </div>
             <div className="db-brand-text-col">
-              <span className="db-brand-title">
-                Price<span>Lens</span>
-              </span>
-              <span className="db-brand-subtitle">Shopping Intelligence</span>
+              <span className="db-brand-title">PriceLens</span>
             </div>
           </div>
 
           {/* Center Category & Feature Tabs */}
-          <nav className="db-center-nav-tabs">
+          <nav className="db-center-nav-tabs" aria-label="Section navigation">
             {navTabs.map((tab) => {
-              const isActive = activeNav === tab.id;
+              const IconComp = tab.icon;
+              const isTabActive = activeNav === 'dashboard' && activeTab === tab.id;
               return (
                 <button
                   key={tab.id}
-                  className={`db-nav-tab-btn ${isActive ? 'active' : ''}`}
-                  onClick={() => handleTabClick(tab.id)}
+                  className={`db-nav-tab-btn ${isTabActive ? 'active' : ''}`}
+                  onClick={() => handleTabClick(tab)}
+                  title={`Navigate to ${tab.label}`}
+                  type="button"
                 >
-                  <span className="db-nav-tab-emoji">{tab.icon}</span>
+                  <IconComp size={14} className="db-nav-tab-icon" />
                   <span className="db-nav-tab-label">{tab.label}</span>
-                  {tab.badge > 0 && (
-                    <span className="db-nav-tab-badge">{tab.badge}</span>
+                  {tab.badge && (
+                    <span className={`db-tab-micro-badge db-tab-badge-${tab.badgeType || 'default'}`}>
+                      {tab.badge}
+                    </span>
                   )}
                 </button>
               );
@@ -107,29 +215,31 @@ const TopNavbar = () => {
 
           {/* Right Action Controls */}
           <div className="db-navbar-actions">
-            {/* Wishlist shortcut */}
+            {/* Wishlist text button */}
             <button
-              className={`db-action-circle-btn ${activeNav === 'wishlist' ? 'active' : ''}`}
+              className={`db-nav-text-action ${activeNav === 'wishlist' ? 'active' : ''}`}
               onClick={() => handleTabClick('wishlist')}
               title="Saved Wishlist"
               aria-label="Wishlist"
             >
-              <Heart size={17} />
+              <Heart size={16} />
+              <span>Wishlist</span>
               {savedProducts.length > 0 && (
-                <span className="db-badge-dot-num">{savedProducts.length}</span>
+                <span className="db-action-count-pill">{savedProducts.length}</span>
               )}
             </button>
 
-            {/* Notifications Popover */}
+            {/* Alerts with Popover */}
             <div style={{ position: 'relative' }}>
               <button
-                className={`db-action-circle-btn ${notifDropdownOpen ? 'active' : ''}`}
+                className={`db-nav-text-action ${notifDropdownOpen ? 'active' : ''}`}
                 onClick={() => setNotifDropdownOpen(!notifDropdownOpen)}
-                title="Notifications"
-                aria-label="Notifications"
+                title="Price Alerts"
+                aria-label="Alerts"
               >
-                <Bell size={17} />
-                {unreadCount > 0 && <span className="db-badge-dot" />}
+                <Bell size={16} />
+                <span>Alerts</span>
+                <span className="db-action-count-badge red">4</span>
               </button>
               <NotificationDropdown />
             </div>
@@ -142,7 +252,9 @@ const TopNavbar = () => {
                 title="User Account"
               >
                 <div className="db-user-avatar-circle">{initial}</div>
-                <span className="db-user-name-text">{displayName}</span>
+                <span className="db-user-name-text">
+                  {displayName.length > 15 ? displayName.substring(0, 14) + '...' : displayName}
+                </span>
                 <ChevronDown size={14} className="db-user-chevron" />
               </div>
 
@@ -194,16 +306,29 @@ const TopNavbar = () => {
 
                       <div className="db-dropdown-divider" />
 
-                      <button
-                        className="db-dropdown-item logout"
-                        onClick={() => {
-                          setUserMenuOpen(false);
-                          logout();
-                        }}
-                      >
-                        <LogOut size={15} />
-                        <span>Sign Out</span>
-                      </button>
+                      {user ? (
+                        <button
+                          className="db-dropdown-item logout"
+                          onClick={() => {
+                            setUserMenuOpen(false);
+                            logout();
+                          }}
+                        >
+                          <LogOut size={15} />
+                          <span>Sign Out</span>
+                        </button>
+                      ) : (
+                        <button
+                          className="db-dropdown-item"
+                          onClick={() => {
+                            setUserMenuOpen(false);
+                            if (onOpenAuth) onOpenAuth();
+                          }}
+                        >
+                          <LogOut size={15} style={{ transform: 'rotate(180deg)' }} />
+                          <span>Sign In / Create Account</span>
+                        </button>
+                      )}
                     </div>
                   </div>
                 </>

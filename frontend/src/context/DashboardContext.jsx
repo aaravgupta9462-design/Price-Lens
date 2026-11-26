@@ -14,11 +14,41 @@ export const DashboardProvider = ({ children }) => {
   const [notifications, setNotifications] = useState(NOTIFICATIONS);
   const [notifDropdownOpen, setNotifDropdownOpen] = useState(false);
 
-  // Saved / Wishlist items
-  const [savedProducts, setSavedProducts] = useState(INITIAL_SAVED_PRODUCTS);
+  // Saved / Wishlist items with localStorage persistence
+  const [savedProducts, setSavedProducts] = useState(() => {
+    try {
+      const saved = localStorage.getItem('pricelens_wishlist');
+      return saved ? JSON.parse(saved) : INITIAL_SAVED_PRODUCTS;
+    } catch {
+      return INITIAL_SAVED_PRODUCTS;
+    }
+  });
 
-  // Price alerts
-  const [priceAlerts, setPriceAlerts] = useState(INITIAL_PRICE_ALERTS);
+  // Price alerts with localStorage persistence
+  const [priceAlerts, setPriceAlerts] = useState(() => {
+    try {
+      const saved = localStorage.getItem('pricelens_alerts');
+      return saved ? JSON.parse(saved) : INITIAL_PRICE_ALERTS;
+    } catch {
+      return INITIAL_PRICE_ALERTS;
+    }
+  });
+
+  // Sync to localStorage
+  React.useEffect(() => {
+    try {
+      localStorage.setItem('pricelens_wishlist', JSON.stringify(savedProducts));
+    } catch (e) {}
+  }, [savedProducts]);
+
+  React.useEffect(() => {
+    try {
+      localStorage.setItem('pricelens_alerts', JSON.stringify(priceAlerts));
+    } catch (e) {}
+  }, [priceAlerts]);
+
+  // Custom User Pasted Store Link (e.g. from Amazon/Flipkart)
+  const [customStoreLink, setCustomStoreLink] = useState(null);
 
   // Global Share Modal
   const [shareModal, setShareModal] = useState({
@@ -141,6 +171,8 @@ export const DashboardProvider = ({ children }) => {
         viewPriceHistory,
         toast,
         showToast,
+        customStoreLink,
+        setCustomStoreLink,
       }}
     >
       {children}
