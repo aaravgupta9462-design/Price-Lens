@@ -159,8 +159,8 @@ async function fetchSerpApiStoreOffers(query) {
       }
       const q = encodeURIComponent(fallbackTitle || query);
       return storeName === 'Amazon'
-        ? `https://www.amazon.in/s?k=${q}`
-        : `https://www.flipkart.com/search?q=${q}`;
+        ? `https://www.amazon.in/s?k=${q}&s=price-asc-rank`
+        : `https://www.flipkart.com/search?q=${q}&sort=price_asc`;
     };
 
     const parseItem = (item, storeName) => ({
@@ -173,12 +173,19 @@ async function fetchSerpApiStoreOffers(query) {
       source: 'serpapi',
     });
 
-    const amzItem = results.find((r) => (r.source || '').toLowerCase().includes('amazon'));
+    // Sort results by lowest price first so we always pick the cheapest valid listing
+    const sortedResults = [...results].sort((a, b) => {
+      const pa = a.extracted_price || Number(String(a.price || '').replace(/[^\d.]/g, '')) || Infinity;
+      const pb = b.extracted_price || Number(String(b.price || '').replace(/[^\d.]/g, '')) || Infinity;
+      return pa - pb;
+    });
+
+    const amzItem = sortedResults.find((r) => (r.source || '').toLowerCase().includes('amazon'));
     const fkItem =
-      results.find((r) => {
+      sortedResults.find((r) => {
         const src = (r.source || '').toLowerCase();
         return src === 'flipkart' || (src.includes('flipkart') && !src.includes('shopsy'));
-      }) || results.find((r) => (r.source || '').toLowerCase().includes('flipkart'));
+      }) || sortedResults.find((r) => (r.source || '').toLowerCase().includes('flipkart'));
 
     return {
       amazon: amzItem ? parseItem(amzItem, 'Amazon') : null,
