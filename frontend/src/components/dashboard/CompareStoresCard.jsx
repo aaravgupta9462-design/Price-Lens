@@ -44,6 +44,7 @@ export const CompareStoresCard = () => {
   });
 
   const calculateEffectivePrice = (row, bank) => {
+    if (!row.price || row.price <= 0) return { price: null, discount: 0, label: null };
     if (bank === 'all') return { price: row.price, discount: 0, label: null };
     const store = row.platform.toLowerCase();
 
@@ -161,36 +162,48 @@ export const CompareStoresCard = () => {
             </tr>
           </thead>
           <tbody>
-            {comparisons.map((row, idx) => {
-              const { price: effectivePrice, discount, label: discountLabel } = calculateEffectivePrice(row, selectedBank);
-              const isLowest = row.isLowestPrice || idx === 0;
+            {(() => {
+              const validPrices = comparisons
+                .map((c) => c.price)
+                .filter((p) => typeof p === 'number' && p > 0);
+              const minValidPrice = validPrices.length > 0 ? Math.min(...validPrices) : null;
 
-              return (
-                <tr key={row.platform} className={isLowest ? 'pl-lowest-row' : ''}>
-                  {/* Store Name & Logo */}
-                  <td className="pl-td-store">
-                    <div className="pl-store-td-group">
-                      <StoreLogo store={row.platform} size="sm" />
-                      {row.isCustomPasted && (
-                        <span className="pl-custom-pasted-pill" title="This row is connected to your pasted product link">
-                          Your Link
-                        </span>
-                      )}
-                    </div>
-                  </td>
+              return comparisons.map((row) => {
+                const { price: effectivePrice, discount, label: discountLabel } = calculateEffectivePrice(row, selectedBank);
+                const isLowest = Boolean(row.price && minValidPrice && row.price === minValidPrice);
 
-                  {/* Price & Effective Calculation */}
-                  <td className="pl-td-price">
-                    <div className="pl-td-price-wrapper">
-                      <span className="pl-td-price-val">{formatPrice(effectivePrice)}</span>
-                      {discount > 0 && (
-                        <span className="pl-bank-applied-badge">{discountLabel}</span>
-                      )}
-                      {isLowest && (
-                        <span className="pl-lowest-price-badge">BEST PRICE</span>
-                      )}
-                    </div>
-                  </td>
+                return (
+                  <tr key={row.platform} className={isLowest ? 'pl-lowest-row' : ''}>
+                    {/* Store Name & Logo */}
+                    <td className="pl-td-store">
+                      <div className="pl-store-td-group">
+                        <StoreLogo store={row.platform} size="sm" />
+                        {row.isCustomPasted && (
+                          <span className="pl-custom-pasted-pill" title="This row is connected to your pasted product link">
+                            Your Link
+                          </span>
+                        )}
+                      </div>
+                    </td>
+
+                    {/* Price & Effective Calculation */}
+                    <td className="pl-td-price">
+                      <div className="pl-td-price-wrapper">
+                        {effectivePrice ? (
+                          <span className="pl-td-price-val">{formatPrice(effectivePrice)}</span>
+                        ) : (
+                          <span className="pl-td-price-val" style={{ fontSize: '13px', color: '#64748B', fontWeight: 600 }}>
+                            Check on Store
+                          </span>
+                        )}
+                        {discount > 0 && (
+                          <span className="pl-bank-applied-badge">{discountLabel}</span>
+                        )}
+                        {isLowest && (
+                          <span className="pl-lowest-price-badge">BEST PRICE</span>
+                        )}
+                      </div>
+                    </td>
 
                   {/* Bank Offer */}
                   <td className="pl-td-bank">
@@ -214,21 +227,22 @@ export const CompareStoresCard = () => {
                     <span className="pl-checked-text">{row.lastChecked || '10 mins ago'}</span>
                   </td>
 
-                  {/* Action Button: Opens the retailer website to purchase with affiliate tracking */}
-                  <td className="pl-td-action text-right">
-                    <button
-                      type="button"
-                      className={`pl-store-view-btn ${isLowest ? 'primary' : ''}`}
-                      onClick={() => handleOpenStore(row.url, row.platform)}
-                      title={`Open and purchase on ${row.platform}`}
-                    >
-                      <span>Buy on {row.platform}</span>
-                      <ExternalLink size={12} />
-                    </button>
-                  </td>
-                </tr>
-              );
-            })}
+                    {/* Action Button: Opens the retailer website to purchase with affiliate tracking */}
+                    <td className="pl-td-action text-right">
+                      <button
+                        type="button"
+                        className={`pl-store-view-btn ${isLowest ? 'primary' : ''}`}
+                        onClick={() => handleOpenStore(row.url, row.platform)}
+                        title={`Open and purchase on ${row.platform}`}
+                      >
+                        <span>Buy on {row.platform}</span>
+                        <ExternalLink size={12} />
+                      </button>
+                    </td>
+                  </tr>
+                );
+              });
+            })()}
           </tbody>
         </table>
       </div>

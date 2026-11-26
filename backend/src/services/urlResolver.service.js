@@ -145,6 +145,8 @@ async function fetchFromScrapingBee(targetUrl, store) {
       const fkPriceMatch =
         html.match(/"@type"\s*:\s*"Product"[\s\S]{0,2000}?"price"\s*:\s*"?(\d+)"?/i) ||
         html.match(/class=["'][^"']*Nx9bqj[^"']*CxhGGd[^"']*["'][^>]*>₹([\d,]+)/i) ||
+        html.match(/class=["'][^"']*Nx9bqj[^"']*["'][^>]*>₹([\d,]+)/i) ||
+        html.match(/class=["'][^"']*_30jeq3[^"']*["'][^>]*>₹([\d,]+)/i) ||
         html.match(/<meta\s+property=["']product:price:amount["']\s+content=["']([\d.]+)["']/i) ||
         html.match(/"finalPrice"\s*:\s*\{\s*"value"\s*:\s*(\d+)/i);
       if (fkPriceMatch) {
@@ -427,7 +429,7 @@ export const urlResolverService = {
     // Step 2: Single parallel SerpApi call for Amazon & Flipkart offers + direct opposite store URL
     const serpOffers = await fetchSerpApiStoreOffers(searchTitle, liveMeta?.price || null, parsedInfo.store);
 
-    const amazonOffer =
+    let amazonOffer =
       (parsedInfo.store === 'Amazon' && liveMeta?.price
         ? {
             store: 'Amazon',
@@ -443,7 +445,7 @@ export const urlResolverService = {
       serpOffers.amazon ||
       null;
 
-    const flipkartOffer =
+    let flipkartOffer =
       (parsedInfo.store === 'Flipkart' && liveMeta?.price
         ? {
             store: 'Flipkart',
@@ -458,6 +460,31 @@ export const urlResolverService = {
         : null) ||
       serpOffers.flipkart ||
       null;
+
+    // Step 3: If opposite store has a direct product URL but no price yet, scrape it live
+    if (amazonOffer && !amazonOffer.price && amazonOffer.url && /amazon\.in\/.*(?:\/dp\/|\/gp\/product\/)/i.test(amazonOffer.url)) {
+      const oppAmz = await fetchFromScrapingBee(amazonOffer.url, 'Amazon');
+      if (oppAmz?.price && (!isHighTicketProduct || oppAmz.price >= 10000)) {
+        amazonOffer = {
+          ...amazonOffer,
+          price: oppAmz.price,
+          imageUrl: amazonOffer.imageUrl || oppAmz.image || null,
+          source: 'scrapingbee-opposite',
+        };
+      }
+    }
+
+    if (flipkartOffer && !flipkartOffer.price && flipkartOffer.url && /flipkart\.com\/.*\/p\//i.test(flipkartOffer.url)) {
+      const oppFk = await fetchFromScrapingBee(flipkartOffer.url, 'Flipkart');
+      if (oppFk?.price && (!isHighTicketProduct || oppFk.price >= 10000)) {
+        flipkartOffer = {
+          ...flipkartOffer,
+          price: oppFk.price,
+          imageUrl: flipkartOffer.imageUrl || oppFk.image || null,
+          source: 'scrapingbee-opposite',
+        };
+      }
+    }
 
     const payload = {
       url: parsedInfo.canonicalUrl,

@@ -225,9 +225,10 @@ export const Hero = () => {
           const customId = `url-${(resolved.asin || resolved.pid || Date.now()).toString().toLowerCase()}`;
 
           const amazonPrice =
-            (resolved.store === 'Amazon' && livePrice) || amzOffer?.price || baseRefPrice;
+            (resolved.store === 'Amazon' && livePrice) || amzOffer?.price || null;
           const flipkartPrice =
-            (resolved.store === 'Flipkart' && livePrice) || fkOffer?.price || baseRefPrice;
+            (resolved.store === 'Flipkart' && livePrice) || fkOffer?.price || null;
+          const validRef = amazonPrice || flipkartPrice || baseRefPrice;
 
           registerRealProduct({
             id: customId,
@@ -240,7 +241,7 @@ export const Hero = () => {
             flipkartPrice,
             originalPrice:
               resolved.liveMetadata?.originalPrice ||
-              Math.round(Math.max(amazonPrice, flipkartPrice) * 1.15),
+              Math.round((Math.max(amazonPrice || 0, flipkartPrice || 0) || validRef) * 1.15),
             amazonUrl:
               resolved.store === 'Amazon'
                 ? resolved.url
@@ -261,9 +262,12 @@ export const Hero = () => {
             showToast(`Live Amazon & Flipkart prices loaded for ${resolved.productName}!`, 'success');
           }
         }
-      } catch {
+      } catch (err) {
         if (showToast) {
-          showToast(`Showing comparison for ${target.productName}`, 'info');
+          showToast(
+            `Could not reach live price server for ${target.productName}. Please ensure backend is running on port 5001.`,
+            'error'
+          );
         }
       }
     }

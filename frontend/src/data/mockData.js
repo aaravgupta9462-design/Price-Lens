@@ -1462,9 +1462,15 @@ export const registerRealProduct = ({
   verdict = 'BUY NOW',
   advisorReason,
 }) => {
-  const lowestNow = Math.min(amazonPrice, flipkartPrice);
-  const cheapestStore = amazonPrice <= flipkartPrice ? 'Amazon' : 'Flipkart';
-  const discount = Math.max(0, Math.round(((originalPrice - lowestNow) / originalPrice) * 100));
+  const validPrices = [amazonPrice, flipkartPrice].filter((p) => typeof p === 'number' && p > 0);
+  const lowestNow = validPrices.length > 0 ? Math.min(...validPrices) : (originalPrice || 0);
+  const cheapestStore =
+    amazonPrice && flipkartPrice
+      ? amazonPrice <= flipkartPrice ? 'Amazon' : 'Flipkart'
+      : amazonPrice ? 'Amazon' : 'Flipkart';
+  const discount = originalPrice > 0 && lowestNow > 0
+    ? Math.max(0, Math.round(((originalPrice - lowestNow) / originalPrice) * 100))
+    : 0;
   const computedLowestEver = lowestEver || Math.round(lowestNow * 0.96);
 
   const productObj = {
@@ -1489,8 +1495,11 @@ export const registerRealProduct = ({
     specs,
   };
 
-  if (!PRODUCTS.some((p) => p.id === id)) {
+  const existingIdx = PRODUCTS.findIndex((p) => p.id === id);
+  if (existingIdx === -1) {
     PRODUCTS.push(productObj);
+  } else {
+    PRODUCTS[existingIdx] = productObj;
   }
 
   PLATFORM_COMPARISONS[id] = [
@@ -1499,26 +1508,26 @@ export const registerRealProduct = ({
       logo: '🛒',
       price: amazonPrice,
       originalPrice,
-      inStock: true,
+      inStock: Boolean(amazonPrice),
       delivery: '1-2 days (Prime)',
       bankOffer: amazonBankOffer,
       rating,
       lastChecked: '2 mins ago',
       url: amazonUrl,
-      isLowest: amazonPrice <= flipkartPrice,
+      isLowest: Boolean(amazonPrice && (!flipkartPrice || amazonPrice <= flipkartPrice)),
     },
     {
       platform: 'Flipkart',
       logo: '🛍️',
       price: flipkartPrice,
       originalPrice,
-      inStock: true,
+      inStock: Boolean(flipkartPrice),
       delivery: '2-3 days',
       bankOffer: flipkartBankOffer,
       rating: Number((rating - 0.1).toFixed(1)),
       lastChecked: '3 mins ago',
       url: flipkartUrl,
-      isLowest: flipkartPrice < amazonPrice,
+      isLowest: Boolean(flipkartPrice && (!amazonPrice || flipkartPrice < amazonPrice)),
     },
   ];
 
