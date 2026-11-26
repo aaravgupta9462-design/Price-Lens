@@ -95,20 +95,20 @@ export const Hero = () => {
 
   const resolveProductFromQuery = (query) => {
     const lower = query.toLowerCase();
-    if (lower.includes('iphone') || lower.includes('16') || lower.includes('apple')) {
+    if (lower.includes('iphone 16') || lower.includes('iphone-16')) {
       return 'iphone-16-128';
-    } else if (lower.includes('sony') || lower.includes('xm5') || lower.includes('headphone')) {
+    } else if (lower.includes('sony') && (lower.includes('xm5') || lower.includes('headphone'))) {
       return 'sony-xm5';
-    } else if (lower.includes('asus') || lower.includes('tuf') || lower.includes('laptop')) {
+    } else if (lower.includes('asus') && lower.includes('tuf')) {
       return 'asus-tuf-f15';
-    } else if (lower.includes('macbook') || lower.includes('air') || lower.includes('m3')) {
+    } else if (lower.includes('macbook air m3') || lower.includes('macbook-air-m3')) {
       return 'macbook-air-m3';
-    } else if (lower.includes('boat') || lower.includes('watch') || lower.includes('wearable')) {
+    } else if (lower.includes('boat wave') || lower.includes('boat-wave')) {
       return 'boat-wave-call-plus';
-    } else if (lower.includes('samsung') || lower.includes('s25')) {
+    } else if (lower.includes('samsung') && lower.includes('s25')) {
       return 'samsung-s25';
     }
-    // Return null for uncatalogued queries to avoid confusing false matches
+    // Return null for uncatalogued queries / new models (e.g. iPhone 17 Pro)
     return null;
   };
 
