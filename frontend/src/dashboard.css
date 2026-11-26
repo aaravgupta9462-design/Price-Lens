@@ -9561,3 +9561,49 @@
     background-position: 100% 50%;
   }
 }
+
+/* ─── Radar Sweep & Category Icon Micro-Animations ─────────────────────────── */
+.pl-telemetry-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.pl-telemetry-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -40%;
+  width: 35%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(99, 102, 241, 0.05) 50%,
+    transparent 100%
+  );
+  transform: skewX(-18deg);
+  animation: plRadarSweep 6.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes plRadarSweep {
+  0%, 40% {
+    left: -40%;
+  }
+  100% {
+    left: 130%;
+  }
+}
+
+.pl-category-icon-box {
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.pl-category-card:hover .pl-category-icon-box {
+  transform: scale(1.12) rotate(-4deg);
+}
+
+.pl-product-deal-card:hover {
+  box-shadow: 0 18px 40px -10px rgba(79, 70, 229, 0.16), 0 4px 12px rgba(17, 19, 34, 0.05) !important;
+  border-color: rgba(99, 102, 241, 0.35) !important;
+}

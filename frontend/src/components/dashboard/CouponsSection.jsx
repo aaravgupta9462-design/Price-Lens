@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 import { Tag, Copy, Check, ExternalLink, ShieldCheck, Sparkles, Scissors } from 'lucide-react';
 import { VERIFIED_COUPONS } from '../../data/mockData';
 import { useDashboard } from '../../context/DashboardContext';
@@ -104,11 +105,20 @@ export const CouponsSection = () => {
 
         {/* Coupon Cards Grid */}
         <div className="pl-coupons-cards-grid">
-          {displayedCoupons.map((coupon) => {
+          {displayedCoupons.map((coupon, idx) => {
             const isCopied = copiedId === coupon.id;
 
             return (
-              <div key={coupon.id} className="pl-coupon-ticket-card">
+              <motion.div
+                key={coupon.id}
+                layout
+                initial={{ opacity: 0, y: 18, scale: 0.96 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: true, amount: 0.1 }}
+                transition={{ duration: 0.38, delay: idx * 0.06, ease: [0.16, 1, 0.3, 1] }}
+                whileHover={{ y: -5, scale: 1.015 }}
+                className="pl-coupon-ticket-card"
+              >
                 <div className="pl-coupon-card-header">
                   <div className="pl-coupon-store-pill">
                     <StoreLogo store={coupon.store} size="sm" />
@@ -160,7 +170,7 @@ export const CouponsSection = () => {
                     <ExternalLink size={12} />
                   </button>
                 </div>
-              </div>
+              </motion.div>
             );
           })}
         </div>

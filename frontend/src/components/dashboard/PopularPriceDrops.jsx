@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { motion } from 'framer-motion';
 import {
   Heart,
   Bookmark,
@@ -174,15 +175,22 @@ export const PopularPriceDrops = () => {
 
       {/* Audited Cards Grid */}
       <div className="pl-popular-cards-grid">
-        {filteredDeals.map((item) => {
+        {filteredDeals.map((item, idx) => {
           const isSaved = savedProducts.some((p) => p.productId === item.id || p.id === item.id);
           const isBookmarked = bookmarkedIds.includes(item.id);
           const isFakeWarning = item.audit.type === 'fake_warning';
           const isAllTimeLow = item.audit.type === 'all_time_low';
 
           return (
-            <div
+            <motion.div
               key={item.id}
+              layout
+              initial={{ opacity: 0, y: 22, scale: 0.96 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true, amount: 0.1 }}
+              transition={{ duration: 0.42, delay: idx * 0.07, ease: [0.16, 1, 0.3, 1] }}
+              whileHover={{ y: -6, scale: 1.015 }}
+              whileTap={{ scale: 0.985 }}
               className="pl-product-deal-card"
               onClick={() => handleCardClick(item)}
             >
@@ -305,7 +313,7 @@ export const PopularPriceDrops = () => {
                   )}
                 </button>
               </div>
-            </div>
+            </motion.div>
           );
         })}
       </div>

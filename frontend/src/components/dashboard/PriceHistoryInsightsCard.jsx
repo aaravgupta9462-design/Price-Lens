@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 import { Bell, Check, TrendingDown, Star, Sparkles, AlertCircle } from 'lucide-react';
 import { useDashboard } from '../../context/DashboardContext';
 import { PRICE_HISTORY_DATA, formatPrice } from '../../data/mockData';
@@ -163,17 +164,30 @@ export const PriceHistoryInsightsCard = () => {
             })}
 
             {/* Area Fill */}
-            {areaPath && <path d={areaPath} fill="url(#plAreaGlow)" />}
+            {areaPath && (
+              <motion.path
+                key={`area-${selectedProductId}-${selectedTimeline}`}
+                d={areaPath}
+                fill="url(#plAreaGlow)"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.7, delay: 0.15 }}
+              />
+            )}
 
             {/* Main Price Line */}
             {linePath && (
-              <path
+              <motion.path
+                key={`line-${selectedProductId}-${selectedTimeline}`}
                 d={linePath}
                 fill="none"
                 stroke="#6842FF"
                 strokeWidth="2.8"
                 strokeLinecap="round"
                 strokeLinejoin="round"
+                initial={{ pathLength: 0, opacity: 0.4 }}
+                animate={{ pathLength: 1, opacity: 1 }}
+                transition={{ duration: 0.95, ease: [0.16, 1, 0.3, 1] }}
               />
             )}
 

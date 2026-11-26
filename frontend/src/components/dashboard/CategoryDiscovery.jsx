@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import { Smartphone, Laptop, Headphones, Watch, Home, ArrowUpRight } from 'lucide-react';
 import { useDashboard } from '../../context/DashboardContext';
 
@@ -78,11 +79,17 @@ export const CategoryDiscovery = () => {
         </div>
 
         <div className="pl-category-grid">
-          {CATEGORIES_DATA.map((cat) => {
+          {CATEGORIES_DATA.map((cat, idx) => {
             const IconComponent = cat.icon;
             return (
-              <div
+              <motion.div
                 key={cat.id}
+                initial={{ opacity: 0, y: 20, scale: 0.96 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: true, amount: 0.1 }}
+                transition={{ duration: 0.4, delay: idx * 0.06, ease: [0.16, 1, 0.3, 1] }}
+                whileHover={{ y: -6, scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
                 className="pl-category-card"
                 onClick={() => handleCategoryClick(cat)}
               >
@@ -105,7 +112,7 @@ export const CategoryDiscovery = () => {
                 <div className="pl-category-footer">
                   <span className="pl-category-saving-pill">{cat.avgSaving}</span>
                 </div>
-              </div>
+              </motion.div>
             );
           })}
         </div>

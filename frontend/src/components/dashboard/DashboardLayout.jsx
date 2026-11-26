@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion, useScroll, useSpring } from 'framer-motion';
 import { DashboardProvider, useDashboard } from '../../context/DashboardContext';
 import TopNavbar from './TopNavbar';
 import DashboardFooter from './DashboardFooter';
@@ -54,8 +55,31 @@ const ScreenRenderer = () => {
 };
 
 const DashboardContent = ({ onOpenAuth }) => {
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 220,
+    damping: 32,
+    restDelta: 0.001,
+  });
+
   return (
     <div className="db-shell-topbar-layout">
+      {/* Live Top Scroll Progress Indicator */}
+      <motion.div
+        style={{
+          scaleX,
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: '3px',
+          transformOrigin: '0%',
+          background: 'linear-gradient(90deg, #4F46E5 0%, #7C3AED 40%, #0EA5E9 75%, #16A34A 100%)',
+          zIndex: 9999,
+          pointerEvents: 'none',
+        }}
+      />
+
       {/* Top Header Navbar with Category Tabs */}
       <TopNavbar onOpenAuth={onOpenAuth} />
 
