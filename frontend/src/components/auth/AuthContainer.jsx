@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import AnimatedBackground from '../common/AnimatedBackground';
 import { Mail, Lock, User, Phone, Eye, EyeOff, KeyRound, CheckCircle2, TrendingDown, Bell, ArrowRight, Smartphone, Zap } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import './AuthContainer.css';
@@ -223,9 +224,12 @@ export const AuthContainer = ({ onClose }) => {
   };
 
   return (
-    <div className="saas-bg-viewport min-h-screen w-full flex flex-col justify-between overflow-hidden">
+    <div className="saas-bg-viewport min-h-screen w-full flex flex-col justify-between overflow-hidden relative">
+      {/* 3-Layer Living Price Graph Background */}
+      <AnimatedBackground />
+
       {/* ─── Top Navbar ───────────────────────────────────────────────────── */}
-      <header className="saas-navbar">
+      <header className="saas-navbar relative z-10">
         <div
           onClick={(e) => {
             e.preventDefault();
@@ -304,16 +308,41 @@ export const AuthContainer = ({ onClose }) => {
                   <div className="bg-slate-800/80 rounded-lg p-2 border border-slate-700/60 my-1">
                     <div className="text-[9px] font-bold text-slate-400 mb-1">7-DAY PRICE TREND</div>
                     <div className="h-10 w-full flex items-end gap-1">
-                      <div className="w-1/5 bg-slate-600 rounded-t h-[90%]" />
-                      <div className="w-1/5 bg-slate-600 rounded-t h-[75%]" />
-                      <div className="w-1/5 bg-slate-600 rounded-t h-[60%]" />
-                      <div className="w-1/5 bg-blue-500 rounded-t h-[45%]" />
-                      <div className="w-1/5 bg-emerald-500 rounded-t h-[30%]" />
+                      <motion.div
+                        initial={{ height: 0 }}
+                        animate={{ height: '90%' }}
+                        transition={{ duration: 0.6, delay: 0.2 }}
+                        className="w-1/5 bg-slate-600 rounded-t"
+                      />
+                      <motion.div
+                        initial={{ height: 0 }}
+                        animate={{ height: '75%' }}
+                        transition={{ duration: 0.6, delay: 0.3 }}
+                        className="w-1/5 bg-slate-600 rounded-t"
+                      />
+                      <motion.div
+                        initial={{ height: 0 }}
+                        animate={{ height: '60%' }}
+                        transition={{ duration: 0.6, delay: 0.4 }}
+                        className="w-1/5 bg-slate-600 rounded-t"
+                      />
+                      <motion.div
+                        initial={{ height: 0 }}
+                        animate={{ height: '45%' }}
+                        transition={{ duration: 0.6, delay: 0.5 }}
+                        className="w-1/5 bg-blue-500 rounded-t"
+                      />
+                      <motion.div
+                        initial={{ height: 0 }}
+                        animate={{ height: '30%' }}
+                        transition={{ duration: 0.6, delay: 0.6 }}
+                        className="w-1/5 bg-emerald-500 rounded-t"
+                      />
                     </div>
                   </div>
 
                   <div className="text-[9px] text-center text-slate-400 font-semibold pt-1">
-                    Synced with 100+ Stores
+                    Auditing Amazon &amp; Flipkart Live
                   </div>
                 </div>
               </motion.div>
@@ -329,9 +358,9 @@ export const AuthContainer = ({ onClose }) => {
                 className="saas-float-card absolute top-2 left-0 z-20"
               >
                 <div className="text-[10px] font-extrabold text-emerald-600 uppercase tracking-wider mb-0.5">BEST PRICE</div>
-                <div className="text-base font-extrabold text-slate-900">₹1,09,990</div>
+                <div className="text-base font-extrabold text-slate-900">₹69,990</div>
                 <div className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 inline-block mt-1">
-                  Croma ✓
+                  Amazon ✓
                 </div>
               </motion.div>
 
@@ -364,17 +393,13 @@ export const AuthContainer = ({ onClose }) => {
               >
                 <div className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mb-1.5">COMPARE STORES</div>
                 <div className="space-y-1 text-xs">
-                  <div className="flex justify-between font-medium text-slate-600">
-                    <span>Amazon</span>
-                    <span>₹1,14,900</span>
-                  </div>
                   <div className="flex justify-between font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
-                    <span>Croma</span>
-                    <span>₹1,09,990 ✓</span>
+                    <span>Amazon</span>
+                    <span>₹69,990 ✓</span>
                   </div>
                   <div className="flex justify-between font-medium text-slate-600">
                     <span>Flipkart</span>
-                    <span>₹1,17,490</span>
+                    <span>₹71,499</span>
                   </div>
                 </div>
               </motion.div>
@@ -404,18 +429,32 @@ export const AuthContainer = ({ onClose }) => {
           </div>
 
           {/* ─── RIGHT 45%: Large Premium SaaS Authentication Panel ────────── */}
-          <div className="lg:col-span-5 w-full">
+          <div className="lg:col-span-5 w-full relative z-10">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4 }}
-              className="saas-card"
+              initial={{ opacity: 0, y: 24, scale: 0.97 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+              className="saas-card saas-card-enhanced relative overflow-hidden"
             >
+              {/* Animated Gradient Top Accent Bar */}
+              <div className="saas-card-top-bar" />
+
               {/* Header inside Card */}
-              <div className="flex items-center gap-2 mb-4">
-                <img src="/logo.png" alt="Logo" className="w-8 h-8 object-contain rounded" />
-                <span className="text-xs font-bold text-slate-900 tracking-tight">PriceLens Auth Workspace</span>
-              </div>
+              <motion.div
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.35, delay: 0.1 }}
+                className="flex items-center justify-between mb-4"
+              >
+                <div className="flex items-center gap-2">
+                  <img src="/logo.png" alt="Logo" className="w-8 h-8 object-contain rounded" />
+                  <span className="text-xs font-bold text-slate-900 tracking-tight">PriceLens Auth Workspace</span>
+                </div>
+                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-[10px] font-bold text-emerald-700">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  Secure
+                </span>
+              </motion.div>
 
               <AnimatePresence mode="wait">
                 {/* ─── 1. LOGIN VIEW ────────────────────────────────────────── */}
@@ -502,14 +541,16 @@ export const AuthContainer = ({ onClose }) => {
                       </div>
 
                       {/* Primary Submit Button: Login → */}
-                      <button
+                      <motion.button
                         type="submit"
                         disabled={isLoading}
-                        className="saas-btn-primary"
+                        whileHover={{ scale: 1.015, y: -1 }}
+                        whileTap={{ scale: 0.985 }}
+                        className="saas-btn-primary saas-btn-animated group"
                       >
                         <span>{isLoading ? 'Logging in...' : 'Login'}</span>
-                        <ArrowRight size={16} />
-                      </button>
+                        <ArrowRight size={16} className="transition-transform duration-200 group-hover:translate-x-1" />
+                      </motion.button>
 
                       {/* Divider: OR */}
                       <div className="relative my-4 flex items-center justify-center select-none">
@@ -522,10 +563,12 @@ export const AuthContainer = ({ onClose }) => {
                       </div>
 
                       {/* Google OAuth Button */}
-                      <button
+                      <motion.button
                         type="button"
                         onClick={handleGoogleAuth}
                         disabled={isLoading}
+                        whileHover={{ scale: 1.012, y: -1 }}
+                        whileTap={{ scale: 0.988 }}
                         className="saas-btn-google"
                       >
                         <svg className="w-4 h-4" viewBox="0 0 24 24">
@@ -535,7 +578,7 @@ export const AuthContainer = ({ onClose }) => {
                           <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
                         </svg>
                         <span>Continue with Google</span>
-                      </button>
+                      </motion.button>
                     </form>
 
                     {/* Switch to Register */}
@@ -685,10 +728,12 @@ export const AuthContainer = ({ onClose }) => {
                       </div>
 
                       {/* Google OAuth Button */}
-                      <button
+                      <motion.button
                         type="button"
                         onClick={handleGoogleAuth}
                         disabled={isLoading}
+                        whileHover={{ scale: 1.012, y: -1 }}
+                        whileTap={{ scale: 0.988 }}
                         className="saas-btn-google"
                       >
                         <svg className="w-4 h-4" viewBox="0 0 24 24">
@@ -698,7 +743,7 @@ export const AuthContainer = ({ onClose }) => {
                           <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
                         </svg>
                         <span>Continue with Google</span>
-                      </button>
+                      </motion.button>
                     </form>
 
                     {/* Switch to Login */}
