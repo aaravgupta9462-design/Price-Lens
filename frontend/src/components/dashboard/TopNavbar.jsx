@@ -285,29 +285,17 @@ const TopNavbar = ({ onOpenAuth }) => {
 
                       <div className="db-dropdown-divider" />
 
-                      {user ? (
-                        <button
-                          className="db-dropdown-item logout"
-                          onClick={() => {
-                            setUserMenuOpen(false);
-                            logout();
-                          }}
-                        >
-                          <LogOut size={15} />
-                          <span>Sign Out</span>
-                        </button>
-                      ) : (
-                        <button
-                          className="db-dropdown-item"
-                          onClick={() => {
-                            setUserMenuOpen(false);
-                            if (onOpenAuth) onOpenAuth();
-                          }}
-                        >
-                          <LogOut size={15} style={{ transform: 'rotate(180deg)' }} />
-                          <span>Sign In / Create Account</span>
-                        </button>
-                      )}
+                      <button
+                        className="db-dropdown-item logout"
+                        onClick={() => {
+                          setUserMenuOpen(false);
+                          if (user && logout) logout();
+                          if (onOpenAuth) onOpenAuth();
+                        }}
+                      >
+                        <LogOut size={15} />
+                        <span>Log Out</span>
+                      </button>
                     </div>
                   </div>
                 </>
