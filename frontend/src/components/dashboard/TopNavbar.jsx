@@ -148,16 +148,22 @@ const TopNavbar = ({ onOpenAuth }) => {
 
     const scrollTarget = tabObj && tabObj.scrollId ? tabObj.scrollId : null;
 
+    const scrollToTarget = (id) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+
     if (scrollTarget) {
-      setTimeout(() => {
-        const el = document.getElementById(scrollTarget);
-        if (el) {
-          const targetTop = Math.max(0, el.getBoundingClientRect().top + window.scrollY - 92);
-          window.scrollTo({ top: targetTop, behavior: 'smooth' });
-        } else {
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-      }, wasOtherScreen ? 120 : 20);
+      if (wasOtherScreen) {
+        window.requestAnimationFrame(() => {
+          window.requestAnimationFrame(() => {
+            scrollToTarget(scrollTarget);
+          });
+        });
+      } else {
+        scrollToTarget(scrollTarget);
+      }
     } else {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
