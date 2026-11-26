@@ -20,6 +20,7 @@ import {
 import { useDashboard } from '../../context/DashboardContext';
 import { PRODUCTS } from '../../data/mockData';
 import StoreLogo from './StoreLogo';
+import AnimatedBackground from '../common/AnimatedBackground';
 
 const POPULAR_CHIPS = [
   { name: 'iPhone 16 Pro', id: 'iphone-16-128' },
@@ -274,6 +275,9 @@ export const Hero = () => {
 
   return (
     <div className="pl-cinematic-hero-section">
+      {/* Living Price Graph Animated Background */}
+      <AnimatedBackground />
+
       {/* Asymmetrical 2-Column Hero Grid */}
       <div className="pl-cinematic-hero-grid">
         {/* Left Column: Editorial Content & Refined Search */}

@@ -4726,10 +4726,16 @@
 
 /* ─── Section 2: Cinematic Hero & Functional Search ────────────────────────── */
 .pl-cinematic-hero-section {
-  padding: 2.25rem 0 3.25rem;
+  position: relative;
+  overflow: hidden;
+  border-radius: 28px;
+  padding: 2.5rem 2rem 3.25rem;
+  margin-bottom: 0.75rem;
 }
 
 .pl-cinematic-hero-grid {
+  position: relative;
+  z-index: 1;
   display: grid;
   grid-template-columns: 1.15fr 0.95fr;
   gap: 3rem;
