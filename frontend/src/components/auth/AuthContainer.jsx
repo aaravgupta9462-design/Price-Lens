@@ -238,15 +238,6 @@ export const AuthContainer = ({ onClose }) => {
         </div>
 
         <div className="saas-nav-cta flex items-center gap-3">
-          {onClose && (
-            <button
-              type="button"
-              onClick={onClose}
-              className="text-xs font-bold text-slate-600 hover:text-indigo-600 px-3 py-1.5 rounded-lg border border-slate-200 hover:border-indigo-300 transition-colors"
-            >
-              ← Back to Deals
-            </button>
-          )}
           <span className="hidden sm:inline text-xs font-semibold text-slate-500">New to PriceLens?</span>
           <button
             onClick={() => switchView(viewState === 'login' ? 'register' : 'login')}
