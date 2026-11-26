@@ -100,14 +100,6 @@ export const CompareStoresCard = () => {
           </div>
         </div>
 
-        <button
-          type="button"
-          className="pl-compare-view-product-btn"
-          onClick={() => viewProductDetail(product.id)}
-        >
-          <span>Product Spec</span>
-          <ArrowRight size={13} />
-        </button>
       </div>
 
       {/* Interactive Bank Card & EMI Effective Price Selector */}
