@@ -169,12 +169,11 @@ const TopNavbar = ({ onOpenAuth }) => {
             onClick={() => handleTabClick({ id: 'deals', scrollId: null })}
             title="PriceLens Home"
           >
-            <div className="db-brand-icon-box">
-              <Zap size={20} fill="#FFFFFF" color="#FFFFFF" />
-            </div>
-            <div className="db-brand-text-col">
-              <span className="db-brand-title">PriceLens</span>
-            </div>
+            <img
+              src="/logo.png"
+              alt="PriceLens — Compare • Track • Save"
+              className="db-navbar-brand-logo-img"
+            />
           </div>
 
           {/* Enriched & Enlarged Center Category/Feature Capsule Bar */}

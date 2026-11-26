@@ -238,6 +238,19 @@
   transform: translateY(-1px);
 }
 
+.db-navbar-brand-logo-img {
+  height: 48px;
+  max-height: 48px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
+}
+
+.db-brand-logo:hover .db-navbar-brand-logo-img {
+  transform: scale(1.03);
+}
+
 .db-brand-icon-box {
   width: 38px;
   height: 38px;
@@ -7272,7 +7285,21 @@
   align-items: center;
   gap: 10px;
   cursor: pointer;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.pl-footer-brand-logo-img {
+  height: 52px;
+  max-height: 52px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+  cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
+}
+
+.pl-footer-brand-logo-img:hover {
+  transform: scale(1.03);
 }
 
 .pl-footer-logo-icon {

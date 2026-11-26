@@ -37,15 +37,11 @@ export const TermsPage = ({ navigate }) => {
             onClick={handleBack}
             title="PriceLens Home"
           >
-            <div className="db-brand-icon-box">
-              <Scale size={19} />
-            </div>
-            <div className="db-brand-text-col">
-              <span className="db-brand-title">
-                Price<span>Lens</span>
-              </span>
-              <span className="db-brand-subtitle">Terms &amp; Disclaimers</span>
-            </div>
+            <img
+              src="/logo.png"
+              alt="PriceLens — Compare • Track • Save"
+              className="db-navbar-brand-logo-img"
+            />
           </div>
 
           <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>

@@ -5,14 +5,10 @@ export const Header = () => {
     <header className="brand-header">
       <a href="/" className="lofi-brand-badge">
         <img
-          src="/logo.jpg"
-          alt="PriceLens Logo"
-          className="lofi-brand-img"
+          src="/logo.png"
+          alt="PriceLens — Compare • Track • Save"
+          className="h-10 w-auto object-contain"
         />
-        <div className="brand-name">
-          <span className="text-price">PRICE</span>
-          <span className="text-lens">LENS</span>
-        </div>
       </a>
 
       {/* Tagline Pill */}

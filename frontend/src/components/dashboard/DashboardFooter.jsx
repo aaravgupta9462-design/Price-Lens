@@ -23,10 +23,11 @@ export const DashboardFooter = () => {
           <div className="pl-footer-top-brand-row">
             <div className="pl-footer-brand-col">
               <div className="pl-footer-logo-wrap" onClick={scrollToTop}>
-                <div className="pl-footer-logo-icon">
-                  <Zap size={18} fill="#FFFFFF" color="#FFFFFF" />
-                </div>
-                <span className="pl-footer-logo-title">PriceLens</span>
+                <img
+                  src="/logo.png"
+                  alt="PriceLens — Compare • Track • Save"
+                  className="pl-footer-brand-logo-img"
+                />
               </div>
               <p className="pl-footer-tagline">
                 SEE THE REAL PRICE. COMPARE SMARTER. BUY BETTER.

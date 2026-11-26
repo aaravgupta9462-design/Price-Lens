@@ -234,11 +234,7 @@ export const AuthContainer = ({ onClose }) => {
           className="saas-brand-badge cursor-pointer"
           title="Back to PriceLens Home"
         >
-          <img src="/logo.jpg" alt="PriceLens Logo" className="saas-brand-img" />
-          <div className="saas-brand-name">
-            <span className="text-price">Price</span>
-            <span className="text-lens">Lens</span>
-          </div>
+          <img src="/logo.png" alt="PriceLens — Compare • Track • Save" className="h-10 w-auto object-contain" />
         </div>
 
         <div className="saas-nav-cta flex items-center gap-3">
@@ -426,7 +422,7 @@ export const AuthContainer = ({ onClose }) => {
             >
               {/* Header inside Card */}
               <div className="flex items-center gap-2 mb-4">
-                <img src="/logo.jpg" alt="Logo" className="w-6 h-6 object-contain rounded" />
+                <img src="/logo.png" alt="Logo" className="w-8 h-8 object-contain rounded" />
                 <span className="text-xs font-bold text-slate-900 tracking-tight">PriceLens Auth Workspace</span>
               </div>
 
