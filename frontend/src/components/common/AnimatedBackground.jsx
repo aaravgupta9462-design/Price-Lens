@@ -8,22 +8,22 @@ export const BG_CONFIG = {
   baseColor: '#F8F9FD',
   colors: {
     indigo: '#4F46E5',
-    violet: '#6366F1',
+    violet: '#7C3AED',
     green: '#16A34A',
     sky: '#0EA5E9',
     dotBase: [100, 116, 139], // Slate-500 RGB
     dotActive: [79, 70, 229], // Indigo-600 RGB
   },
-  blobOpacity: 0.11, // 8% - 15% recommended
+  blobOpacity: 0.24, // Clearly visible yet soft fintech aurora
   speedMultiplier: 1, // Increase (>1) to slow down, decrease (<1) to speed up
-  blobCount: 4, // 3-4 on desktop; automatically reduced to 2 on mobile
-  gridSpacing: 28,
-  dotRadius: 1.15,
-  dotBaseAlpha: 0.22,
-  interactionRadius: 120,
-  sparklineCount: 5, // 4-6 faint Keepa-style price lines
-  sparklineOpacity: 0.18,
-  ghostLabelOpacity: 0.11,
+  blobCount: 4, // 4 on desktop; automatically reduced to 2 on mobile
+  gridSpacing: 26,
+  dotRadius: 1.25,
+  dotBaseAlpha: 0.28,
+  interactionRadius: 145,
+  sparklineCount: 6, // 6 visible Keepa-style price lines
+  sparklineOpacity: 0.58,
+  ghostLabelOpacity: 0.78,
 };
 
 const GHOST_LABELS = ['₹69,990', '-22%', '₹24,990', '-18%', '₹62,990', '-15%'];
@@ -175,15 +175,24 @@ export const AnimatedBackground = () => {
       }
     };
 
-    const drawFrame = (isStatic = false) => {
+    const drawFrame = (isStatic = false, timeMs = 0) => {
       ctx.clearRect(0, 0, width, height);
       const [br, bg, bb] = BG_CONFIG.colors.dotBase;
       const [ar, ag, ab] = BG_CONFIG.colors.dotActive;
       const radiusSq = BG_CONFIG.interactionRadius * BG_CONFIG.interactionRadius;
+      const wavePhase = (timeMs * 0.0012) / BG_CONFIG.speedMultiplier;
 
       for (let i = 0; i < dots.length; i++) {
         const dot = dots[i];
         let target = 0;
+
+        // Subtle ambient diagonal data shimmer wave across the grid
+        if (!isStatic) {
+          const wave = Math.sin((dot.x + dot.y) * 0.012 - wavePhase);
+          if (wave > 0.65) {
+            target = ((wave - 0.65) / 0.35) * 0.28;
+          }
+        }
 
         if (!isStatic && !isMobile && mouse.active) {
           const dx = dot.x - mouse.x;
@@ -191,20 +200,21 @@ export const AnimatedBackground = () => {
           const distSq = dx * dx + dy * dy;
           if (distSq < radiusSq) {
             const dist = Math.sqrt(distSq);
-            target = Math.pow(1 - dist / BG_CONFIG.interactionRadius, 1.6);
+            const hoverStrength = Math.pow(1 - dist / BG_CONFIG.interactionRadius, 1.4);
+            target = Math.max(target, hoverStrength);
           }
         }
 
         // Smooth easing toward target and gentle relaxation back
-        dot.intensity += (target - dot.intensity) * (target > dot.intensity ? 0.2 : 0.08);
+        dot.intensity += (target - dot.intensity) * (target > dot.intensity ? 0.22 : 0.09);
         if (dot.intensity < 0.004) dot.intensity = 0;
 
         const t = dot.intensity;
         const r = Math.round(br + (ar - br) * t);
         const g = Math.round(bg + (ag - bg) * t);
         const b = Math.round(bb + (ab - bb) * t);
-        const alpha = BG_CONFIG.dotBaseAlpha + t * 0.48;
-        const dotR = BG_CONFIG.dotRadius + t * 1.45;
+        const alpha = BG_CONFIG.dotBaseAlpha + t * 0.56;
+        const dotR = BG_CONFIG.dotRadius + t * 2.1;
 
         ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha.toFixed(3)})`;
         ctx.beginPath();
@@ -213,9 +223,9 @@ export const AnimatedBackground = () => {
       }
     };
 
-    const loop = () => {
+    const loop = (now) => {
       if (!document.hidden && isVisible && !reducedMotion) {
-        drawFrame(false);
+        drawFrame(false, now);
         rafId = window.requestAnimationFrame(loop);
       } else {
         rafId = null;
@@ -333,11 +343,22 @@ export const AnimatedBackground = () => {
             }}
           >
             <svg viewBox="0 0 120 44" className="pl-floating-spark-svg" fill="none">
+              <defs>
+                <linearGradient id={`sparkGrad-${item.id}`} x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor={BG_CONFIG.colors.indigo} stopOpacity="0.22" />
+                  <stop offset="100%" stopColor={BG_CONFIG.colors.indigo} stopOpacity="0" />
+                </linearGradient>
+              </defs>
+              <path
+                d={`${item.path} L 114 42 L 6 42 Z`}
+                fill={`url(#sparkGrad-${item.id})`}
+                className="pl-floating-spark-area"
+              />
               <path
                 d={item.path}
                 className="pl-floating-spark-path"
                 stroke={BG_CONFIG.colors.indigo}
-                strokeWidth="1.6"
+                strokeWidth="2.1"
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 pathLength="100"
@@ -345,8 +366,18 @@ export const AnimatedBackground = () => {
               <circle
                 cx={item.endPoint.x}
                 cy={item.endPoint.y}
-                r="3.2"
+                r="7"
                 fill={BG_CONFIG.colors.green}
+                fillOpacity="0.24"
+                className="pl-floating-drop-ring"
+              />
+              <circle
+                cx={item.endPoint.x}
+                cy={item.endPoint.y}
+                r="3.8"
+                fill={BG_CONFIG.colors.green}
+                stroke="#FFFFFF"
+                strokeWidth="1.4"
                 className="pl-floating-drop-dot"
               />
             </svg>

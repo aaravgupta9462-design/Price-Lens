@@ -26,46 +26,46 @@
 .pl-aurora-blob {
   position: absolute;
   border-radius: 50%;
-  filter: blur(76px);
-  opacity: var(--pl-blob-opacity, 0.11);
+  filter: blur(64px);
+  opacity: var(--pl-blob-opacity, 0.24);
   will-change: transform;
   transform: translate3d(0, 0, 0);
 }
 
 .pl-blob-indigo {
-  width: 520px;
-  height: 520px;
+  width: 560px;
+  height: 560px;
   top: -18%;
   left: -8%;
-  background: radial-gradient(circle, #4F46E5 0%, rgba(79, 70, 229, 0) 70%);
-  animation: plAuroraDrift1 calc(30s * var(--pl-speed-mult, 1)) ease-in-out infinite;
+  background: radial-gradient(circle, #4F46E5 0%, rgba(79, 70, 229, 0) 68%);
+  animation: plAuroraDrift1 calc(16s * var(--pl-speed-mult, 1)) ease-in-out infinite;
 }
 
 .pl-blob-violet {
-  width: 560px;
-  height: 560px;
-  top: -12%;
+  width: 600px;
+  height: 600px;
+  top: -14%;
   right: -10%;
-  background: radial-gradient(circle, #6366F1 0%, rgba(99, 102, 241, 0) 70%);
-  animation: plAuroraDrift2 calc(36s * var(--pl-speed-mult, 1)) ease-in-out infinite;
+  background: radial-gradient(circle, #7C3AED 0%, rgba(124, 58, 237, 0) 68%);
+  animation: plAuroraDrift2 calc(20s * var(--pl-speed-mult, 1)) ease-in-out infinite;
 }
 
 .pl-blob-green {
-  width: 440px;
-  height: 440px;
+  width: 480px;
+  height: 480px;
   bottom: -22%;
-  right: 12%;
-  background: radial-gradient(circle, #16A34A 0%, rgba(22, 163, 74, 0) 72%);
-  animation: plAuroraDrift3 calc(28s * var(--pl-speed-mult, 1)) ease-in-out infinite;
+  right: 10%;
+  background: radial-gradient(circle, #16A34A 0%, rgba(22, 163, 74, 0) 70%);
+  animation: plAuroraDrift3 calc(15s * var(--pl-speed-mult, 1)) ease-in-out infinite;
 }
 
 .pl-blob-sky {
-  width: 460px;
-  height: 460px;
+  width: 500px;
+  height: 500px;
   bottom: -20%;
-  left: 22%;
-  background: radial-gradient(circle, #0EA5E9 0%, rgba(14, 165, 233, 0) 72%);
-  animation: plAuroraDrift4 calc(34s * var(--pl-speed-mult, 1)) ease-in-out infinite;
+  left: 20%;
+  background: radial-gradient(circle, #0EA5E9 0%, rgba(14, 165, 233, 0) 70%);
+  animation: plAuroraDrift4 calc(18s * var(--pl-speed-mult, 1)) ease-in-out infinite;
 }
 
 @keyframes plAuroraDrift1 {
@@ -73,7 +73,7 @@
     transform: translate3d(0, 0, 0) scale(1);
   }
   50% {
-    transform: translate3d(60px, 36px, 0) scale(1.08);
+    transform: translate3d(95px, 55px, 0) scale(1.12);
   }
 }
 
@@ -82,7 +82,7 @@
     transform: translate3d(0, 0, 0) scale(1);
   }
   50% {
-    transform: translate3d(-55px, 42px, 0) scale(1.06);
+    transform: translate3d(-90px, 60px, 0) scale(1.1);
   }
 }
 
@@ -91,7 +91,7 @@
     transform: translate3d(0, 0, 0) scale(1);
   }
   50% {
-    transform: translate3d(-40px, -30px, 0) scale(1.1);
+    transform: translate3d(-70px, -48px, 0) scale(1.14);
   }
 }
 
@@ -100,7 +100,7 @@
     transform: translate3d(0, 0, 0) scale(1);
   }
   50% {
-    transform: translate3d(45px, -28px, 0) scale(0.95);
+    transform: translate3d(75px, -45px, 0) scale(0.92);
   }
 }
 
@@ -122,11 +122,11 @@
 
 .pl-floating-sparkline {
   position: absolute;
-  width: 120px;
-  height: 44px;
+  width: 136px;
+  height: 48px;
   opacity: 0;
   will-change: transform, opacity;
-  animation: plSparkLifecycle var(--spark-duration, 8s) ease-in-out var(--spark-delay, 0s) infinite;
+  animation: plSparkLifecycle var(--spark-duration, 7.5s) ease-in-out var(--spark-delay, 0s) infinite;
 }
 
 .pl-floating-spark-svg {
@@ -135,29 +135,64 @@
   overflow: visible;
 }
 
+.pl-floating-spark-area {
+  opacity: 0;
+  animation: plDropDotPop var(--spark-duration, 7.5s) ease-in-out var(--spark-delay, 0s) infinite;
+}
+
 .pl-floating-spark-path {
   stroke-dasharray: 100;
   stroke-dashoffset: 100;
-  animation: plSparkDraw var(--spark-duration, 8s) ease-in-out var(--spark-delay, 0s) infinite;
+  animation: plSparkDraw var(--spark-duration, 7.5s) ease-in-out var(--spark-delay, 0s) infinite;
+}
+
+.pl-floating-drop-ring {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: plDropRingPulse var(--spark-duration, 7.5s) ease-out var(--spark-delay, 0s) infinite;
 }
 
 .pl-floating-drop-dot {
   opacity: 0;
-  animation: plDropDotPop var(--spark-duration, 8s) ease-in-out var(--spark-delay, 0s) infinite;
+  animation: plDropDotPop var(--spark-duration, 7.5s) ease-in-out var(--spark-delay, 0s) infinite;
 }
 
 .pl-floating-ghost-label {
   position: absolute;
-  right: 2px;
-  top: -12px;
+  right: 0;
+  top: -18px;
   font-family: 'JetBrains Mono', 'Space Grotesk', monospace;
-  font-size: 0.68rem;
+  font-size: 0.7rem;
   font-weight: 700;
-  color: #16A34A;
+  color: #15803D;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(22, 163, 74, 0.22);
+  padding: 2px 6px;
+  border-radius: 9999px;
   letter-spacing: 0.02em;
-  opacity: var(--pl-label-opacity, 0.11);
+  opacity: var(--pl-label-opacity, 0.78);
   will-change: transform, opacity;
-  animation: plGhostLabelDrift var(--spark-duration, 8s) ease-out var(--spark-delay, 0s) infinite;
+  animation: plGhostLabelDrift var(--spark-duration, 7.5s) ease-out var(--spark-delay, 0s) infinite;
+}
+
+@keyframes plDropRingPulse {
+  0%, 46% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  58% {
+    opacity: 0.85;
+    transform: scale(1);
+  }
+  82% {
+    opacity: 0.15;
+    transform: scale(1.65);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.8);
+  }
 }
 
 @keyframes plSparkLifecycle {
