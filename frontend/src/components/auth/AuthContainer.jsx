@@ -66,9 +66,12 @@ export const AuthContainer = ({ onClose }) => {
     setForgotPasswordErrors({});
   };
 
-  const handleGoogleAuth = () => {
+  const handleGoogleAuth = async () => {
     if (loginWithGoogle) {
-      loginWithGoogle();
+      const result = await loginWithGoogle();
+      if (result && result.user && onClose) {
+        onClose();
+      }
     } else {
       if (addToast) addToast('Connecting to Google OAuth...', 'info');
     }
@@ -151,6 +154,7 @@ export const AuthContainer = ({ onClose }) => {
 
     try {
       await signup(registerData);
+      if (onClose) onClose();
     } catch (err) {
       // Handled via AuthContext
     }
