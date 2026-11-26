@@ -90,7 +90,7 @@ const ComparePricesScreen = () => {
           <div>
             <h1 className="db-screen-title">Compare Prices</h1>
             <p className="db-screen-subtitle">
-              Live multi-store price comparisons across Amazon, Flipkart, Croma, and verified Indian retailers.
+              Live price comparisons across Amazon and Flipkart (more stores coming in future updates).
             </p>
           </div>
 

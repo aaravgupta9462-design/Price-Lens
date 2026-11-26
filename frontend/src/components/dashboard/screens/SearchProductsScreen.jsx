@@ -133,7 +133,7 @@ const SearchProductsScreen = () => {
       <div className="db-screen-header">
         <h1 className="db-screen-title">Search & Check Online Prices</h1>
         <p className="db-screen-subtitle">
-          Search any gadget or paste direct store links from Amazon, Flipkart, Croma, and Reliance Digital.
+          Search any gadget or paste direct store links from Amazon &amp; Flipkart (more stores coming in future updates).
         </p>
       </div>
 
@@ -144,7 +144,7 @@ const SearchProductsScreen = () => {
           type="text"
           className="db-search-input"
           style={{ height: '52px', fontSize: '0.95rem', paddingRight: '140px' }}
-          placeholder="Search products, brands or paste store link (Flipkart, Amazon, Croma...)"
+          placeholder="Search products, brands or paste store link (Amazon, Flipkart...)"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />

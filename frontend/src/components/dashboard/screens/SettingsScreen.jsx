@@ -368,7 +368,7 @@ const SettingsScreen = () => {
                         </div>
                         <div className="as-pref-text">
                           <h4>Live Price Sync Rate</h4>
-                          <p>Background price tracking cadence across Amazon, Flipkart & Croma</p>
+                          <p>Background price tracking cadence across Amazon &amp; Flipkart</p>
                         </div>
                       </div>
                       <div className="as-select-wrapper">
@@ -442,11 +442,11 @@ const SettingsScreen = () => {
                     </div>
                     <div className="as-select-wrapper">
                       <select className="as-select" defaultValue="Compare All Stores">
-                        <option value="Compare All Stores">Compare All Stores (Recommended)</option>
-                        <option value="Amazon">Amazon India</option>
-                        <option value="Flipkart">Flipkart</option>
-                        <option value="Croma">Croma</option>
-                        <option value="Reliance Digital">Reliance Digital</option>
+                        <option value="Compare All Stores">Compare Amazon &amp; Flipkart (Recommended)</option>
+                        <option value="Amazon">Amazon India (Live)</option>
+                        <option value="Flipkart">Flipkart (Live)</option>
+                        <option value="Croma" disabled>Croma (Future Update)</option>
+                        <option value="Reliance Digital" disabled>Reliance Digital (Future Update)</option>
                       </select>
                       <ChevronDown size={14} className="as-select-arrow" />
                     </div>
@@ -734,7 +734,7 @@ const SettingsScreen = () => {
                       <div className="as-pref-icon"><ShieldCheck size={18} /></div>
                       <div className="as-pref-text">
                         <h4>API Contracts & Store Scraper Specs</h4>
-                        <p>Review API_CONTRACTS.md specification for Amazon, Flipkart & Croma adapters</p>
+                        <p>Review API_CONTRACTS.md specification for Amazon &amp; Flipkart adapters (More in future updates)</p>
                       </div>
                     </div>
                     <button

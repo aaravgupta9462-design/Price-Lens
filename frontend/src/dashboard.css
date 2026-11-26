@@ -8637,3 +8637,209 @@
   color: #64748B;
   font-weight: 550;
 }
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   AMAZON & FLIPKART ACTIVE FOCUS + FUTURE STORES ROADMAP STYLES
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+/* ─── Hero 3D Stage: Future Stores Panel ──────────────────────────────────── */
+.panel-future-stores {
+  bottom: 15px;
+  left: -35px;
+  border-top: 2.5px solid #8B5CF6;
+  animation: plFloatLeft 7s ease-in-out infinite;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 10px 14px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(139, 92, 246, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 170px;
+}
+
+.pl-future-pill-tag {
+  background: #F3E8FF;
+  color: #7C3AED;
+  font-size: 0.62rem;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 9999px;
+  letter-spacing: 0.04em;
+  display: inline-flex;
+  align-items: center;
+}
+
+.pl-future-status-pill {
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: #64748B;
+}
+
+.pl-future-content-row {
+  margin-top: 2px;
+}
+
+.pl-future-store-names {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #1E293B;
+  display: block;
+}
+
+/* ─── Retailer Strip: Live vs Future Updates ───────────────────────────────── */
+.pl-retailer-live-active {
+  border-color: rgba(17, 155, 103, 0.28) !important;
+  background: #FFFFFF !important;
+  box-shadow: 0 4px 12px -2px rgba(17, 155, 103, 0.08);
+}
+
+.pl-retailer-future-box {
+  opacity: 0.82;
+  border-style: dashed;
+}
+
+.pl-retailer-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.62rem;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 9999px;
+  margin-bottom: 2px;
+}
+
+.pl-retailer-status-badge.live {
+  background: #EAF8F1;
+  color: #119B67;
+}
+
+.pl-retailer-status-badge.future {
+  background: #F1F5F9;
+  color: #64748B;
+}
+
+.pl-status-dot-green {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #119B67;
+  display: inline-block;
+  box-shadow: 0 0 0 2px rgba(17, 155, 103, 0.25);
+}
+
+.pl-retailer-divider-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  background: #F5F3FF;
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: 9999px;
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: #7C3AED;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+/* ─── Compare Stores: Future Stores Roadmap Banner ────────────────────────── */
+.pl-future-stores-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 14px;
+  padding: 12px 16px;
+  background: linear-gradient(135deg, #FAF5FF 0%, #F5F3FF 100%);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: 10px;
+}
+
+.pl-future-stores-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1 1 300px;
+}
+
+.pl-future-icon-wrap {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: #EDE9FE;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #7C3AED;
+}
+
+.pl-future-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pl-future-title {
+  font-size: 0.84rem;
+  font-weight: 750;
+  color: #1E293B;
+}
+
+.pl-future-badge-pill {
+  background: #DDD6FE;
+  color: #6D28D9;
+  font-size: 0.62rem;
+  font-weight: 800;
+  padding: 1px 6px;
+  border-radius: 9999px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.pl-future-subtext {
+  font-size: 0.74rem;
+  color: #64748B;
+  margin: 2px 0 0 0;
+  line-height: 1.4;
+}
+
+.pl-future-stores-pills {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.pl-future-store-chip {
+  font-size: 0.68rem;
+  font-weight: 650;
+  color: #475569;
+  background: #FFFFFF;
+  border: 1px dashed #CBD5E1;
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+/* ─── Footer Store Live / Future Badges ───────────────────────────────────── */
+.pl-footer-live-badge {
+  background: #EAF8F1;
+  color: #119B67;
+  font-size: 0.6rem;
+  font-weight: 800;
+  padding: 1px 5px;
+  border-radius: 4px;
+  margin-left: 5px;
+  vertical-align: middle;
+}
+
+.pl-footer-future-tag {
+  color: #94A3B8;
+  font-size: 0.76rem;
+  cursor: default;
+}

@@ -15,7 +15,7 @@ const STEPS = [
   {
     step: '01',
     title: 'Search or Paste Any URL',
-    desc: 'Enter any product name or directly paste a product link from Amazon, Flipkart, Croma, or Reliance Digital.',
+    desc: 'Enter any product name or directly paste a product link from Amazon or Flipkart.',
     icon: Search,
     highlight: 'Instant multi-store lookup',
   },
@@ -42,9 +42,9 @@ const TRUST_STATS = [
     subtext: 'Across 140,000+ purchases',
   },
   {
-    value: '4 Major Stores',
+    value: 'Amazon & Flipkart',
     label: 'Continuous 24/7 Auditing',
-    subtext: 'Amazon, Flipkart, Croma & Reliance',
+    subtext: 'More stores in future updates',
   },
   {
     value: '92,000+',

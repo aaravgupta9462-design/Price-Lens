@@ -55,7 +55,7 @@ export const DashboardHome = () => {
             <span className="pl-section-eyebrow">INTELLIGENCE SUITE</span>
             <h2 className="pl-section-title">Multi-store comparison &amp; price history</h2>
             <p className="pl-section-subtitle">
-              Verify live checkout pricing across Amazon, Flipkart, Croma &amp; Reliance Digital and audit full historical price movement graphs
+              Verify live checkout pricing across Amazon &amp; Flipkart and audit full historical price movement graphs (more stores in future updates)
             </p>
           </div>
         </div>

@@ -46,7 +46,7 @@ export const CouponsSection = () => {
             </div>
             <h2 className="pl-section-title">Verified store coupons &amp; bank codes</h2>
             <p className="pl-section-subtitle">
-              Tested promo codes for Amazon, Flipkart, Croma &amp; Reliance Digital. Copy with one click or auto-apply at checkout.
+              Tested promo codes for Amazon &amp; Flipkart. Copy with one click or auto-apply at checkout. (More stores coming soon)
             </p>
           </div>
 

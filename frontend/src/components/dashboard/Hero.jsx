@@ -51,7 +51,7 @@ const AUTOCOMPLETE_SUGGESTIONS = [
     name: 'ASUS TUF Gaming F15 Laptop',
     category: 'Laptops',
     lowestPrice: '₹62,990',
-    store: 'Croma',
+    store: 'Amazon',
     image: '/products/asus-f15.jpg',
   },
   {
@@ -59,7 +59,7 @@ const AUTOCOMPLETE_SUGGESTIONS = [
     name: 'boAt Wave Call Plus Smartwatch',
     category: 'Wearables',
     lowestPrice: '₹1,199',
-    store: 'Reliance Digital',
+    store: 'Flipkart',
     image: '/products/boat-watch.jpg',
   },
 ];
@@ -128,14 +128,28 @@ export const Hero = () => {
     if (!isUrl) return null;
 
     let store = 'Store';
+    let isSupportedNow = false;
     const cleanUrl = str.startsWith('http') ? str : `https://${str}`;
 
-    if (str.includes('amazon.')) store = 'Amazon';
-    else if (str.includes('flipkart.')) store = 'Flipkart';
-    else if (str.includes('croma.')) store = 'Croma';
-    else if (str.includes('reliancedigital.')) store = 'Reliance Digital';
-    else if (str.includes('myntra.')) store = 'Myntra';
-    else if (str.includes('tatacliq.')) store = 'Tata CLiQ';
+    if (str.includes('amazon.')) {
+      store = 'Amazon';
+      isSupportedNow = true;
+    } else if (str.includes('flipkart.')) {
+      store = 'Flipkart';
+      isSupportedNow = true;
+    } else if (str.includes('croma.')) {
+      store = 'Croma';
+      isSupportedNow = false;
+    } else if (str.includes('reliancedigital.')) {
+      store = 'Reliance Digital';
+      isSupportedNow = false;
+    } else if (str.includes('myntra.')) {
+      store = 'Myntra';
+      isSupportedNow = false;
+    } else if (str.includes('tatacliq.')) {
+      store = 'Tata CLiQ';
+      isSupportedNow = false;
+    }
 
     const targetProductId = resolveProductFromQuery(str);
     const matchedProduct = PRODUCTS.find((p) => p.id === targetProductId) || PRODUCTS[0];
@@ -144,6 +158,7 @@ export const Hero = () => {
       isUrl: true,
       url: cleanUrl,
       store,
+      isSupportedNow,
       productId: targetProductId,
       productName: matchedProduct.name,
       productPrice: matchedProduct.currentPrice,
@@ -302,7 +317,7 @@ export const Hero = () => {
 
           {/* Supporting Copy */}
           <p className="pl-editorial-subtext">
-            PriceLens monitors real-time prices across <strong>Amazon, Flipkart, Croma</strong>, and <strong>Reliance Digital</strong>. Audit 1-year historical curves, uncover fake festive markups, and purchase at the verified lowest price.
+            PriceLens monitors real-time prices across <strong>Amazon &amp; Flipkart</strong>. Audit 1-year historical curves, uncover fake festive markups, and purchase at the verified lowest price. (More stores coming in future updates)
           </p>
 
           {/* Premium Functional Search & Paste Engine */}
@@ -357,7 +372,11 @@ export const Hero = () => {
                 <div className="pl-link-detected-left">
                   <div className="pl-link-store-badge">
                     <StoreLogo store={linkInfo.store} size="xs" />
-                    <span>Verified {linkInfo.store} Link</span>
+                    <span>
+                      {linkInfo.isSupportedNow
+                        ? `Verified ${linkInfo.store} Link`
+                        : `${linkInfo.store} (Future Update — Amazon & Flipkart Active)`}
+                    </span>
                   </div>
                   <span className="pl-link-detected-title">
                     {linkInfo.productName}
@@ -368,7 +387,7 @@ export const Hero = () => {
                     type="button"
                     className="pl-link-btn-compare"
                     onClick={() => handleViewPriceList(linkInfo)}
-                    title="View 4-Store Price Comparison List"
+                    title="View Amazon & Flipkart Price Comparison List"
                   >
                     <Layers size={13} />
                     <span>View Price List</span>
@@ -450,7 +469,7 @@ export const Hero = () => {
           <div className="pl-hero-feature-pills-row">
             <div className="pl-feature-indicator-pill">
               <Layers size={14} className="pl-feature-icon" />
-              <span>4-Store Comparison</span>
+              <span>Amazon &amp; Flipkart Live</span>
             </div>
             <div className="pl-feature-indicator-pill">
               <BarChart2 size={14} className="pl-feature-icon" />
@@ -517,16 +536,16 @@ export const Hero = () => {
                 <span className="pl-panel-delivery-note">Free 2-Day Delivery</span>
               </div>
 
-              {/* Floating Data Panel 3: Croma Store Offer */}
-              <div className="pl-floating-panel panel-croma">
+              {/* Floating Data Panel 3: Future Stores Roadmap */}
+              <div className="pl-floating-panel panel-future-stores">
                 <div className="pl-panel-header">
-                  <StoreLogo store="croma" size="sm" />
-                  <span className="pl-panel-store-tag">Tata Retail</span>
+                  <span className="pl-future-pill-tag">FUTURE UPDATE</span>
+                  <span className="pl-future-status-pill">Roadmap</span>
                 </div>
-                <div className="pl-panel-price-row">
-                  <span className="pl-panel-price">₹72,990</span>
+                <div className="pl-future-content-row">
+                  <span className="pl-future-store-names">+ Croma &amp; Reliance</span>
                 </div>
-                <span className="pl-panel-delivery-note">Store Pickup in 2h</span>
+                <span className="pl-panel-delivery-note">In Active Development</span>
               </div>
 
               {/* Floating Mini Historical Price Chart */}

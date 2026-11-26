@@ -80,7 +80,7 @@ export const PriceAlertCTA = () => {
             </h2>
 
             <p className="pl-alert-main-desc">
-              We monitor Flipkart, Amazon, Croma, and Reliance Digital 24/7. When prices drop to your target, you receive an instantaneous trigger notification.
+              We monitor Amazon and Flipkart 24/7. When prices drop to your target, you receive an instantaneous trigger notification. (More stores coming in future updates)
             </p>
 
             <div className="pl-alert-benefits-list">

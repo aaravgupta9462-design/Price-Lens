@@ -109,7 +109,7 @@ export const PopularPriceDrops = () => {
         <div className="pl-section-title-col">
           <h2 className="pl-section-title">Popular price drops &amp; festive sale audit</h2>
           <p className="pl-section-subtitle">
-            Audited deals from Amazon, Flipkart, Croma and Reliance Digital with AI Fake-Discount verification
+            Audited deals from Amazon and Flipkart with AI Fake-Discount verification (More stores coming soon)
           </p>
         </div>
         <button

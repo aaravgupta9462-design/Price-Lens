@@ -20,7 +20,7 @@ export const CompareStoresCard = () => {
     [];
 
   // Override with user's pasted link for that platform if active
-  const comparisons = baseComparisons.map((row) => {
+  const allComparisons = baseComparisons.map((row) => {
     if (
       customStoreLink &&
       customStoreLink.store &&
@@ -35,6 +35,12 @@ export const CompareStoresCard = () => {
       };
     }
     return row;
+  });
+
+  // Keep only active live stores (Amazon and Flipkart)
+  const comparisons = allComparisons.filter((row) => {
+    const p = row.platform.toLowerCase();
+    return p.includes('amazon') || p.includes('flipkart');
   });
 
   const calculateEffectivePrice = (row, bank) => {
@@ -233,6 +239,30 @@ export const CompareStoresCard = () => {
             })}
           </tbody>
         </table>
+      </div>
+
+      {/* Future Stores Roadmap Strip */}
+      <div className="pl-future-stores-banner">
+        <div className="pl-future-stores-left">
+          <div className="pl-future-icon-wrap">
+            <Sparkles size={16} className="text-violet" />
+          </div>
+          <div>
+            <div className="pl-future-title-row">
+              <span className="pl-future-title">More Retailers Coming in Future Update</span>
+              <span className="pl-future-badge-pill">Roadmap</span>
+            </div>
+            <p className="pl-future-subtext">
+              We are actively integrating live price adapters for <strong>Croma, Reliance Digital, Tata CLiQ, and Vijay Sales</strong>. Currently live: Amazon &amp; Flipkart.
+            </p>
+          </div>
+        </div>
+        <div className="pl-future-stores-pills">
+          <span className="pl-future-store-chip">Croma</span>
+          <span className="pl-future-store-chip">Reliance Digital</span>
+          <span className="pl-future-store-chip">Tata CLiQ</span>
+          <span className="pl-future-store-chip">Vijay Sales</span>
+        </div>
       </div>
     </div>
   );

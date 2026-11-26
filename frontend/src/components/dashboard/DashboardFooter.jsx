@@ -51,11 +51,11 @@ export const DashboardFooter = () => {
               <div className="pl-footer-nav-col">
                 <h4 className="pl-footer-col-title">Retailers Monitored</h4>
                 <ul className="pl-footer-links-list">
-                  <li><a href="https://www.amazon.in" target="_blank" rel="noopener noreferrer">Amazon India</a></li>
-                  <li><a href="https://www.flipkart.com" target="_blank" rel="noopener noreferrer">Flipkart</a></li>
-                  <li><a href="https://www.croma.com" target="_blank" rel="noopener noreferrer">Croma Electronics</a></li>
-                  <li><a href="https://www.reliancedigital.in" target="_blank" rel="noopener noreferrer">Reliance Digital</a></li>
-                  <li><a href="https://www.tatacliq.com" target="_blank" rel="noopener noreferrer">Tata CLiQ</a></li>
+                  <li><a href="https://www.amazon.in" target="_blank" rel="noopener noreferrer">Amazon India <span className="pl-footer-live-badge">Live</span></a></li>
+                  <li><a href="https://www.flipkart.com" target="_blank" rel="noopener noreferrer">Flipkart <span className="pl-footer-live-badge">Live</span></a></li>
+                  <li><span className="pl-footer-future-tag">Croma (Future Update)</span></li>
+                  <li><span className="pl-footer-future-tag">Reliance Digital (Future Update)</span></li>
+                  <li><span className="pl-footer-future-tag">Tata CLiQ (Future Update)</span></li>
                 </ul>
               </div>
 

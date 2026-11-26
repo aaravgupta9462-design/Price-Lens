@@ -19,8 +19,11 @@ const ProductDetailScreen = () => {
 
   const product =
     PRODUCTS.find((p) => p.id === selectedProductId) || PRODUCTS[0];
-  const platforms =
+  const allPlatforms =
     PLATFORM_COMPARISONS[product.id] || PLATFORM_COMPARISONS['iphone-16-128'];
+  const platforms = allPlatforms.filter(
+    (p) => p.platform.toLowerCase().includes('amazon') || p.platform.toLowerCase().includes('flipkart')
+  );
   const bestPlatform = platforms.find((p) => p.isBestPrice) || platforms[0];
   const isSaved = savedProducts.some((s) => s.productId === product.id || s.id === product.id);
 
