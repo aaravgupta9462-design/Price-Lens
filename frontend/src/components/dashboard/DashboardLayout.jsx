@@ -22,6 +22,14 @@ import '../../dashboard.css';
 const ScreenRenderer = () => {
   const { activeNav } = useDashboard();
 
+  React.useEffect(() => {
+    if (activeNav !== 'dashboard') {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    }
+  }, [activeNav]);
+
   switch (activeNav) {
     case 'search':
       return <SearchProductsScreen />;

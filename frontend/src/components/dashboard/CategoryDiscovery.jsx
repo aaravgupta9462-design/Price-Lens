@@ -61,7 +61,7 @@ export const CategoryDiscovery = () => {
   const handleCategoryClick = (category) => {
     setSearchQuery(category.id);
     setActiveNav('search');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
   };
 
   return (
