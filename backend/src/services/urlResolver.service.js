@@ -140,16 +140,22 @@ async function fetchFromScrapingBee(targetUrl, store) {
       }
     } else if (store === 'Flipkart') {
       const fkPriceMatch =
-        html.match(/"finalPrice"\s*:\s*\{\s*"value"\s*:\s*(\d+)/i) ||
-        html.match(/class=["'][^"']*Nx9bqj[^"']*["'][^>]*>₹([\d,]+)/i) ||
-        html.match(/<meta\s+property=["']product:price:amount["']\s+content=["']([\d.]+)["']/i);
+        html.match(/"@type"\s*:\s*"Product"[\s\S]{0,2000}?"price"\s*:\s*"?(\d+)"?/i) ||
+        html.match(/class=["'][^"']*Nx9bqj[^"']*CxhGGd[^"']*["'][^>]*>₹([\d,]+)/i) ||
+        html.match(/<meta\s+property=["']product:price:amount["']\s+content=["']([\d.]+)["']/i) ||
+        html.match(/"finalPrice"\s*:\s*\{\s*"value"\s*:\s*(\d+)/i);
       if (fkPriceMatch) {
         extractedPrice = Math.round(Number(fkPriceMatch[1].replace(/,/g, '')));
       }
     }
 
+    const cleanTitle = titleMatch?.[1]
+      ?.replace(/\s*Online at Best Price.*$/i, '')
+      ?.replace(/\s*[-|:]\s*(Amazon\.in|Flipkart\.com).*$/i, '')
+      .trim() || null;
+
     return {
-      title: titleMatch?.[1]?.replace(/\s*[-|:]\s*(Amazon\.in|Flipkart\.com).*$/i, '').trim() || null,
+      title: cleanTitle,
       price: extractedPrice && extractedPrice > 0 ? extractedPrice : null,
       image: imageMatch?.[1] || null,
       source: 'scrapingbee',
@@ -249,11 +255,21 @@ async function fetchSerpApiStoreOffers(query, referencePrice = null, pastedStore
       return queryWords.reduce((acc, w) => (titleLower.includes(w) ? acc + 1 : acc), 0);
     };
 
+    const queryLower = shortQuery.toLowerCase();
+    const isAccessoryQuery = /\b(case|cover|tempered|guard|protector|cable|charger|skin|pouch)\b/.test(queryLower);
+    const isHighTicket = /\b(iphone|macbook|ipad|laptop|galaxy s|oled|ps5|playstation)\b/.test(queryLower);
+    const safeRefPrice = isHighTicket && referencePrice && referencePrice < 8000 ? null : referencePrice;
+
     const validResults = results.filter((item) => {
       const p = extractPrice(item);
       if (!p || p <= 0) return false;
-      if (referencePrice && referencePrice > 500) {
-        if (p < referencePrice * 0.45 || p > referencePrice * 2.2) return false;
+      const titleLower = (item.title || '').toLowerCase();
+      if (!isAccessoryQuery && /\b(case|back cover|cover for|tempered|screen guard|protector|skin|pouch)\b/.test(titleLower)) {
+        return false;
+      }
+      if (isHighTicket && p < 10000) return false;
+      if (safeRefPrice && safeRefPrice > 500) {
+        if (p < safeRefPrice * 0.45 || p > safeRefPrice * 2.2) return false;
       }
       if (queryWords.length >= 2 && scoreRelevance(item) < 1) return false;
       return true;
