@@ -1,4 +1,5 @@
 import React from 'react';
+import { useDashboard } from '../../../context/DashboardContext';
 import Hero from '../Hero';
 import ExtensionPromo from '../ExtensionPromo';
 import LivePriceDropsTicker from '../LivePriceDropsTicker';
@@ -11,8 +12,36 @@ import PriceHistoryInsightsCard from '../PriceHistoryInsightsCard';
 import BuyAdvisorSection from '../BuyAdvisorSection';
 import PriceAlertCTA from '../PriceAlertCTA';
 import HowItWorksSection from '../HowItWorksSection';
+import FAQSection from '../FAQSection';
+
+const SHOWCASE_PRODUCTS = [
+  { id: 'iphone-16-128', label: 'iPhone 16 (128GB)' },
+  { id: 'samsung-s25', label: 'Galaxy S25 Ultra' },
+  { id: 'macbook-air-m3', label: 'MacBook Air M3' },
+  { id: 'sony-xm5', label: 'Sony WH-1000XM5' },
+  { id: 'airpods-pro-2', label: 'AirPods Pro 2' },
+];
 
 export const DashboardHome = () => {
+  const { selectedProductId, setSelectedProductId } = useDashboard();
+
+  const renderProductSwitcher = () => (
+    <div className="pl-showcase-switcher" role="group" aria-label="Select flagship product to inspect">
+      <span className="pl-switcher-label">Quick Switch Product:</span>
+      <div className="pl-switcher-pills">
+        {SHOWCASE_PRODUCTS.map((prod) => (
+          <button
+            key={prod.id}
+            type="button"
+            className={`pl-switcher-pill ${(selectedProductId || 'iphone-16-128') === prod.id ? 'active' : ''}`}
+            onClick={() => setSelectedProductId(prod.id)}
+          >
+            {prod.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
   return (
     <div className="pl-homepage-editorial-container db-page-fade">
       {/* 1. Cinematic Hero and Dual Search/Link Paste Engine */}
@@ -58,6 +87,7 @@ export const DashboardHome = () => {
               Verify real-time checkout pricing and calculate effective card discounts across Amazon &amp; Flipkart
             </p>
           </div>
+          {renderProductSwitcher()}
         </div>
 
         <div className="pl-fullwidth-card-container">
@@ -79,6 +109,7 @@ export const DashboardHome = () => {
               Audit 1-year historical price curves, spot fake festive discount inflation, and set instant price-drop alerts
             </p>
           </div>
+          {renderProductSwitcher()}
         </div>
 
         <div className="pl-fullwidth-card-container">
@@ -86,20 +117,23 @@ export const DashboardHome = () => {
         </div>
       </section>
 
-      {/* 9. Buy-Now Versus Wait Recommendation (Buyhatke Deal Index Engine) */}
+      {/* 10. Buy-Now Versus Wait Recommendation (Buyhatke Deal Index Engine) */}
       <div id="buy-advisor">
         <BuyAdvisorSection />
       </div>
 
-      {/* 10. Price-Alert Call To Action (WhatsApp & Email Drop Dispatcher) */}
+      {/* 11. Price-Alert Call To Action (WhatsApp & Email Drop Dispatcher) */}
       <div id="alerts">
         <PriceAlertCTA />
       </div>
 
-      {/* 11. Trust Indicators and How-It-Works Methodology */}
+      {/* 12. Trust Indicators and How-It-Works Methodology */}
       <div id="how-it-works">
         <HowItWorksSection />
       </div>
+
+      {/* 13. Frequently Asked Questions */}
+      <FAQSection />
     </div>
   );
 };

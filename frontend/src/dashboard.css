@@ -9274,3 +9274,161 @@
   font-size: 0.76rem;
   cursor: default;
 }
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   MARKET-READY POLISH: PRODUCT SWITCHER, FAQ ACCORDION & FOOTER STATUS PILL
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+.pl-showcase-switcher {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+}
+
+.pl-switcher-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #64748B;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.pl-switcher-pills {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.pl-switcher-pill {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  color: #475569;
+  font-size: 0.76rem;
+  font-weight: 650;
+  padding: 0.36rem 0.78rem;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.16s ease;
+}
+
+.pl-switcher-pill:hover {
+  border-color: #6842FF;
+  color: #6842FF;
+  background: #F5F3FF;
+}
+
+.pl-switcher-pill.active {
+  background: #111322;
+  color: #FFFFFF;
+  border-color: #111322;
+  box-shadow: 0 2px 8px rgba(17, 19, 34, 0.14);
+}
+
+/* ─── FAQ Section ──────────────────────────────────────────────────────────── */
+.pl-faq-section {
+  margin-bottom: 4rem;
+}
+
+.pl-faq-container {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.pl-faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1.75rem;
+}
+
+.pl-faq-item {
+  background: #FFFFFF;
+  border: 1px solid #E3E6F0;
+  border-radius: 14px;
+  overflow: hidden;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.pl-faq-item.open {
+  border-color: rgba(104, 66, 255, 0.35);
+  box-shadow: 0 6px 20px rgba(104, 66, 255, 0.06);
+}
+
+.pl-faq-question-btn {
+  width: 100%;
+  background: transparent;
+  border: none;
+  padding: 1.15rem 1.35rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  cursor: pointer;
+  text-align: left;
+}
+
+.pl-faq-question-text {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.96rem;
+  font-weight: 700;
+  color: #111322;
+  line-height: 1.4;
+}
+
+.pl-faq-chevron {
+  color: #64748B;
+  flex-shrink: 0;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.pl-faq-chevron.rotated {
+  transform: rotate(180deg);
+  color: #6842FF;
+}
+
+.pl-faq-answer {
+  padding: 0 1.35rem 1.2rem;
+  border-top: 1px solid #F1F5F9;
+}
+
+.pl-faq-answer p {
+  margin: 0.85rem 0 0;
+  font-size: 0.86rem;
+  color: #475569;
+  line-height: 1.65;
+}
+
+.pl-faq-trust-note {
+  margin-top: 1.35rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #64748B;
+}
+
+/* ─── Footer Operational Status Pill ───────────────────────────────────────── */
+.pl-footer-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #EAF8F1;
+  color: #0F8A5B;
+  border: 1px solid rgba(17, 155, 103, 0.22);
+  padding: 0.25rem 0.7rem;
+  border-radius: 9999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.pl-footer-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #119B67;
+  box-shadow: 0 0 0 2px rgba(17, 155, 103, 0.25);
+}

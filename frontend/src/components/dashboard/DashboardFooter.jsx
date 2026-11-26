@@ -42,9 +42,10 @@ export const DashboardFooter = () => {
                 <h4 className="pl-footer-col-title">Intelligence</h4>
                 <ul className="pl-footer-links-list">
                   <li><a href="#price-comparison-section">Multi-Store Compare</a></li>
-                  <li><a href="#price-comparison-section">Price History Curves</a></li>
+                  <li><a href="#price-history-section">Price History Curves</a></li>
                   <li><a href="#buy-advisor">Buy-Now vs Wait</a></li>
                   <li><a href="#popular-deals">Popular Price Drops</a></li>
+                  <li><a href="#coupons-section">Verified Coupons</a></li>
                   <li><a href="#alerts">Drop Dispatcher</a></li>
                 </ul>
               </div>
@@ -119,6 +120,10 @@ export const DashboardFooter = () => {
             </div>
 
             <div className="pl-footer-copyright-col">
+              <span className="pl-footer-status-pill" title="All price scrapers and alert dispatchers operational">
+                <span className="pl-footer-status-dot" />
+                <span>All Systems Operational</span>
+              </span>
               <span className="pl-footer-copy">© 2026 PriceLens Technologies Inc. All rights reserved.</span>
               <button type="button" className="pl-back-to-top-btn" onClick={scrollToTop}>
                 <span>Back to Top</span>

@@ -37,9 +37,9 @@ const STEPS = [
 
 const TRUST_STATS = [
   {
-    value: '₹4.8 Cr+',
-    label: 'Calculated Shopper Savings',
-    subtext: 'Across 140,000+ purchases',
+    value: '50,000+',
+    label: 'Daily Price Points Audited',
+    subtext: 'Smartphones, laptops & audio',
   },
   {
     value: 'Amazon & Flipkart',
@@ -47,14 +47,14 @@ const TRUST_STATS = [
     subtext: 'More stores in future updates',
   },
   {
-    value: '92,000+',
-    label: 'Active Drop Monitors',
-    subtext: 'Firing instant alerts daily',
+    value: '365-Day',
+    label: 'Historical Telemetry Depth',
+    subtext: 'Spotting artificial sale markups',
   },
   {
     value: '100% Objective',
     label: 'Zero Sponsored Placement',
-    subtext: 'Rankings strictly by real price',
+    subtext: 'Ranked strictly by real net price',
   },
 ];
 
